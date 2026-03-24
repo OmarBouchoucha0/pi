@@ -1,7 +1,5 @@
 # Backend
 
-A Spring Boot REST API backend built with Java 17, Maven, and MySQL (MariaDB).
-
 ---
 
 ## Prerequisites
@@ -111,4 +109,95 @@ journalctl -f -u backend
 
 ---
 
+# FrontEnd
+
+---
+
+## Prerequisites
+
+Make sure you have the following installed before getting started:
+
+- **node** -
+- **npm** -
+
+Verify your installs:
+```bash
+node -v
+npm -v
+```
+
+---
+
+## Database Setup
+
+**1. Initialize and start MariaDB:**
+```bash
+cd frontend
+npm install
+```
+---
+
+## Running the App
+
+```bash
+# Development
+ng serve                    # Start dev server with hot reload
+ng serve --configuration=production  # Test production build locally
+
+# Building
+ng build                    # Development build
+ng build --configuration=production  # Optimized production build
+
+# Testing
+ng test                     # Run unit tests (Jest)
+ng test --watch             # Run tests in watch mode
+ng test --coverage          # Generate coverage report
+ng e2e                      # Run end-to-end tests (Cypress)
+
+# Code Quality
+ng lint                     # Run ESLint
+ng lint --fix               # Fix auto-fixable linting errors
+
+# Other
+ng generate component [name] # Generate new component
+ng generate service [name]   # Generate new service
+ng analyze                  # Analyze bundle size
+---
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── core/                 # Singleton services, guards, interceptors
+│   │   ├── services/
+│   │   ├── guards/
+│   │   └── interceptors/
+│   ├── shared/               # Reusable components, pipes, directives
+│   │   ├── components/
+│   │   ├── pipes/
+│   │   └── directives/
+│   ├── features/             # Feature modules (lazy-loaded)
+│   │   ├── feature-name/
+│   │   │   ├── components/
+│   │   │   ├── services/
+│   │   │   └── feature-name.routes.ts
+│   ├── layout/               # Shell components (header, sidebar, footer)
+│   └── app.config.ts         # App-level configuration
+├── assets/                   # Static assets
+├── styles/                   # Global styles & theming
+│   ├── _theme.scss           # Material theme customization
+│   └── _custom-tailwind.css  # Tailwind custom utilities
+└── environments/             # Environment configurations```
+
+---
+
+## Key Dependencies
+
+| Dependency | Purpose |
+|---|---|
+| tailwind | Css Framework |
+| angular material ui | Component Library(offical) |
+
+---
 
