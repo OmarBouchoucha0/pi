@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
@@ -6,7 +6,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   standalone: true,
   imports: [MatSlideToggleModule],
   templateUrl: './testcomp.component.html',
-  styleUrl: './testcomp.component.scss'
+  styleUrl: './testcomp.component.scss',
+  encapsulation: ViewEncapsulation.None  // Test this
 })
 export class TestcompComponent {
 
