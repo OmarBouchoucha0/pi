@@ -1,0 +1,29 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Java / Maven
+backend/target/
+*.jar
+*.war
+*.class
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
