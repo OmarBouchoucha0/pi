@@ -40,10 +40,6 @@ git checkout -b fix/your-bug-name
 
 Write your code, then verify the build passes before committing:
 
-```bash
-mvn clean install -DskipTests
-```
-
 ### 6. Commit your changes
 
 ```bash
