@@ -1,6 +1,5 @@
 # Backend
 
----
 
 ## Prerequisites
 
@@ -17,7 +16,6 @@ mvn -version
 mysql --version
 ```
 
----
 
 ## Database Setup
 
@@ -40,7 +38,6 @@ FLUSH PRIVILEGES;
 EXIT;
 ```
 
----
 
 ## Running the App
 
@@ -76,7 +73,6 @@ src/main/resources/
 └── application.properties   # App configuration
 ```
 
----
 
 ## Key Dependencies
 
@@ -92,7 +88,6 @@ src/main/resources/
 | Spring Validation | Request validation |
 | Lombok | Boilerplate reduction |
 
----
 
 ## Useful Commands
 
@@ -111,7 +106,6 @@ journalctl -f -u backend
 
 # FrontEnd
 
----
 
 ## Prerequisites
 
@@ -126,7 +120,6 @@ node -v
 npm -v
 ```
 
----
 
 ## Database Setup
 
@@ -135,7 +128,6 @@ npm -v
 cd frontend
 npm install
 ```
----
 
 ## Running the App
 
@@ -162,7 +154,7 @@ ng lint --fix               # Fix auto-fixable linting errors
 ng generate component [name] # Generate new component
 ng generate service [name]   # Generate new service
 ng analyze                  # Analyze bundle size
----
+```
 
 ## Project Structure
 
@@ -188,9 +180,13 @@ src/
 ├── styles/                   # Global styles & theming
 │   ├── _theme.scss           # Material theme customization
 │   └── _custom-tailwind.css  # Tailwind custom utilities
-└── environments/             # Environment configurations```
+└── environments/             # Environment configurations
+```
 
----
+
+
+
+
 
 ## Key Dependencies
 
@@ -199,5 +195,4 @@ src/
 | tailwind | Css Framework |
 | angular material ui | Component Library(offical) |
 
----
 
