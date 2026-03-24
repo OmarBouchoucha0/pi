@@ -10,6 +10,7 @@ This skill guides creation of distinctive, production-grade Angular frontend int
 ## Angular Architecture Context
 
 The project uses:
+
 - **Angular** as the framework (standalone components or NgModules as appropriate)
 - **Tailwind CSS** for utility-first styling and rapid UI development
 - **Angular Material** for foundational accessible components
@@ -26,5 +27,3 @@ Before coding Angular components, understand the context and commit to a BOLD ae
 - **Differentiation**: What makes this UNFORGETTABLE? What's the one thing someone will remember?
 
 **CRITICAL**: Choose a clear conceptual direction and execute it with precision in Angular. Consider component composition, data flow, and reusability while pushing creative boundaries.
-
-
