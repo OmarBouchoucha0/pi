@@ -1,0 +1,37 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+        exclude: ^frontend/tsconfig.*\.json$
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: prettier-check
+        name: Prettier
+        entry: bash -c 'cd frontend && npx prettier --check "src/**/*.{ts,html,scss,css,json}"'
+        language: system
+        files: ^frontend/src/.*\.(ts|html|scss|css|json)$
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: eslint
+        name: ESLint
+        entry: bash -c 'cd frontend && npx ng lint'
+        language: system
+        files: ^frontend/src/.*\.(ts|html)$
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: spotless-check
+        name: Spotless (Java)
+        entry: bash -c 'cd backend && ./mvnw spotless:check -q'
+        language: system
+        files: ^backend/.*\.java$
+        pass_filenames: false

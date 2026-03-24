@@ -7,7 +7,7 @@ import { TestcompComponent } from '../testcomp/testcomp.component';
   standalone: true,
   imports: [RouterOutlet, TestcompComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   title = 'frontend';

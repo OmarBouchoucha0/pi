@@ -8,6 +8,4 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   templateUrl: './testcomp.component.html',
   styleUrl: './testcomp.component.scss',
 })
-export class TestcompComponent {
-
-}
+export class TestcompComponent {}
