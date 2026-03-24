@@ -8,9 +8,9 @@ A Spring Boot REST API backend built with Java 17, Maven, and MySQL (MariaDB).
 
 Make sure you have the following installed before getting started:
 
-- **Java 17** 
+- **Java 17** -
 - **Maven** -
-**MariaDB** — 
+- **MariaDB** -
 
 Verify your installs:
 ```bash
