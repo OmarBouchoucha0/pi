@@ -53,7 +53,8 @@ describe('LoginComponent', () => {
 
   it('should navigate to signup when Register is clicked', () => {
     const navigateSpy = spyOn(router, 'navigate');
-    component.router.navigate(['/signup']);
+    const register = fixture.nativeElement.querySelector('span[role="button"]') as HTMLElement;
+    register.click();
     expect(navigateSpy).toHaveBeenCalledWith(['/signup']);
   });
 });
