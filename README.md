@@ -9,6 +9,7 @@ Make sure you have the following installed before getting started:
 - **MariaDB** -
 
 Verify your installs:
+
 ```bash
 java -version
 mvn -version
@@ -18,6 +19,7 @@ mysql --version
 ## Database Setup
 
 **1. Initialize and start MariaDB:**
+
 ```bash
 sudo mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
 sudo systemctl enable --now mariadb
@@ -25,9 +27,11 @@ sudo mysql_secure_installation
 ```
 
 **2. Create the database and user:**
+
 ```bash
 sudo mysql -u root -p
 ```
+
 ```sql
 CREATE DATABASE pi_db;
 CREATE USER 'user'@'localhost' IDENTIFIED BY '';
@@ -72,17 +76,17 @@ src/main/resources/
 
 ## Key Dependencies
 
-| Dependency | Purpose |
-|---|---|
-| Spring Web | REST API |
-| Spring Data JPA | Database ORM |
-| Spring Security | Auth and access control |
-| JJWT | JWT token generation and validation |
-| MySQL Connector | MariaDB/MySQL driver |
-| Spring Mail | Email sending |
-| Spring WebSocket | Real-time communication |
-| Spring Validation | Request validation |
-| Lombok | Boilerplate reduction |
+| Dependency        | Purpose                             |
+| ----------------- | ----------------------------------- |
+| Spring Web        | REST API                            |
+| Spring Data JPA   | Database ORM                        |
+| Spring Security   | Auth and access control             |
+| JJWT              | JWT token generation and validation |
+| MySQL Connector   | MariaDB/MySQL driver                |
+| Spring Mail       | Email sending                       |
+| Spring WebSocket  | Real-time communication             |
+| Spring Validation | Request validation                  |
+| Lombok            | Boilerplate reduction               |
 
 ## Useful Commands
 
@@ -109,6 +113,7 @@ Make sure you have the following installed before getting started:
 - **npm** -
 
 Verify your installs:
+
 ```bash
 node -v
 npm -v
@@ -175,12 +180,12 @@ src/
 
 ## Key Dependencies
 
-| Dependency | Purpose |
-|---|---|
-| Angular 20 | Framework |
-| PrimeNG 20 | Component library |
+| Dependency   | Purpose                     |
+| ------------ | --------------------------- |
+| Angular 20   | Framework                   |
+| PrimeNG 20   | Component library           |
 | Tailwind CSS | Utility-first CSS framework |
-| PrimeIcons | Icon library |
+| PrimeIcons   | Icon library                |
 
 ## Code Quality
 
@@ -202,5 +207,6 @@ pre-commit install
 ### CI/CD
 
 GitHub Actions runs on every PR:
+
 - **Frontend**: lint, format check, production build
 - **Backend**: spotless check, compile, test
