@@ -66,6 +66,10 @@
         Don't have an account?
         <span
           class="text-[#0a0a0a] font-medium border-b border-[#0a0a0a] cursor-pointer hover:opacity-70 transition-opacity"
+          tabindex="0"
+          role="button"
+          (click)="router.navigate(['/signup'])"
+          (keyup.enter)="router.navigate(['/signup'])"
         >
           Register
         </span>
