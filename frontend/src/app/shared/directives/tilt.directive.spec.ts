@@ -22,8 +22,14 @@ describe('TiltDirective', () => {
     hostElement = fixture.nativeElement.querySelector('#host');
   });
 
+import { By } from '@angular/platform-browser';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { TiltDirective } from './tilt.directive';
+
   it('should create with directive', () => {
-    expect(hostElement).toBeTruthy();
+    const directiveEl = fixture.debugElement.query(By.directive(TiltDirective));
+    expect(directiveEl).toBeTruthy();
   });
 
   it('should set willChange to transform', () => {
