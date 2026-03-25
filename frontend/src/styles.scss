@@ -5,9 +5,11 @@
 html,
 body {
   height: 100%;
-}
-
-body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(to right, #00000015 1px, transparent 1px),
+    linear-gradient(to bottom, #00000015 1px, transparent 1px);
+  background-size: 120px 120px;
 }
