@@ -19,7 +19,7 @@
             [(ngModel)]="email"
             name="email"
             inputId="email"
-            class="!w-full !rounded-lg !border !border-black/15 !bg-white !text-sm !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
           />
           <label for="email" class="!text-xs !font-light">Email</label>
         </p-floatlabel>
@@ -39,7 +39,7 @@
             [toggleMask]="true"
             [feedback]="false"
             styleClass="w-full"
-            inputStyleClass="!w-full !rounded-lg !border !border-black/15 !bg-white !text-sm !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+            inputStyleClass="!w-full !p-1 !rounded-xs !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
           />
           <label for="password" class="!text-xs !font-light">Password</label>
         </p-floatlabel>
@@ -66,6 +66,10 @@
         Don't have an account?
         <span
           class="text-[#0a0a0a] font-medium border-b border-[#0a0a0a] cursor-pointer hover:opacity-70 transition-opacity"
+          tabindex="0"
+          role="button"
+          (click)="router.navigate(['/signup'])"
+          (keyup.enter)="router.navigate(['/signup'])"
         >
           Register
         </span>
