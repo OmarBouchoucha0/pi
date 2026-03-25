@@ -22,6 +22,7 @@ git remote add upstream git@github.com:OmarBouchoucha0/pi.git
 ```
 
 Verify your remotes:
+
 ```bash
 git remote -v
 ```
@@ -49,13 +50,13 @@ git commit -m "feat: short description of what you did"
 
 Use clear commit message prefixes:
 
-| Prefix | When to use |
-|---|---|
-| `feat:` | Adding a new feature |
-| `fix:` | Fixing a bug |
+| Prefix      | When to use                      |
+| ----------- | -------------------------------- |
+| `feat:`     | Adding a new feature             |
+| `fix:`      | Fixing a bug                     |
 | `refactor:` | Code cleanup, no behavior change |
-| `docs:` | Documentation changes only |
-| `test:` | Adding or updating tests |
+| `docs:`     | Documentation changes only       |
+| `test:`     | Adding or updating tests         |
 
 ### 7. Sync with upstream before pushing
 
@@ -90,9 +91,9 @@ git push origin feature/your-feature-name
 
 ## Branch Naming Convention
 
-| Type | Format | Example |
-|---|---|---|
-| New feature | `feature/name` | `feature/jwt-auth` |
-| Bug fix | `fix/name` | `fix/login-error` |
-| Refactor | `refactor/name` | `refactor/user-service` |
-| Documentation | `docs/name` | `docs/update-readme` |
+| Type          | Format          | Example                 |
+| ------------- | --------------- | ----------------------- |
+| New feature   | `feature/name`  | `feature/jwt-auth`      |
+| Bug fix       | `fix/name`      | `fix/login-error`       |
+| Refactor      | `refactor/name` | `refactor/user-service` |
+| Documentation | `docs/name`     | `docs/update-readme`    |
