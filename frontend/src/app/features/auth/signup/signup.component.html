@@ -12,41 +12,41 @@
 
     <form #registerForm="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
       <!-- Username -->
-      <div class="flex flex-col gap-1.5">
+      <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
           <input
             pInputText
             [(ngModel)]="username"
             name="username"
             inputId="username"
-            class="!w-full !rounded-lg !border !border-black/15 !bg-white !text-sm !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
           />
           <label for="username" class="!text-xs !font-light">Username</label>
         </p-floatlabel>
         @if (usernameInvalid && submitted) {
-          <small class="text-red-500 text-[11px] font-light pl-1">Please enter a username</small>
+          <small class="text-red-500 text-[12px] font-light pl-1">Please enter a username</small>
         }
       </div>
 
       <!-- Email -->
-      <div class="flex flex-col gap-1.5">
+      <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
           <input
             pInputText
             [(ngModel)]="email"
             name="email"
             inputId="email"
-            class="!w-full !rounded-lg !border !border-black/15 !bg-white !text-sm !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
           />
           <label for="email" class="!text-xs !font-light">Email</label>
         </p-floatlabel>
         @if (emailInvalid && submitted) {
-          <small class="text-red-500 text-[11px] font-light pl-1">Please enter a valid email</small>
+          <small class="text-red-500 text-[12px] font-light pl-1">Please enter a valid email</small>
         }
       </div>
 
       <!-- Password -->
-      <div class="flex flex-col gap-1.5">
+      <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
           <p-password
             [(ngModel)]="password"
@@ -56,19 +56,19 @@
             [toggleMask]="true"
             [feedback]="false"
             styleClass="w-full"
-            inputStyleClass="!w-full !rounded-lg !border !border-black/15 !bg-white !text-sm !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+            inputStyleClass="!w-full !p-1 !rounded-xs !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
           />
           <label for="password" class="!text-xs !font-light">Password</label>
         </p-floatlabel>
         @if (passwordInvalid && submitted) {
-          <small class="text-red-500 text-[11px] font-light pl-1"
+          <small class="text-red-500 text-[12px] font-light pl-1"
             >Password must be at least 6 characters</small
           >
         }
       </div>
 
       <!-- Confirm Password -->
-      <div class="flex flex-col gap-1.5">
+      <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
           <p-password
             [(ngModel)]="confirmPassword"
@@ -78,12 +78,12 @@
             [toggleMask]="true"
             [feedback]="false"
             styleClass="w-full"
-            inputStyleClass="!w-full !rounded-lg !border !border-black/15 !bg-white !text-sm !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+            inputStyleClass="!w-full !p-1 !rounded-xs !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
           />
           <label for="confirmPassword" class="!text-xs !font-light">Confirm Password</label>
         </p-floatlabel>
         @if (confirmPasswordInvalid && submitted) {
-          <small class="text-red-500 text-[11px] font-light pl-1">Passwords do not match</small>
+          <small class="text-red-500 text-[12px] font-light pl-1">Passwords do not match</small>
         }
       </div>
 
