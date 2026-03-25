@@ -12,7 +12,7 @@
 
     <form #loginForm="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
       <!-- Email -->
-      <div class="flex flex-col gap-1.5">
+      <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
           <input
             pInputText
@@ -24,12 +24,12 @@
           <label for="email" class="!text-xs !font-light">Email</label>
         </p-floatlabel>
         @if (emailInvalid && submitted) {
-          <small class="text-red-500 text-[11px] font-light pl-1">Please enter a valid email</small>
+          <small class="text-red-500 text-[12px] font-light pl-1">Please enter a valid email</small>
         }
       </div>
 
       <!-- Password -->
-      <div class="flex flex-col gap-1.5">
+      <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
           <p-password
             [(ngModel)]="password"
@@ -44,7 +44,7 @@
           <label for="password" class="!text-xs !font-light">Password</label>
         </p-floatlabel>
         @if (passwordInvalid && submitted) {
-          <small class="text-red-500 text-[11px] font-light pl-1"
+          <small class="text-red-500 text-[12px] font-light pl-1"
             >Password must be at least 6 characters</small
           >
         }
