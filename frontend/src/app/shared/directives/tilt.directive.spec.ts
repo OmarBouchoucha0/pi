@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
+import { By } from '@angular/platform-browser';
 import { TiltDirective } from './tilt.directive';
 
 @Component({
@@ -21,11 +22,6 @@ describe('TiltDirective', () => {
     fixture.detectChanges();
     hostElement = fixture.nativeElement.querySelector('#host');
   });
-
-import { By } from '@angular/platform-browser';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
-import { TiltDirective } from './tilt.directive';
 
   it('should create with directive', () => {
     const directiveEl = fixture.debugElement.query(By.directive(TiltDirective));
