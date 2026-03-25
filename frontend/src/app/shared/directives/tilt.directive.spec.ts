@@ -4,7 +4,7 @@ import { TiltDirective } from './tilt.directive';
 
 @Component({
   template: '<div appTilt id="host"></div>',
-  imports: [TiltDirective],
+  imports: [TiltDirective, Component, ComponentFixture, TestBed],
 })
 class TestHostComponent {}
 
