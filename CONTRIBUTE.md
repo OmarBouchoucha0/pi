@@ -96,13 +96,3 @@ git push origin feature/your-feature-name
 | Bug fix | `fix/name` | `fix/login-error` |
 | Refactor | `refactor/name` | `refactor/user-service` |
 | Documentation | `docs/name` | `docs/update-readme` |
-
-## pre commit actions run locally
-### Install pre-commit (if not installed)
-```bash
-pip install pre-commit
-```
-### Install the hooks into your git repo
-```bash
-pre-commit install
-```
