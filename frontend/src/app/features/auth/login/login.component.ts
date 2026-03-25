@@ -3,7 +3,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+
 import { Component, inject } from '@angular/core';
 import { TiltDirective } from '../../../shared/directives/tilt.directive';
 import { Router } from '@angular/router';
@@ -15,7 +15,6 @@ import { Router } from '@angular/router';
     InputTextModule,
     PasswordModule,
     FormsModule,
-    CommonModule,
     FloatLabelModule,
     TiltDirective,
   ],
