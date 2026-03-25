@@ -1,6 +1,5 @@
 # Backend
 
-
 ## Prerequisites
 
 Make sure you have the following installed before getting started:
@@ -15,7 +14,6 @@ java -version
 mvn -version
 mysql --version
 ```
-
 
 ## Database Setup
 
@@ -38,7 +36,6 @@ FLUSH PRIVILEGES;
 EXIT;
 ```
 
-
 ## Running the App
 
 ```bash
@@ -59,7 +56,7 @@ The API will be available at `http://localhost:8080`.
 ## Project Structure
 
 ```
-src/main/java/com/yourname/backend/
+src/main/java/com/pi/backend/
 ├── config/         # Security, WebSocket, CORS configuration
 ├── controller/     # REST endpoints (@RestController)
 ├── service/        # Business logic
@@ -72,7 +69,6 @@ src/main/java/com/yourname/backend/
 src/main/resources/
 └── application.properties   # App configuration
 ```
-
 
 ## Key Dependencies
 
@@ -88,12 +84,11 @@ src/main/resources/
 | Spring Validation | Request validation |
 | Lombok | Boilerplate reduction |
 
-
 ## Useful Commands
 
 ```bash
 # Connect to the database
-mysql -u myapp_user -p myapp_db
+mysql -u user -p pi_db
 
 # Check if the app is running
 curl http://localhost:8080/api/users
@@ -104,14 +99,13 @@ journalctl -f -u backend
 
 ---
 
-# FrontEnd
-
+# Frontend
 
 ## Prerequisites
 
 Make sure you have the following installed before getting started:
 
-- **node** -
+- **Node** (v20+) -
 - **npm** -
 
 Verify your installs:
@@ -120,10 +114,8 @@ node -v
 npm -v
 ```
 
+## Setup
 
-## Database Setup
-
-**1. Initialize and start MariaDB:**
 ```bash
 cd frontend
 npm install
@@ -133,27 +125,27 @@ npm install
 
 ```bash
 # Development
-ng serve                    # Start dev server with hot reload
+ng serve                          # Start dev server with hot reload
 ng serve --configuration=production  # Test production build locally
 
 # Building
-ng build                    # Development build
+ng build                          # Development build
 ng build --configuration=production  # Optimized production build
 
 # Testing
-ng test                     # Run unit tests (Jest)
-ng test --watch             # Run tests in watch mode
-ng test --coverage          # Generate coverage report
-ng e2e                      # Run end-to-end tests (Cypress)
+ng test                           # Run unit tests
+ng test --watch                   # Run tests in watch mode
+ng test --coverage                # Generate coverage report
 
 # Code Quality
-ng lint                     # Run ESLint
-ng lint --fix               # Fix auto-fixable linting errors
+ng lint                           # Run ESLint
+npm run format                    # Auto-fix Prettier formatting
+npm run format:check              # Check Prettier formatting
 
 # Other
-ng generate component [name] # Generate new component
-ng generate service [name]   # Generate new service
-ng analyze                  # Analyze bundle size
+ng generate component [name]      # Generate new component
+ng generate service [name]        # Generate new service
+ng analyze                        # Analyze bundle size
 ```
 
 ## Project Structure
@@ -170,29 +162,45 @@ src/
 │   │   ├── pipes/
 │   │   └── directives/
 │   ├── features/             # Feature modules (lazy-loaded)
-│   │   ├── feature-name/
-│   │   │   ├── components/
-│   │   │   ├── services/
-│   │   │   └── feature-name.routes.ts
+│   │   ├── auth/
+│   │   │   ├── login/
+│   │   │   └── auth.routes.ts
 │   ├── layout/               # Shell components (header, sidebar, footer)
 │   └── app.config.ts         # App-level configuration
 ├── assets/                   # Static assets
-├── styles/                   # Global styles & theming
-│   ├── _theme.scss           # Material theme customization
-│   └── _custom-tailwind.css  # Tailwind custom utilities
+├── styles/
+│   └── styles.scss           # Global styles & theming
 └── environments/             # Environment configurations
 ```
-
-
-
-
-
 
 ## Key Dependencies
 
 | Dependency | Purpose |
 |---|---|
-| tailwind | Css Framework |
-| angular material ui | Component Library(offical) |
+| Angular 20 | Framework |
+| PrimeNG 20 | Component library |
+| Tailwind CSS | Utility-first CSS framework |
+| PrimeIcons | Icon library |
 
+## Code Quality
 
+This project uses the following tools for code quality:
+
+- **ESLint** — TypeScript/HTML linting via `angular-eslint`
+- **Prettier** — Code formatting
+- **Spotless** (backend) — Java code formatting (Google Java Format)
+
+### Pre-commit Hooks
+
+Install pre-commit hooks to catch issues before committing:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+### CI/CD
+
+GitHub Actions runs on every PR:
+- **Frontend**: lint, format check, production build
+- **Backend**: spotless check, compile, test
