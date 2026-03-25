@@ -13,7 +13,7 @@ The project uses:
 
 - **Angular** as the framework (standalone components or NgModules as appropriate)
 - **Tailwind CSS** for utility-first styling and rapid UI development
-- **Angular Material** for foundational accessible components
+- **PrimeNG** for foundational accessible components
 
 **Integration Pattern**: Use Angular Material for complex interactive components (dialogs, menus, tables, form controls) where accessibility and behavior are critical. Use Tailwind for layout, spacing, custom styling overrides, and creative aesthetic choices. This combination allows rapid development with Material's robust foundation while enabling distinctive visual design through Tailwind's utilities.
 
