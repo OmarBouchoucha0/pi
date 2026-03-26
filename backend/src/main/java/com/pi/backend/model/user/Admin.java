@@ -1,19 +1,21 @@
-package com.pi.backend.model;
+package com.pi.backend.model.user;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.pi.backend.model.user.enums.AdminPrivilege;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "nurses")
+@Table(name = "admins")
 @Data
-@SQLDelete(sql = "UPDATE nurses SET deleted_at = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE admins SET deleted_at = NOW() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
-public class Nurse {
+public class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,13 +25,9 @@ public class Nurse {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", nullable = false)
-    private Department department;
-
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private NurseShift shift;
+    @Column(name = "privilege_level", nullable = false)
+    private AdminPrivilege privilegeLevel;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;

@@ -1,19 +1,22 @@
-package com.pi.backend.model;
+package com.pi.backend.model.user;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.pi.backend.model.Department;
+import com.pi.backend.model.user.enums.NurseShift;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "doctors")
+@Table(name = "nurses")
 @Data
-@SQLDelete(sql = "UPDATE doctors SET deleted_at = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE nurses SET deleted_at = NOW() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
-public class Doctor {
+public class Nurse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,14 +30,9 @@ public class Doctor {
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
-    @Column(name = "license_number", nullable = false, unique = true)
-    private String licenseNumber;
-
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String specialty;
-
-    @Column(name = "years_of_experience")
-    private Integer yearsOfExperience;
+    private NurseShift shift;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
