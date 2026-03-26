@@ -3,6 +3,8 @@ package com.pi.backend.model.ai;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
