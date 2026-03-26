@@ -106,13 +106,13 @@ class ChatMessageRepositoryTest {
 
     private ChatSession createSession() {
         Tenant tenant = new Tenant();
-        tenant.setName("Hospital A");
+        tenant.setName("Message Hospital");
         tenant.setStatus(TenantStatus.ACTIVE);
         tenantRepository.save(tenant);
 
         User user = new User();
         user.setTenant(tenant);
-        user.setEmail("patient@test.com");
+        user.setEmail("message-patient@test.com");
         user.setPasswordHash("hashed");
         user.setRole(UserRole.PATIENT);
         user.setStatus(UserStatus.ACTIVE);
