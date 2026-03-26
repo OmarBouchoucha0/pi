@@ -1,10 +1,12 @@
-package com.pi.backend.model;
+package com.pi.backend.model.user;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+
+import com.pi.backend.model.Department;
 
 import jakarta.persistence.*;
 import lombok.Data;

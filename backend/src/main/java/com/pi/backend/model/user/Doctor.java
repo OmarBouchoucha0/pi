@@ -1,19 +1,21 @@
-package com.pi.backend.model;
+package com.pi.backend.model.user;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.pi.backend.model.Department;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "secretaries")
+@Table(name = "doctors")
 @Data
-@SQLDelete(sql = "UPDATE secretaries SET deleted_at = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE doctors SET deleted_at = NOW() WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
-public class Secretary {
+public class Doctor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +28,15 @@ public class Secretary {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
+
+    @Column(name = "license_number", nullable = false, unique = true)
+    private String licenseNumber;
+
+    @Column(nullable = false)
+    private String specialty;
+
+    @Column(name = "years_of_experience")
+    private Integer yearsOfExperience;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
