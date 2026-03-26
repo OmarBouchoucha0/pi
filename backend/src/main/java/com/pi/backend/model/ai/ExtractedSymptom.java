@@ -3,8 +3,6 @@ package com.pi.backend.model.ai;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 import com.pi.backend.model.ai.enums.SymptomSeverity;
 
@@ -20,8 +18,6 @@ import lombok.ToString;
 @Setter
 @ToString(exclude = "session")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@SQLDelete(sql = "UPDATE chat_contexts SET deleted_at = NOW() WHERE id = ?")
-@SQLRestriction("deleted_at IS NULL")
 public class ExtractedSymptom {
 
     @EqualsAndHashCode.Include

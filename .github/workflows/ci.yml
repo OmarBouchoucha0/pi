@@ -62,6 +62,8 @@ jobs:
       SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/pi_db
       SPRING_DATASOURCE_USERNAME: user
       SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
     steps:
       - uses: actions/checkout@v4
 

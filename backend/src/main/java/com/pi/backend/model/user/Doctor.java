@@ -13,7 +13,7 @@ import lombok.Data;
 @Entity
 @Table(name = "doctors")
 @Data
-@SQLDelete(sql = "UPDATE doctors SET deleted_at = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE doctors SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class Doctor {
 

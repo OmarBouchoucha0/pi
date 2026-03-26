@@ -21,7 +21,7 @@ import lombok.ToString;
 @Setter
 @ToString(exclude = {"replyTo"})
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@SQLDelete(sql = "UPDATE chat_messages SET deleted_at = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE chat_messages SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class ChatMessage {
 
