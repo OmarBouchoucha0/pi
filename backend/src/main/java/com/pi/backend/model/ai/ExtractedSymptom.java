@@ -7,13 +7,22 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.pi.backend.model.ai.enums.SymptomSeverity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "extracted_symptoms")
-@Data
+@Getter
+@Setter
+@ToString(exclude = "session")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@SQLDelete(sql = "UPDATE chat_contexts SET deleted_at = NOW() WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 public class ExtractedSymptom {
 
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
