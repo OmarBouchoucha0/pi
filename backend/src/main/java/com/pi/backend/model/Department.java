@@ -14,7 +14,7 @@ import lombok.Data;
     @UniqueConstraint(columnNames = {"tenant_id", "name"})
 })
 @Data
-@SQLDelete(sql = "UPDATE departments SET deleted_at = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE departments SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class Department {
 
