@@ -41,7 +41,7 @@ public class User {
     private UserStatus status;
 
     @Column(name = "failed_attempts")
-    private Integer failedAttempts;
+    private Integer failedAttempts = 0;
 
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
