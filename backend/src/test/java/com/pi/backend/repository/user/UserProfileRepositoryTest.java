@@ -3,10 +3,12 @@ package com.pi.backend.repository.user;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,5 +98,31 @@ class UserProfileRepositoryTest {
         profile.setGender(Gender.MALE);
         profile.setAddress("123 Main St");
         return profile;
+    }
+
+    @Test
+    void softDeleteFiltersFromFindAll() {
+        User user = createUser();
+        UserProfile profile = createProfile(user);
+        UserProfile saved = userProfileRepository.save(profile);
+
+        userProfileRepository.deleteById(saved.getId());
+
+        List<UserProfile> all = userProfileRepository.findAll();
+        assertTrue(all.isEmpty());
+    }
+
+    @Test
+    void uniqueConstraintOnUser() {
+        User user = createUser();
+
+        UserProfile p1 = createProfile(user);
+        userProfileRepository.save(p1);
+
+        UserProfile p2 = createProfile(user);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            userProfileRepository.saveAndFlush(p2);
+        });
     }
 }

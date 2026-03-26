@@ -2,6 +2,8 @@ package com.pi.backend.repository.ai;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -123,5 +125,22 @@ class ChatMessageRepositoryTest {
         session.setSessionType(SessionType.TRIAGE);
         session.setLanguage("en");
         return chatSessionRepository.save(session);
+    }
+
+    @Test
+    void softDeleteFiltersFromFindAll() {
+        ChatSession session = createSession();
+
+        ChatMessage message = new ChatMessage();
+        message.setSession(session);
+        message.setSenderType(SenderType.PATIENT);
+        message.setContent("Test message");
+        message.setMessageType(MessageType.TEXT);
+        ChatMessage saved = chatMessageRepository.save(message);
+
+        chatMessageRepository.deleteById(saved.getId());
+
+        List<ChatMessage> all = chatMessageRepository.findAll();
+        assertTrue(all.isEmpty());
     }
 }

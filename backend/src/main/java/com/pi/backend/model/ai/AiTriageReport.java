@@ -3,8 +3,6 @@ package com.pi.backend.model.ai;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 import com.pi.backend.model.ai.enums.UrgencyLevel;
 
@@ -16,16 +14,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-
-
 @Entity
 @Table(name = "ai_triage_reports")
 @Getter
 @Setter
 @ToString(exclude = "session")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@SQLDelete(sql = "UPDATE ai_triage_reports SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
-@SQLRestriction("deleted_at IS NULL")
 public class AiTriageReport {
 
     @Id

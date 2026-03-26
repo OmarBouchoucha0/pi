@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -129,5 +130,27 @@ class AiTriageReportRepositoryTest {
         session.setSessionType(SessionType.TRIAGE);
         session.setLanguage("en");
         return chatSessionRepository.save(session);
+    }
+
+    @Test
+    void uniqueConstraintOnSession() {
+        ChatSession session = createSession();
+
+        AiTriageReport r1 = new AiTriageReport();
+        r1.setSession(session);
+        r1.setRiskScore(50);
+        r1.setUrgencyLevel(UrgencyLevel.MEDIUM);
+        r1.setConfidenceScore(0.80f);
+        aiTriageReportRepository.save(r1);
+
+        AiTriageReport r2 = new AiTriageReport();
+        r2.setSession(session);
+        r2.setRiskScore(60);
+        r2.setUrgencyLevel(UrgencyLevel.HIGH);
+        r2.setConfidenceScore(0.90f);
+
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            aiTriageReportRepository.saveAndFlush(r2);
+        });
     }
 }
