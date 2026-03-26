@@ -10,7 +10,6 @@ import com.pi.backend.model.ai.enums.MessageType;
 import com.pi.backend.model.ai.enums.SenderType;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +17,6 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "chat_messages")
-@Data
 @Getter
 @Setter
 @ToString(exclude = {"replyTo"})
