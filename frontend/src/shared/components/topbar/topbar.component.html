@@ -1,0 +1,76 @@
+<div class="w-full top-0 z-50">
+  <div class="w-full">
+    <div
+      class="w-full bg-white border border-black/10 rounded-[4px] px-5 py-3 flex items-center justify-between"
+    >
+      <!-- Left: Hamburger + Logo -->
+      <div class="flex items-center gap-4">
+        <button
+          class="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-black/5 transition-colors cursor-pointer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 text-[#0a0a0a]"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 bg-[#0a0a0a] rounded-[4px] flex items-center justify-center">
+            <span class="text-white text-xs font-bold">H</span>
+          </div>
+          <span class="text-sm font-semibold text-[#0a0a0a] tracking-tight">Pi</span>
+        </div>
+      </div>
+
+      <!-- Right: Notifications + Avatar + Name -->
+      <div class="flex items-center gap-3">
+        <button
+          class="relative flex items-center justify-center w-8 h-8 rounded-lg hover:bg-black/5 transition-colors cursor-pointer"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-4 h-4 text-[#0a0a0a]"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+            />
+          </svg>
+          <span
+            class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-white"
+          ></span>
+        </button>
+
+        <div class="w-px h-5 bg-black/10"></div>
+
+        <div class="flex items-center gap-2.5 cursor-pointer group">
+          <p-avatar
+            image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+            [style]="{ width: '30px', height: '30px', borderRadius: '50%' }"
+          />
+          <div class="flex flex-col leading-none">
+            <span
+              class="text-xs font-medium text-[#0a0a0a] group-hover:opacity-70 transition-opacity"
+              >Omar</span
+            >
+            <span
+              class="text-xs font-medium text-[#0a0a0a] group-hover:opacity-70 transition-opacity"
+              >Bouchoucha</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
