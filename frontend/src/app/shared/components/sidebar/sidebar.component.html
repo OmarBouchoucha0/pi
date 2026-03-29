@@ -1,12 +1,14 @@
 <aside
-  class="h-full flex flex-col bg-white border border-black/10 rounded-[4px] transition-all duration-200"
+  class="h-full flex flex-col bg-white border border-black/10 rounded-[4px] transition-all duration-300 ease-in-out"
   [ngClass]="collapsed ? 'w-16' : 'w-56'"
 >
   <!-- Header -->
   <div class="flex items-center justify-between px-4 py-4 border-b border-black/10">
     @if (!collapsed) {
       <div class="flex items-center gap-2">
-        <div class="w-7 h-7 bg-[#0a0a0a] rounded-[4px] flex items-center justify-center">
+        <div
+          class="w-7 h-7 bg-[#0a0a0a] rounded-[4px] flex items-center justify-center transition-colors duration-200 group-hover:!bg-white group-hover:!text-[#0a0a0a]"
+        >
           <span class="text-white text-xs font-bold">H</span>
         </div>
         <span class="text-sm font-semibold text-[#0a0a0a] tracking-tight">Pi</span>
@@ -14,12 +16,12 @@
     }
     <button
       (click)="toggle()"
-      class="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-black/5 transition-colors cursor-pointer"
+      class="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-200 cursor-pointer text-[#0a0a0a]"
       [ngClass]="{ 'mx-auto': collapsed }"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="w-4 h-4 text-[#0a0a0a] transition-transform duration-200"
+        class="w-4 h-4 transition-transform duration-200"
         [ngClass]="{ 'rotate-180': collapsed }"
         fill="none"
         viewBox="0 0 24 24"
@@ -35,14 +37,14 @@
   <nav class="flex-1 flex flex-col gap-1 px-3 py-4">
     @for (item of menuItems; track item.icon) {
       <button
-        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg hover:bg-black/5 transition-colors cursor-pointer text-left"
+        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-left hover:bg-[#0a0a0a] hover:text-white group"
         [ngClass]="{ 'justify-center px-0': collapsed }"
       >
         <!-- Dashboard -->
         @if (item.icon === 'home') {
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-[18px] h-[18px] text-[#0a0a0a] shrink-0"
+            class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-200"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -59,7 +61,7 @@
         @if (item.icon === 'users') {
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-[18px] h-[18px] text-[#0a0a0a] shrink-0"
+            class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-200"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -76,7 +78,7 @@
         @if (item.icon === 'calendar') {
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-[18px] h-[18px] text-[#0a0a0a] shrink-0"
+            class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-200"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -93,7 +95,7 @@
         @if (item.icon === 'chart') {
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-[18px] h-[18px] text-[#0a0a0a] shrink-0"
+            class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-200"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -110,7 +112,7 @@
         @if (item.icon === 'inbox') {
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-[18px] h-[18px] text-[#0a0a0a] shrink-0"
+            class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-200"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -127,7 +129,7 @@
         @if (item.icon === 'settings') {
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="w-[18px] h-[18px] text-[#0a0a0a] shrink-0"
+            class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-200"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -147,31 +149,39 @@
         }
 
         @if (!collapsed) {
-          <span class="text-sm font-medium text-[#0a0a0a]">{{ item.label }}</span>
+          <span class="text-sm font-medium group-hover:text-white transition-colors duration-200">{{
+            item.label
+          }}</span>
         }
       </button>
     }
   </nav>
 
-  <!-- User Profile -->
-  <div class="border-t border-black/10 px-4 py-4">
-    <div
-      class="flex items-center gap-2.5 cursor-pointer group"
-      [ngClass]="{ 'justify-center': collapsed }"
+  <!-- Logout -->
+  <div class="border-t border-black/10 px-3 py-4">
+    <button
+      class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-left hover:bg-[#0a0a0a] hover:text-white group"
+      [ngClass]="{ 'justify-center px-0': collapsed }"
     >
-      <p-avatar
-        image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
-        [style]="{ width: '30px', height: '30px', borderRadius: '50%' }"
-      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-200"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="1.5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+        />
+      </svg>
       @if (!collapsed) {
-        <div class="flex flex-col leading-none min-w-0">
-          <span
-            class="text-xs font-medium text-[#0a0a0a] group-hover:opacity-70 transition-opacity truncate"
-            >Omar</span
-          >
-          <span class="text-[11px] font-light text-black/40">Admin</span>
-        </div>
+        <span class="text-sm font-medium group-hover:text-white transition-colors duration-200"
+          >Logout</span
+        >
       }
-    </div>
+    </button>
   </div>
 </aside>
