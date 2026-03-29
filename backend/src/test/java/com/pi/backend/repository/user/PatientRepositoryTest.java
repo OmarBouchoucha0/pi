@@ -84,6 +84,17 @@ class PatientRepositoryTest {
         assertEquals("Diabetes, Hypertension", found.getChronicConditions());
     }
 
+    @Test
+    void savePatientWithoutMedicalRecordNumber() {
+        User user = createUser();
+        Patient patient = createPatient(user, null);
+
+        Patient saved = patientRepository.save(patient);
+
+        assertNotNull(saved.getId());
+        assertNull(saved.getMedicalRecordNumber());
+    }
+
     private User createUser() {
         return createUser("test@test.com");
     }
