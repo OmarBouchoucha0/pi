@@ -115,6 +115,8 @@ class AiTriageReportRepositoryTest {
         user.setTenant(tenant);
         user.setEmail("triage-patient@test.com");
         user.setPasswordHash("hashed");
+        user.setFirstName("Triage");
+        user.setLastName("Patient");
         user.setRole(UserRole.PATIENT);
         user.setStatus(UserStatus.ACTIVE);
         userRepository.save(user);

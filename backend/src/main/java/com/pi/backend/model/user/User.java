@@ -1,5 +1,6 @@
 package com.pi.backend.model.user;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -7,6 +8,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.pi.backend.model.Tenant;
+import com.pi.backend.model.user.enums.Gender;
 import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.model.user.enums.UserStatus;
 
@@ -39,6 +41,23 @@ public class User {
 
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false)
+    private String lastName;
+
+    private String phone;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Column(columnDefinition = "TEXT")
+    private String address;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
