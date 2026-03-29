@@ -28,9 +28,13 @@ describe('SignupComponent', () => {
     expect(compiled.querySelector('h2')?.textContent).toContain('Create account');
   });
 
-  it('should render username input', () => {
+  it('should render firstname input', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('input[name="username"]')).toBeTruthy();
+    expect(compiled.querySelector('input[name="firstName"]')).toBeTruthy();
+  });
+  it('should render lastname input', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('input[name="lastName"]')).toBeTruthy();
   });
 
   it('should render email input', () => {
