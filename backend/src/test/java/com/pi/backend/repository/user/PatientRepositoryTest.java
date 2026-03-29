@@ -109,6 +109,8 @@ class PatientRepositoryTest {
         user.setTenant(tenant);
         user.setEmail(email);
         user.setPasswordHash("hashed");
+        user.setFirstName("Patient");
+        user.setLastName("Test");
         user.setRole(UserRole.PATIENT);
         user.setStatus(UserStatus.ACTIVE);
         return userRepository.save(user);

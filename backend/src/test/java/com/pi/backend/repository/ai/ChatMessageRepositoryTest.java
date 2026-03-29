@@ -110,6 +110,8 @@ class ChatMessageRepositoryTest {
         user.setTenant(tenant);
         user.setEmail("message-patient@test.com");
         user.setPasswordHash("hashed");
+        user.setFirstName("Message");
+        user.setLastName("Patient");
         user.setRole(UserRole.PATIENT);
         user.setStatus(UserStatus.ACTIVE);
         userRepository.save(user);

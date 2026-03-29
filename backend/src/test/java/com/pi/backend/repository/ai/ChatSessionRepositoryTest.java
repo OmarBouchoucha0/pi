@@ -100,6 +100,8 @@ class ChatSessionRepositoryTest {
         user.setTenant(tenant);
         user.setEmail("session-patient@test.com");
         user.setPasswordHash("hashed");
+        user.setFirstName("Session");
+        user.setLastName("Patient");
         user.setRole(UserRole.PATIENT);
         user.setStatus(UserStatus.ACTIVE);
         return userRepository.save(user);

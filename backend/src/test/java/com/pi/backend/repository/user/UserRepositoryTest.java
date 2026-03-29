@@ -109,6 +109,8 @@ class UserRepositoryTest {
         user.setTenant(tenant);
         user.setEmail(email);
         user.setPasswordHash("hashed_password");
+        user.setFirstName("Test");
+        user.setLastName("User");
         user.setRole(role);
         user.setStatus(UserStatus.ACTIVE);
         user.setFailedAttempts(0);
