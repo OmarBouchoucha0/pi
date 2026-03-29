@@ -1,13 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [CommonModule],
+  imports: [CommonModule, Tooltip],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
+  private router = inject(Router);
   collapsed = false;
 
   menuItems = [
@@ -21,5 +24,9 @@ export class SidebarComponent {
 
   toggle(): void {
     this.collapsed = !this.collapsed;
+  }
+
+  logout(): void {
+    this.router.navigate(['/login']);
   }
 }

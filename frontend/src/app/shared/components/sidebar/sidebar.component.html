@@ -42,6 +42,9 @@
       <button
         class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white group"
         [ngClass]="{ 'justify-center px-0': collapsed }"
+        [pTooltip]="collapsed ? item.label : undefined"
+        tooltipPosition="right"
+        [showDelay]="1000"
       >
         <!-- Dashboard -->
         @if (item.icon === 'home') {
@@ -166,6 +169,10 @@
     <button
       class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white group"
       [ngClass]="{ 'justify-center px-0': collapsed }"
+      [pTooltip]="collapsed ? 'Logout' : undefined"
+      tooltipPosition="right"
+      [showDelay]="1000"
+      (click)="logout()"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
