@@ -1,8 +1,13 @@
-<div class="h-screen flex">
+<div class="h-screen flex overflow-hidden">
   <app-sidebar></app-sidebar>
-  <div class="flex flex-col flex-1 gap-4 p-4">
+  <div class="flex flex-col flex-1 gap-4">
     <app-topbar></app-topbar>
-    <main class="flex-1 bg-white border border-black/10 rounded-[4px] p-6">
+    <main class="flex-1 bg-white border border-black/10 rounded-[4px] mx-4 p-6">
+      <div class="flex items-center justify-center">
+        <h1 class="text-[120px] font-bold tracking-tighter leading-none text-[#0a0a0a] select-none">
+          TEST
+        </h1>
+      </div>
       <router-outlet></router-outlet>
     </main>
   </div>
