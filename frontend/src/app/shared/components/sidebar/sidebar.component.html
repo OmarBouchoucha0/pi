@@ -37,7 +37,7 @@
   <nav class="flex-1 flex flex-col gap-1 px-3 py-4">
     @for (item of menuItems; track item.icon) {
       <button
-        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-left hover:bg-[#0a0a0a] hover:text-white group"
+        class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-left text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white group"
         [ngClass]="{ 'justify-center px-0': collapsed }"
       >
         <!-- Dashboard -->
@@ -149,9 +149,10 @@
         }
 
         @if (!collapsed) {
-          <span class="text-sm font-medium group-hover:text-white transition-colors duration-200">{{
-            item.label
-          }}</span>
+          <span
+            class="text-sm font-medium text-[#0a0a0a] group-hover:text-white transition-colors duration-200"
+            >{{ item.label }}</span
+          >
         }
       </button>
     }
@@ -160,7 +161,7 @@
   <!-- Logout -->
   <div class="border-t border-black/10 px-3 py-4">
     <button
-      class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-left hover:bg-[#0a0a0a] hover:text-white group"
+      class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-200 cursor-pointer text-left text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white group"
       [ngClass]="{ 'justify-center px-0': collapsed }"
     >
       <svg
@@ -178,7 +179,8 @@
         />
       </svg>
       @if (!collapsed) {
-        <span class="text-sm font-medium group-hover:text-white transition-colors duration-200"
+        <span
+          class="text-sm font-medium text-[#0a0a0a] group-hover:text-white transition-colors duration-200"
           >Logout</span
         >
       }
