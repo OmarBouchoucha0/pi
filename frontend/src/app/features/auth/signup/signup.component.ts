@@ -25,14 +25,18 @@ import { Router } from '@angular/router';
 export class SignupComponent {
   router = inject(Router);
 
-  username = '';
+  firstName = '';
+  lastName = '';
   email = '';
   password = '';
   confirmPassword = '';
   submitted = false;
 
-  get usernameInvalid() {
-    return !this.username.trim();
+  get firstNameInvalid() {
+    return !this.firstName.trim();
+  }
+  get lastNameInvalid() {
+    return !this.lastName.trim();
   }
   get emailInvalid() {
     return !this.email.includes('@');
@@ -47,7 +51,8 @@ export class SignupComponent {
   onSubmit(): void {
     this.submitted = true;
     if (
-      this.usernameInvalid ||
+      this.firstNameInvalid ||
+      this.lastNameInvalid ||
       this.emailInvalid ||
       this.passwordInvalid ||
       this.confirmPasswordInvalid

@@ -9,21 +9,38 @@
     <p class="text-sm font-light text-black/40 mb-8">Fill in your details to get started</p>
 
     <form #registerForm="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
-      <!-- Username -->
-      <div class="flex flex-col">
-        <p-floatlabel variant="on" class="w-full">
-          <input
-            pInputText
-            [(ngModel)]="username"
-            name="username"
-            inputId="username"
-            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
-          />
-          <label for="username" class="!text-xs !font-light">Username</label>
-        </p-floatlabel>
-        @if (usernameInvalid && submitted) {
-          <small class="text-red-500 text-[12px] font-light pl-1">Please enter a username</small>
-        }
+      <!-- First Name + Last Name -->
+      <div class="flex gap-4">
+        <div class="flex flex-col flex-1">
+          <p-floatlabel variant="on" class="w-full">
+            <input
+              pInputText
+              [(ngModel)]="firstName"
+              name="firstName"
+              inputId="firstName"
+              class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+            />
+            <label for="firstName" class="!text-xs !font-light">First Name</label>
+          </p-floatlabel>
+          @if (firstNameInvalid && submitted) {
+            <small class="text-red-500 text-[12px] font-light pl-1">First name is required</small>
+          }
+        </div>
+        <div class="flex flex-col flex-1">
+          <p-floatlabel variant="on" class="w-full">
+            <input
+              pInputText
+              [(ngModel)]="lastName"
+              name="lastName"
+              inputId="lastName"
+              class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+            />
+            <label for="lastName" class="!text-xs !font-light">Last Name</label>
+          </p-floatlabel>
+          @if (lastNameInvalid && submitted) {
+            <small class="text-red-500 text-[12px] font-light pl-1">Last name is required</small>
+          }
+        </div>
       </div>
 
       <!-- Email -->
