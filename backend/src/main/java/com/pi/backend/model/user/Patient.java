@@ -26,7 +26,7 @@ public class Patient {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Column(name = "medical_record_number", nullable = false, unique = true)
+    @Column(name = "medical_record_number", unique = true)
     private String medicalRecordNumber;
 
     @Column(name = "blood_type")
