@@ -1,13 +1,13 @@
 <aside
-  class="h-full flex flex-col bg-white border border-black/10 rounded-[4px] transition-[width] duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] overflow-hidden"
+  class="h-full flex flex-col bg-white border border-black/10 transition-[width] duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] overflow-hidden"
   [ngClass]="collapsed ? 'w-16' : 'w-56'"
 >
   <!-- Header -->
-  <div class="flex items-center justify-between px-4 py-4 border-b border-black/10">
+  <div class="flex items-center justify-between px-4 py-4">
     @if (!collapsed) {
       <div class="flex items-center gap-2">
         <div
-          class="w-7 h-7 bg-[#0a0a0a] rounded-[4px] flex items-center justify-center transition-colors duration-100 group-hover:!bg-white group-hover:!text-[#0a0a0a]"
+          class="w-7 h-8 bg-[#0a0a0a] rounded-[4px] flex items-center justify-center transition-colors duration-100 group-hover:!bg-white group-hover:!text-[#0a0a0a]"
         >
           <span class="text-white text-xs font-bold">H</span>
         </div>
@@ -42,6 +42,9 @@
       <button
         class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white group"
         [ngClass]="{ 'justify-center px-0': collapsed }"
+        [pTooltip]="collapsed ? item.label : undefined"
+        tooltipPosition="right"
+        [showDelay]="1000"
       >
         <!-- Dashboard -->
         @if (item.icon === 'home') {
@@ -166,6 +169,10 @@
     <button
       class="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white group"
       [ngClass]="{ 'justify-center px-0': collapsed }"
+      [pTooltip]="collapsed ? 'Logout' : undefined"
+      tooltipPosition="right"
+      [showDelay]="1000"
+      (click)="logout()"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
