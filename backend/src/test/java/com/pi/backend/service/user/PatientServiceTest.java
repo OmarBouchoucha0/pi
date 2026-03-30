@@ -162,6 +162,45 @@ class PatientServiceTest {
     }
 
     @Test
+    void createEmptyPatient_success() {
+        User user = new User();
+        user.setId(1L);
+        Patient patient = new Patient();
+        patient.setId(1L);
+
+        when(userService.createUser(1L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+            .thenReturn(user);
+        when(patientRepository.save(any(Patient.class))).thenReturn(patient);
+
+        Patient result = patientService.createEmptyPatient(1L, "John", "Doe",
+            "patient@test.com", "hash");
+
+        assertNotNull(result);
+        verify(userService).createUser(1L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT);
+        verify(patientRepository).save(any(Patient.class));
+    }
+
+    @Test
+    void createEmptyPatient_duplicateEmail() {
+        when(userService.createUser(1L, "existing@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+            .thenThrow(new DuplicateResourceException("User", "email", "existing@test.com"));
+
+        assertThrows(DuplicateResourceException.class, () -> {
+            patientService.createEmptyPatient(1L, "John", "Doe", "existing@test.com", "hash");
+        });
+    }
+
+    @Test
+    void createEmptyPatient_tenantNotFound() {
+        when(userService.createUser(999L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+            .thenThrow(new ResourceNotFoundException("Tenant", 999L));
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            patientService.createEmptyPatient(999L, "John", "Doe", "patient@test.com", "hash");
+        });
+    }
+
+    @Test
     void getPatientById_success() {
         Patient patient = new Patient();
         patient.setId(1L);

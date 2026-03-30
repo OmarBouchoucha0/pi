@@ -88,6 +88,18 @@ public class PatientService {
         return patientRepository.save(patient);
     }
 
+    @Transactional
+    public Patient createEmptyPatient(Long tenantId, String firstName, String lastName,
+                                      String email, String passwordHash) {
+        User user = userService.createUser(tenantId, email, passwordHash,
+            firstName, lastName, UserRole.PATIENT);
+
+        Patient patient = new Patient();
+        patient.setUser(user);
+
+        return patientRepository.save(patient);
+    }
+
     public Patient getPatientById(Long patientId) {
         return patientRepository.findByIdAndDeletedAtIsNull(patientId)
             .orElseThrow(() -> new ResourceNotFoundException("Patient", patientId));
