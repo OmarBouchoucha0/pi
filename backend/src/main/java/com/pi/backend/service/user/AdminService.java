@@ -42,7 +42,7 @@ public class AdminService {
     }
 
     public List<Admin> getAdminsByPrivilegeLevel(AdminPrivilege privilegeLevel) {
-        return adminRepository.findByPrivilegeLevelAndDeletedIsNull(privilegeLevel);
+        return adminRepository.findByPrivilegeLevelAndDeletedAtIsNull(privilegeLevel);
     }
 
     @Transactional

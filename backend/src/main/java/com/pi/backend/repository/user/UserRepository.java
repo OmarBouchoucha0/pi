@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByTenantIdAndEmail(Long tenantId, String email);
 
+    Optional<User> findByTenantIdAndEmailAndDeletedAtIsNull(Long tenantId, String email);
+
     boolean existsByTenantIdAndEmail(Long tenantId, String email);
 
     List<User> findByTenantId(Long tenantId);
@@ -21,7 +23,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByTenantIdAndRole(Long tenantId, UserRole role);
 
+    List<User> findByTenantIdAndRoleAndDeletedAtIsNull(Long tenantId, UserRole role);
+
     List<User> findByTenantIdAndStatus(Long tenantId, UserStatus status);
+
+    List<User> findByTenantIdAndStatusAndDeletedAtIsNull(Long tenantId, UserStatus status);
 
     Optional<User> findByIdAndDeletedAtIsNull(Long id);
 

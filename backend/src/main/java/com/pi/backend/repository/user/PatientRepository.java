@@ -15,7 +15,11 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     Optional<Patient> findByMedicalRecordNumber(String medicalRecordNumber);
 
+    Optional<Patient> findByMedicalRecordNumberAndDeletedAtIsNull(String medicalRecordNumber);
+
     boolean existsByMedicalRecordNumber(String medicalRecordNumber);
+
+    boolean existsByMedicalRecordNumberAndDeletedAtIsNull(String medicalRecordNumber);
 
     List<Patient> findByPrimaryDepartmentId(Long departmentId);
 
