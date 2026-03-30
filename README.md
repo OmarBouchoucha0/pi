@@ -5,8 +5,8 @@
 Make sure you have the following installed before getting started:
 
 - **Java 17** -
-- **Maven** -
-- **MariaDB** -
+- **Maven 3.9** -
+- **MariaDB 12.2** -
 
 Verify your installs:
 
