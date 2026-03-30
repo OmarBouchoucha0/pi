@@ -22,6 +22,10 @@ import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.user.PatientRepository;
 
+/**
+ * Unit tests for {@link PatientService}. Uses Mockito to mock repositories
+ * and verify service logic for patient CRUD operations and exception handling.
+ */
 @ExtendWith(MockitoExtension.class)
 class PatientServiceTest {
 
@@ -37,6 +41,9 @@ class PatientServiceTest {
     @InjectMocks
     private PatientService patientService;
 
+    /**
+     * Verifies that a patient can be created successfully with a valid medical record number.
+     */
     @Test
     void createPatient_success() {
         User user = new User();
@@ -55,6 +62,9 @@ class PatientServiceTest {
         verify(patientRepository).save(any(Patient.class));
     }
 
+    /**
+     * Verifies that a patient can be created with an associated department.
+     */
     @Test
     void createPatient_withDepartment() {
         User user = new User();
@@ -74,6 +84,9 @@ class PatientServiceTest {
         verify(patientRepository).save(any(Patient.class));
     }
 
+    /**
+     * Verifies that creating a patient with a duplicate MRN throws a {@link DuplicateResourceException}.
+     */
     @Test
     void createPatient_duplicateMRN() {
         when(patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull("MRN-001")).thenReturn(true);
@@ -83,6 +96,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that creating a patient for a non-existent user throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createPatient_userNotFound() {
         when(userService.getUserById(999L)).thenThrow(new ResourceNotFoundException("User", 999L));
@@ -92,6 +108,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that creating a patient with a non-existent department throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createPatient_departmentNotFound() {
         User user = new User();
@@ -103,6 +122,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that a patient and user account can be created together successfully.
+     */
     @Test
     void createPatientWithUser_success() {
         User user = new User();
@@ -124,6 +146,9 @@ class PatientServiceTest {
         verify(patientRepository).save(any(Patient.class));
     }
 
+    /**
+     * Verifies that creating a patient with a duplicate email throws a {@link DuplicateResourceException}.
+     */
     @Test
     void createPatientWithUser_duplicateEmail() {
         when(userService.createUser(1L, "existing@test.com", "hash", "John", "Doe", UserRole.PATIENT))
@@ -135,6 +160,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that creating a patient with a duplicate MRN throws a {@link DuplicateResourceException}.
+     */
     @Test
     void createPatientWithUser_duplicateMRN() {
         User user = new User();
@@ -150,6 +178,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that creating a patient with a non-existent tenant throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createPatientWithUser_tenantNotFound() {
         when(userService.createUser(999L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
@@ -161,6 +192,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that an empty patient record can be created with a new user account.
+     */
     @Test
     void createEmptyPatient_success() {
         User user = new User();
@@ -180,6 +214,9 @@ class PatientServiceTest {
         verify(patientRepository).save(any(Patient.class));
     }
 
+    /**
+     * Verifies that creating an empty patient with a duplicate email throws a {@link DuplicateResourceException}.
+     */
     @Test
     void createEmptyPatient_duplicateEmail() {
         when(userService.createUser(1L, "existing@test.com", "hash", "John", "Doe", UserRole.PATIENT))
@@ -190,6 +227,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that creating an empty patient with a non-existent tenant throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createEmptyPatient_tenantNotFound() {
         when(userService.createUser(999L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
@@ -200,6 +240,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that a patient can be retrieved by their ID.
+     */
     @Test
     void getPatientById_success() {
         Patient patient = new Patient();
@@ -210,6 +253,9 @@ class PatientServiceTest {
         assertEquals(1L, result.getId());
     }
 
+    /**
+     * Verifies that retrieving a non-existent patient by ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getPatientById_notFound() {
         when(patientRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -219,6 +265,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that a patient can be retrieved by their associated user ID.
+     */
     @Test
     void getPatientByUserId_success() {
         Patient patient = new Patient();
@@ -228,6 +277,9 @@ class PatientServiceTest {
         assertNotNull(result);
     }
 
+    /**
+     * Verifies that retrieving a patient by a non-existent user ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getPatientByUserId_notFound() {
         when(patientRepository.findByUserIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -237,6 +289,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that a patient can be retrieved by their medical record number.
+     */
     @Test
     void getPatientByMedicalRecordNumber_success() {
         Patient patient = new Patient();
@@ -247,6 +302,9 @@ class PatientServiceTest {
         assertNotNull(result);
     }
 
+    /**
+     * Verifies that retrieving a patient by a non-existent MRN throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getPatientByMedicalRecordNumber_notFound() {
         when(patientRepository.findByMedicalRecordNumberAndDeletedAtIsNull("MRN-999"))
@@ -257,6 +315,9 @@ class PatientServiceTest {
         });
     }
 
+    /**
+     * Verifies that all patients assigned to a department can be retrieved.
+     */
     @Test
     void getPatientsByDepartment() {
         when(patientRepository.findByPrimaryDepartmentIdAndDeletedAtIsNull(1L))
@@ -266,6 +327,9 @@ class PatientServiceTest {
         assertEquals(2, result.size());
     }
 
+    /**
+     * Verifies that a patient's medical details can be updated successfully.
+     */
     @Test
     void updatePatient_success() {
         Patient patient = new Patient();
@@ -279,6 +343,9 @@ class PatientServiceTest {
         assertEquals("Peanuts", result.getAllergies());
     }
 
+    /**
+     * Verifies that deleting a patient removes the record from the database.
+     */
     @Test
     void deletePatient_success() {
         Patient patient = new Patient();
@@ -290,6 +357,9 @@ class PatientServiceTest {
         verify(patientRepository).delete(patient);
     }
 
+    /**
+     * Verifies that deleting a non-existent patient throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void deletePatient_notFound() {
         when(patientRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());

@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.pi.backend.model.user.Doctor;
 
+/**
+ * Repository for managing Doctor entities.
+ */
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
     Optional<Doctor> findByUserId(Long userId);

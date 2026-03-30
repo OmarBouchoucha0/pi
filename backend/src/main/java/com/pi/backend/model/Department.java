@@ -9,6 +9,9 @@ import org.hibernate.annotations.SQLRestriction;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Represents a department within a tenant (e.g., Cardiology, Radiology).
+ */
 @Entity
 @Table(name = "departments", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"tenant_id", "name"})

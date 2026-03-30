@@ -12,6 +12,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Represents an alert generated during a chat session (e.g., high risk, inactivity).
+ */
 @Entity
 @Table(name = "chat_alerts")
 @Getter

@@ -19,6 +19,10 @@ import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.TenantRepository;
 
+/**
+ * Integration tests for {@link NurseRepository}. Verifies database operations
+ * including CRUD, lookup by department/shift, and soft delete filtering.
+ */
 @SpringBootTest
 @Transactional
 class NurseRepositoryTest {
@@ -35,6 +39,9 @@ class NurseRepositoryTest {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    /**
+     * Verifies that a nurse can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveNurse() {
         Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
@@ -53,6 +60,9 @@ class NurseRepositoryTest {
         assertEquals(dept.getId(), saved.getDepartment().getId());
     }
 
+    /**
+     * Verifies that a nurse can be looked up by their associated user ID.
+     */
     @Test
     void findByUserId() {
         Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
@@ -69,6 +79,9 @@ class NurseRepositoryTest {
         assertEquals(NurseShift.DAY, found.getShift());
     }
 
+    /**
+     * Verifies that nurses can be retrieved filtered by their department ID.
+     */
     @Test
     void findByDepartmentId() {
         Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
@@ -94,6 +107,9 @@ class NurseRepositoryTest {
         assertEquals(1, icuNurses.size());
     }
 
+    /**
+     * Verifies that nurses can be retrieved filtered by their shift type.
+     */
     @Test
     void findByShift() {
         Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
@@ -118,6 +134,9 @@ class NurseRepositoryTest {
         assertEquals(1, dayNurses.size());
     }
 
+    /**
+     * Verifies that nurses can be retrieved filtered by both department ID and shift type.
+     */
     @Test
     void findByDepartmentIdAndShift() {
         Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
@@ -150,6 +169,9 @@ class NurseRepositoryTest {
         assertEquals(1, icuDay.size());
     }
 
+    /**
+     * Verifies that soft-deleted nurses are excluded from findAll results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");

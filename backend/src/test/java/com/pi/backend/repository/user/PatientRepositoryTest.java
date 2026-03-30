@@ -18,6 +18,10 @@ import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.model.user.enums.UserStatus;
 import com.pi.backend.repository.TenantRepository;
 
+/**
+ * Integration tests for {@link PatientRepository}. Verifies database operations
+ * including CRUD, unique MRN constraints, allergy/chronic condition persistence, and soft delete filtering.
+ */
 @SpringBootTest
 @Transactional
 class PatientRepositoryTest {
@@ -31,6 +35,9 @@ class PatientRepositoryTest {
     @Autowired
     private TenantRepository tenantRepository;
 
+    /**
+     * Verifies that a patient can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrievePatient() {
         User user = createUser();
@@ -44,6 +51,9 @@ class PatientRepositoryTest {
         assertEquals(user.getId(), saved.getUser().getId());
     }
 
+    /**
+     * Verifies that a unique constraint on medical record number prevents duplicate MRNs.
+     */
     @Test
     void uniqueMedicalRecordNumber() {
         User u1 = createUser("user1@test.com");
@@ -59,6 +69,9 @@ class PatientRepositoryTest {
         });
     }
 
+    /**
+     * Verifies that soft-deleted patients are excluded from findAll results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         User user = createUser();
@@ -71,6 +84,9 @@ class PatientRepositoryTest {
         assertTrue(all.isEmpty());
     }
 
+    /**
+     * Verifies that patient allergies and chronic conditions are persisted and retrieved correctly.
+     */
     @Test
     void allergiesAndChronicConditionsStored() {
         User user = createUser();
@@ -84,6 +100,9 @@ class PatientRepositoryTest {
         assertEquals("Diabetes, Hypertension", found.getChronicConditions());
     }
 
+    /**
+     * Verifies that a patient can be saved without a medical record number.
+     */
     @Test
     void savePatientWithoutMedicalRecordNumber() {
         User user = createUser();

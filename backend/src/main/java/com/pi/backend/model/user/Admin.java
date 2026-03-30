@@ -10,6 +10,9 @@ import com.pi.backend.model.user.enums.AdminPrivilege;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Represents an admin profile linked to a user account.
+ */
 @Entity
 @Table(name = "admins")
 @Data

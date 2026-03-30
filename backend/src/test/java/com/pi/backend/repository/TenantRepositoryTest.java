@@ -13,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pi.backend.model.Tenant;
 import com.pi.backend.model.TenantStatus;
 
+/**
+ * Integration tests for {@link TenantRepository}. Verifies database operations
+ * including CRUD, soft delete filtering, and unique constraints.
+ */
 @SpringBootTest
 @Transactional
 class TenantRepositoryTest {
@@ -20,6 +24,9 @@ class TenantRepositoryTest {
     @Autowired
     private TenantRepository tenantRepository;
 
+    /**
+     * Verifies that a tenant can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveTenant() {
         Tenant tenant = new Tenant();
@@ -34,6 +41,9 @@ class TenantRepositoryTest {
         assertNotNull(saved.getCreatedAt());
     }
 
+    /**
+     * Verifies that all tenants including active and inactive are returned.
+     */
     @Test
     void findAllReturnsActiveTenants() {
         Tenant t1 = new Tenant();
@@ -50,6 +60,9 @@ class TenantRepositoryTest {
         assertEquals(2, all.size());
     }
 
+    /**
+     * Verifies that soft-deleted tenants are excluded from findAll and findById results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         Tenant tenant = new Tenant();
@@ -66,6 +79,9 @@ class TenantRepositoryTest {
         assertTrue(raw.isEmpty());
     }
 
+    /**
+     * Verifies that findById returns empty for a soft-deleted tenant.
+     */
     @Test
     void findByIdReturnsEmptyForDeleted() {
         Tenant tenant = new Tenant();

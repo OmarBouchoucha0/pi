@@ -9,6 +9,9 @@ import com.pi.backend.model.user.User;
 import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.model.user.enums.UserStatus;
 
+/**
+ * Repository for managing User entities.
+ */
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByTenantIdAndEmail(Long tenantId, String email);

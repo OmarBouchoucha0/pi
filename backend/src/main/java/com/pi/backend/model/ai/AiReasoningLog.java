@@ -10,6 +10,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Represents a step in the AI reasoning process during triage.
+ */
 @Entity
 @Table(name = "ai_reasoning_logs")
 @Getter

@@ -14,6 +14,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Represents the AI-generated triage report for a chat session.
+ */
 @Entity
 @Table(name = "ai_triage_reports")
 @Getter

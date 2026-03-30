@@ -21,6 +21,10 @@ import com.pi.backend.model.user.enums.NurseShift;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.user.NurseRepository;
 
+/**
+ * Unit tests for {@link NurseService}. Uses Mockito to mock repositories
+ * and verify service logic for nurse CRUD operations and exception handling.
+ */
 @ExtendWith(MockitoExtension.class)
 class NurseServiceTest {
 
@@ -36,6 +40,9 @@ class NurseServiceTest {
     @InjectMocks
     private NurseService nurseService;
 
+    /**
+     * Verifies that a nurse can be created successfully with valid user, department, and shift.
+     */
     @Test
     void createNurse_success() {
         User user = new User();
@@ -53,6 +60,9 @@ class NurseServiceTest {
         verify(nurseRepository).save(any(Nurse.class));
     }
 
+    /**
+     * Verifies that creating a nurse for a non-existent user throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createNurse_userNotFound() {
         when(userService.getUserById(999L)).thenThrow(new ResourceNotFoundException("User", 999L));
@@ -62,6 +72,9 @@ class NurseServiceTest {
         });
     }
 
+    /**
+     * Verifies that creating a nurse with a non-existent department throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createNurse_departmentNotFound() {
         User user = new User();
@@ -73,6 +86,9 @@ class NurseServiceTest {
         });
     }
 
+    /**
+     * Verifies that a nurse can be retrieved by their ID.
+     */
     @Test
     void getNurseById_success() {
         Nurse nurse = new Nurse();
@@ -83,6 +99,9 @@ class NurseServiceTest {
         assertEquals(1L, result.getId());
     }
 
+    /**
+     * Verifies that retrieving a non-existent nurse by ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getNurseById_notFound() {
         when(nurseRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -92,6 +111,9 @@ class NurseServiceTest {
         });
     }
 
+    /**
+     * Verifies that a nurse can be retrieved by their associated user ID.
+     */
     @Test
     void getNurseByUserId_success() {
         Nurse nurse = new Nurse();
@@ -101,6 +123,9 @@ class NurseServiceTest {
         assertNotNull(result);
     }
 
+    /**
+     * Verifies that retrieving a nurse by a non-existent user ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getNurseByUserId_notFound() {
         when(nurseRepository.findByUserIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -110,6 +135,9 @@ class NurseServiceTest {
         });
     }
 
+    /**
+     * Verifies that all nurses assigned to a department can be retrieved.
+     */
     @Test
     void getNursesByDepartment() {
         when(nurseRepository.findByDepartmentIdAndDeletedAtIsNull(1L))
@@ -119,6 +147,9 @@ class NurseServiceTest {
         assertEquals(2, result.size());
     }
 
+    /**
+     * Verifies that nurses can be retrieved filtered by their shift.
+     */
     @Test
     void getNursesByShift() {
         when(nurseRepository.findByShiftAndDeletedAtIsNull(NurseShift.DAY))
@@ -128,6 +159,9 @@ class NurseServiceTest {
         assertEquals(1, result.size());
     }
 
+    /**
+     * Verifies that nurses can be retrieved filtered by both department and shift.
+     */
     @Test
     void getNursesByDepartmentAndShift() {
         when(nurseRepository.findByDepartmentIdAndShiftAndDeletedAtIsNull(1L, NurseShift.NIGHT))
@@ -137,6 +171,9 @@ class NurseServiceTest {
         assertEquals(1, result.size());
     }
 
+    /**
+     * Verifies that a nurse's shift can be updated successfully.
+     */
     @Test
     void updateNurseShift_success() {
         Nurse nurse = new Nurse();
@@ -150,6 +187,9 @@ class NurseServiceTest {
         assertEquals(NurseShift.NIGHT, result.getShift());
     }
 
+    /**
+     * Verifies that deleting a nurse removes the record from the database.
+     */
     @Test
     void deleteNurse_success() {
         Nurse nurse = new Nurse();
@@ -161,6 +201,9 @@ class NurseServiceTest {
         verify(nurseRepository).delete(nurse);
     }
 
+    /**
+     * Verifies that deleting a non-existent nurse throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void deleteNurse_notFound() {
         when(nurseRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());

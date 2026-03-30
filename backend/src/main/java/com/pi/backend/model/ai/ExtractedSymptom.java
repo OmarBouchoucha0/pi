@@ -12,6 +12,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Represents a symptom extracted from a chat session.
+ */
 @Entity
 @Table(name = "extracted_symptoms")
 @Getter

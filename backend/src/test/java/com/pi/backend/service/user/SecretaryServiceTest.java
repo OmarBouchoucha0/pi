@@ -20,6 +20,10 @@ import com.pi.backend.model.user.User;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.user.SecretaryRepository;
 
+/**
+ * Unit tests for {@link SecretaryService}. Uses Mockito to mock repositories
+ * and verify service logic for secretary CRUD operations and exception handling.
+ */
 @ExtendWith(MockitoExtension.class)
 class SecretaryServiceTest {
 
@@ -35,6 +39,9 @@ class SecretaryServiceTest {
     @InjectMocks
     private SecretaryService secretaryService;
 
+    /**
+     * Verifies that a secretary can be created successfully with valid user and department.
+     */
     @Test
     void createSecretary_success() {
         User user = new User();
@@ -52,6 +59,9 @@ class SecretaryServiceTest {
         verify(secretaryRepository).save(any(Secretary.class));
     }
 
+    /**
+     * Verifies that creating a secretary for a non-existent user throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createSecretary_userNotFound() {
         when(userService.getUserById(999L)).thenThrow(new ResourceNotFoundException("User", 999L));
@@ -61,6 +71,9 @@ class SecretaryServiceTest {
         });
     }
 
+    /**
+     * Verifies that creating a secretary with a non-existent department throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createSecretary_departmentNotFound() {
         User user = new User();
@@ -72,6 +85,9 @@ class SecretaryServiceTest {
         });
     }
 
+    /**
+     * Verifies that a secretary can be retrieved by their ID.
+     */
     @Test
     void getSecretaryById_success() {
         Secretary secretary = new Secretary();
@@ -82,6 +98,9 @@ class SecretaryServiceTest {
         assertEquals(1L, result.getId());
     }
 
+    /**
+     * Verifies that retrieving a non-existent secretary by ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getSecretaryById_notFound() {
         when(secretaryRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -91,6 +110,9 @@ class SecretaryServiceTest {
         });
     }
 
+    /**
+     * Verifies that a secretary can be retrieved by their associated user ID.
+     */
     @Test
     void getSecretaryByUserId_success() {
         Secretary secretary = new Secretary();
@@ -100,6 +122,9 @@ class SecretaryServiceTest {
         assertNotNull(result);
     }
 
+    /**
+     * Verifies that retrieving a secretary by a non-existent user ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getSecretaryByUserId_notFound() {
         when(secretaryRepository.findByUserIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -109,6 +134,9 @@ class SecretaryServiceTest {
         });
     }
 
+    /**
+     * Verifies that all secretaries assigned to a department can be retrieved.
+     */
     @Test
     void getSecretariesByDepartment() {
         when(secretaryRepository.findByDepartmentIdAndDeletedAtIsNull(1L))
@@ -118,6 +146,9 @@ class SecretaryServiceTest {
         assertEquals(2, result.size());
     }
 
+    /**
+     * Verifies that a secretary's department assignment can be updated successfully.
+     */
     @Test
     void updateSecretaryDepartment_success() {
         Secretary secretary = new Secretary();
@@ -135,6 +166,9 @@ class SecretaryServiceTest {
         verify(secretaryRepository).save(any(Secretary.class));
     }
 
+    /**
+     * Verifies that updating a secretary with a non-existent department throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void updateSecretaryDepartment_departmentNotFound() {
         Secretary secretary = new Secretary();
@@ -147,6 +181,9 @@ class SecretaryServiceTest {
         });
     }
 
+    /**
+     * Verifies that deleting a secretary removes the record from the database.
+     */
     @Test
     void deleteSecretary_success() {
         Secretary secretary = new Secretary();
@@ -158,6 +195,9 @@ class SecretaryServiceTest {
         verify(secretaryRepository).delete(secretary);
     }
 
+    /**
+     * Verifies that deleting a non-existent secretary throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void deleteSecretary_notFound() {
         when(secretaryRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());

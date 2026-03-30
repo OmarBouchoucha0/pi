@@ -11,6 +11,9 @@ import com.pi.backend.model.user.enums.NurseShift;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Represents a nurse profile linked to a user account.
+ */
 @Entity
 @Table(name = "nurses")
 @Data

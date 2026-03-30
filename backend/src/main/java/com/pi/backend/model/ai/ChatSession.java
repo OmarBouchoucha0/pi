@@ -14,6 +14,9 @@ import com.pi.backend.model.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Represents an AI triage chat session between a patient and the system.
+ */
 @Entity
 @Table(name = "chat_sessions")
 @Data

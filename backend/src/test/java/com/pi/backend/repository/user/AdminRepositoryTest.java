@@ -17,6 +17,10 @@ import com.pi.backend.model.user.enums.AdminPrivilege;
 import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.repository.TenantRepository;
 
+/**
+ * Integration tests for {@link AdminRepository}. Verifies database operations
+ * including CRUD, lookup by privilege level, and soft delete filtering.
+ */
 @SpringBootTest
 @Transactional
 class AdminRepositoryTest {
@@ -30,6 +34,9 @@ class AdminRepositoryTest {
     @Autowired
     private TenantRepository tenantRepository;
 
+    /**
+     * Verifies that an admin can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveAdmin() {
         Tenant tenant = createTenant(tenantRepository, "Admin Hospital");
@@ -45,6 +52,9 @@ class AdminRepositoryTest {
         assertEquals(user.getId(), saved.getUser().getId());
     }
 
+    /**
+     * Verifies that an admin can be looked up by their associated user ID.
+     */
     @Test
     void findByUserId() {
         Tenant tenant = createTenant(tenantRepository, "Admin Hospital");
@@ -59,6 +69,9 @@ class AdminRepositoryTest {
         assertEquals(AdminPrivilege.TENANT_ADMIN, found.getPrivilegeLevel());
     }
 
+    /**
+     * Verifies that admins can be retrieved filtered by their privilege level.
+     */
     @Test
     void findByPrivilegeLevel() {
         Tenant tenant = createTenant(tenantRepository, "Admin Hospital");
@@ -80,6 +93,9 @@ class AdminRepositoryTest {
         assertEquals(u1.getId(), superAdmins.get(0).getUser().getId());
     }
 
+    /**
+     * Verifies that soft-deleted admins are excluded from findAll results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         Tenant tenant = createTenant(tenantRepository, "Admin Hospital");

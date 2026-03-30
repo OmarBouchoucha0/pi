@@ -15,6 +15,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Represents a single message within a chat session.
+ */
 @Entity
 @Table(name = "chat_messages")
 @Getter

@@ -20,6 +20,10 @@ import com.pi.backend.model.user.enums.UserStatus;
 import com.pi.backend.repository.TenantRepository;
 import com.pi.backend.repository.user.UserRepository;
 
+/**
+ * Integration tests for {@link ChatSessionRepository}. Verifies database operations
+ * including CRUD, enum persistence for session types and statuses, and soft delete filtering.
+ */
 @SpringBootTest
 @Transactional
 class ChatSessionRepositoryTest {
@@ -33,6 +37,9 @@ class ChatSessionRepositoryTest {
     @Autowired
     private TenantRepository tenantRepository;
 
+    /**
+     * Verifies that a chat session can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveSession() {
         User patient = createPatientUser();
@@ -55,6 +62,9 @@ class ChatSessionRepositoryTest {
         assertNotNull(saved.getStartedAt());
     }
 
+    /**
+     * Verifies that ChatSessionStatus and SessionType enums are persisted and retrieved correctly.
+     */
     @Test
     void enumPersistence() {
         User patient = createPatientUser();
@@ -72,6 +82,9 @@ class ChatSessionRepositoryTest {
         assertEquals(SessionType.FOLLOW_UP, found.getSessionType());
     }
 
+    /**
+     * Verifies that soft-deleted chat sessions are excluded from findAll results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         User patient = createPatientUser();

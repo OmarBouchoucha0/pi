@@ -8,6 +8,9 @@ import org.hibernate.annotations.SQLRestriction;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Represents a hospital or clinic tenant in the multi-tenant system.
+ */
 @Entity
 @Table(name = "tenants")
 @Data

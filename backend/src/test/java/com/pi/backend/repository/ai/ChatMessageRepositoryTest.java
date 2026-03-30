@@ -23,6 +23,10 @@ import com.pi.backend.model.user.enums.UserStatus;
 import com.pi.backend.repository.TenantRepository;
 import com.pi.backend.repository.user.UserRepository;
 
+/**
+ * Integration tests for {@link ChatMessageRepository}. Verifies database operations
+ * including CRUD, reply-to self-references, intent/confidence metadata, and soft delete filtering.
+ */
 @SpringBootTest
 @Transactional
 class ChatMessageRepositoryTest {
@@ -39,6 +43,9 @@ class ChatMessageRepositoryTest {
     @Autowired
     private TenantRepository tenantRepository;
 
+    /**
+     * Verifies that a chat message can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveMessage() {
         ChatSession session = createSession();
@@ -58,6 +65,9 @@ class ChatMessageRepositoryTest {
         assertNotNull(saved.getSentAt());
     }
 
+    /**
+     * Verifies that a message reply correctly references the original message via self-reference.
+     */
     @Test
     void replyToSelfReference() {
         ChatSession session = createSession();
@@ -82,6 +92,9 @@ class ChatMessageRepositoryTest {
         assertEquals(original.getId(), found.getReplyTo().getId());
     }
 
+    /**
+     * Verifies that intent and confidence score metadata are persisted and retrieved correctly.
+     */
     @Test
     void intentAndConfidenceScore() {
         ChatSession session = createSession();
@@ -125,6 +138,9 @@ class ChatMessageRepositoryTest {
         return chatSessionRepository.save(session);
     }
 
+    /**
+     * Verifies that soft-deleted chat messages are excluded from findAll results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         ChatSession session = createSession();

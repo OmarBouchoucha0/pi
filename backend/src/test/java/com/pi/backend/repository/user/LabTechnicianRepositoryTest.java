@@ -18,6 +18,10 @@ import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.TenantRepository;
 
+/**
+ * Integration tests for {@link LabTechnicianRepository}. Verifies database operations
+ * including CRUD, lookup by department, and soft delete filtering.
+ */
 @SpringBootTest
 @Transactional
 class LabTechnicianRepositoryTest {
@@ -34,6 +38,9 @@ class LabTechnicianRepositoryTest {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    /**
+     * Verifies that a lab technician can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveLabTechnician() {
         Tenant tenant = createTenant(tenantRepository, "Lab Hospital");
@@ -51,6 +58,9 @@ class LabTechnicianRepositoryTest {
         assertEquals(user.getId(), saved.getUser().getId());
     }
 
+    /**
+     * Verifies that a lab technician can be looked up by their associated user ID.
+     */
     @Test
     void findByUserId() {
         Tenant tenant = createTenant(tenantRepository, "Lab Hospital");
@@ -67,6 +77,9 @@ class LabTechnicianRepositoryTest {
         assertEquals("MLT Certified", found.getCertification());
     }
 
+    /**
+     * Verifies that lab technicians can be retrieved filtered by their department ID.
+     */
     @Test
     void findByDepartmentId() {
         Tenant tenant = createTenant(tenantRepository, "Lab Hospital");
@@ -92,6 +105,9 @@ class LabTechnicianRepositoryTest {
         assertEquals(1, pathTechs.size());
     }
 
+    /**
+     * Verifies that soft-deleted lab technicians are excluded from findAll results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         Tenant tenant = createTenant(tenantRepository, "Lab Hospital");
