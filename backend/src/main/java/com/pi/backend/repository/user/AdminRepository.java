@@ -16,5 +16,7 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     List<Admin> findByPrivilegeLevel(AdminPrivilege privilegeLevel);
 
+    List<Admin> findByPrivilegeLevelAndDeletedAtIsNull(AdminPrivilege privilegeLevel);
+
     Optional<Admin> findByIdAndDeletedAtIsNull(Long id);
 }

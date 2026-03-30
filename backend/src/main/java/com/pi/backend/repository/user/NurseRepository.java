@@ -20,7 +20,11 @@ public interface NurseRepository extends JpaRepository<Nurse, Long> {
 
     List<Nurse> findByShift(NurseShift shift);
 
+    List<Nurse> findByShiftAndDeletedAtIsNull(NurseShift shift);
+
     List<Nurse> findByDepartmentIdAndShift(Long departmentId, NurseShift shift);
+
+    List<Nurse> findByDepartmentIdAndShiftAndDeletedAtIsNull(Long departmentId, NurseShift shift);
 
     Optional<Nurse> findByIdAndDeletedAtIsNull(Long id);
 }

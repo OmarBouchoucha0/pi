@@ -18,7 +18,6 @@ public class GlobalExceptionHandler {
             "message", ex.getMessage(),
             "resource", ex.getResource(),
             "field", ex.getField(),
-            "value", ex.getValue(),
             "timestamp", LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
@@ -31,7 +30,6 @@ public class GlobalExceptionHandler {
             "message", ex.getMessage(),
             "resource", ex.getResource(),
             "field", ex.getField(),
-            "value", ex.getValue(),
             "timestamp", LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
