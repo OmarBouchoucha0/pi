@@ -52,11 +52,11 @@ public class NurseService {
     }
 
     public List<Nurse> getNursesByShift(NurseShift shift) {
-        return nurseRepository.findByShift(shift);
+        return nurseRepository.findByShiftAndDeletedAtIsNull(shift);
     }
 
     public List<Nurse> getNursesByDepartmentAndShift(Long departmentId, NurseShift shift) {
-        return nurseRepository.findByDepartmentIdAndShift(departmentId, shift);
+        return nurseRepository.findByDepartmentIdAndShiftAndDeletedAtIsNull(departmentId, shift);
     }
 
     @Transactional
