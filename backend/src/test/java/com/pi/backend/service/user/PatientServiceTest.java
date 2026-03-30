@@ -18,6 +18,7 @@ import com.pi.backend.exception.ResourceNotFoundException;
 import com.pi.backend.model.Department;
 import com.pi.backend.model.user.Patient;
 import com.pi.backend.model.user.User;
+import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.user.PatientRepository;
 
@@ -99,6 +100,64 @@ class PatientServiceTest {
 
         assertThrows(ResourceNotFoundException.class, () -> {
             patientService.createPatient(1L, null, "O+", null, null, null, null, 999L);
+        });
+    }
+
+    @Test
+    void createPatientWithUser_success() {
+        User user = new User();
+        user.setId(1L);
+        Patient patient = new Patient();
+        patient.setId(1L);
+
+        when(userService.createUser(1L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+            .thenReturn(user);
+        when(patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull("MRN-001")).thenReturn(false);
+        when(patientRepository.save(any(Patient.class))).thenReturn(patient);
+
+        Patient result = patientService.createPatientWithUser(1L, "John", "Doe",
+            "patient@test.com", "hash", "MRN-001", "O+", "Peanuts",
+            "Diabetes", "Jane Doe", "1234567890", null);
+
+        assertNotNull(result);
+        verify(userService).createUser(1L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT);
+        verify(patientRepository).save(any(Patient.class));
+    }
+
+    @Test
+    void createPatientWithUser_duplicateEmail() {
+        when(userService.createUser(1L, "existing@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+            .thenThrow(new DuplicateResourceException("User", "email", "existing@test.com"));
+
+        assertThrows(DuplicateResourceException.class, () -> {
+            patientService.createPatientWithUser(1L, "John", "Doe",
+                "existing@test.com", "hash", null, null, null, null, null, null, null);
+        });
+    }
+
+    @Test
+    void createPatientWithUser_duplicateMRN() {
+        User user = new User();
+        user.setId(1L);
+
+        when(userService.createUser(1L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+            .thenReturn(user);
+        when(patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull("MRN-001")).thenReturn(true);
+
+        assertThrows(DuplicateResourceException.class, () -> {
+            patientService.createPatientWithUser(1L, "John", "Doe",
+                "patient@test.com", "hash", "MRN-001", null, null, null, null, null, null);
+        });
+    }
+
+    @Test
+    void createPatientWithUser_tenantNotFound() {
+        when(userService.createUser(999L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+            .thenThrow(new ResourceNotFoundException("Tenant", 999L));
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            patientService.createPatientWithUser(999L, "John", "Doe",
+                "patient@test.com", "hash", null, null, null, null, null, null, null);
         });
     }
 

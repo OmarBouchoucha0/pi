@@ -10,6 +10,7 @@ import com.pi.backend.exception.ResourceNotFoundException;
 import com.pi.backend.model.Department;
 import com.pi.backend.model.user.Patient;
 import com.pi.backend.model.user.User;
+import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.user.PatientRepository;
 
@@ -35,6 +36,39 @@ public class PatientService {
         }
 
         User user = userService.getUserById(userId);
+
+        Patient patient = new Patient();
+        patient.setUser(user);
+        patient.setMedicalRecordNumber(medicalRecordNumber);
+        patient.setBloodType(bloodType);
+        patient.setAllergies(allergies);
+        patient.setChronicConditions(chronicConditions);
+        patient.setEmergencyContactName(emergencyContactName);
+        patient.setEmergencyContactPhone(emergencyContactPhone);
+
+        if (primaryDepartmentId != null) {
+            Department dept = departmentRepository.findById(primaryDepartmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Department", primaryDepartmentId));
+            patient.setPrimaryDepartment(dept);
+        }
+
+        return patientRepository.save(patient);
+    }
+
+    @Transactional
+    public Patient createPatientWithUser(Long tenantId, String firstName, String lastName,
+                                         String email, String passwordHash,
+                                         String medicalRecordNumber, String bloodType,
+                                         String allergies, String chronicConditions,
+                                         String emergencyContactName,
+                                         String emergencyContactPhone,
+                                         Long primaryDepartmentId) {
+        User user = userService.createUser(tenantId, email, passwordHash,
+            firstName, lastName, UserRole.PATIENT);
+
+        if (medicalRecordNumber != null && patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull(medicalRecordNumber)) {
+            throw new DuplicateResourceException("Patient", "medicalRecordNumber", medicalRecordNumber);
+        }
 
         Patient patient = new Patient();
         patient.setUser(user);
