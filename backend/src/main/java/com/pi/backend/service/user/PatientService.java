@@ -30,7 +30,7 @@ public class PatientService {
                                  String emergencyContactName,
                                  String emergencyContactPhone,
                                  Long primaryDepartmentId) {
-        if (medicalRecordNumber != null && patientRepository.existsByMedicalRecordNumber(medicalRecordNumber)) {
+        if (medicalRecordNumber != null && patientRepository.existsByMedicalRecordNumberAndDeletedIsNull(medicalRecordNumber)) {
             throw new DuplicateResourceException("Patient", "medicalRecordNumber", medicalRecordNumber);
         }
 
@@ -65,7 +65,7 @@ public class PatientService {
     }
 
     public Patient getPatientByMedicalRecordNumber(String mrn) {
-        return patientRepository.findByMedicalRecordNumber(mrn)
+        return patientRepository.findByMedicalRecordNumberAndDeletedIsNull(mrn)
             .orElseThrow(() -> new ResourceNotFoundException("Patient", "medicalRecordNumber", mrn));
     }
 

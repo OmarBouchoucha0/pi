@@ -55,7 +55,7 @@ public class UserService {
     }
 
     public User getUserByEmail(Long tenantId, String email) {
-        return userRepository.findByTenantIdAndEmail(tenantId, email)
+        return userRepository.findByTenantIdAndEmailAndDeletedAtIsNull(tenantId, email)
             .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
     }
 
@@ -64,11 +64,11 @@ public class UserService {
     }
 
     public List<User> getUsersByRole(Long tenantId, UserRole role) {
-        return userRepository.findByTenantIdAndRole(tenantId, role);
+        return userRepository.findByTenantIdAndRoleAndDeletedAtIsNull(tenantId, role);
     }
 
     public List<User> getUsersByStatus(Long tenantId, UserStatus status) {
-        return userRepository.findByTenantIdAndStatus(tenantId, status);
+        return userRepository.findByTenantIdAndStatusAndDeletedAtIsNull(tenantId, status);
     }
 
     public boolean existsByEmail(Long tenantId, String email) {
@@ -118,6 +118,7 @@ public class UserService {
     @Transactional
     public void deleteUser(Long userId) {
         User user = getUserById(userId);
-        userRepository.delete(user);
+    user.setDeletedAt(LocalDateTime.now());
+    userRepository.save(user);
     }
 }
