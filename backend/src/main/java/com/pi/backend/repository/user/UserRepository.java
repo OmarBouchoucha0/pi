@@ -11,8 +11,6 @@ import com.pi.backend.model.user.enums.UserStatus;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByEmail(String email);
-
     Optional<User> findByTenantIdAndEmail(Long tenantId, String email);
 
     boolean existsByTenantIdAndEmail(Long tenantId, String email);
