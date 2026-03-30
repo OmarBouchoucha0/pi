@@ -1,5 +1,6 @@
 package com.pi.backend.repository.user;
 
+import static com.pi.backend.repository.user.TestHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -11,11 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pi.backend.model.Department;
 import com.pi.backend.model.Tenant;
-import com.pi.backend.model.TenantStatus;
 import com.pi.backend.model.user.LabTechnician;
 import com.pi.backend.model.user.User;
 import com.pi.backend.model.user.enums.UserRole;
-import com.pi.backend.model.user.enums.UserStatus;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.TenantRepository;
 
@@ -37,11 +36,14 @@ class LabTechnicianRepositoryTest {
 
     @Test
     void saveAndRetrieveLabTechnician() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "lab@test.com");
-        Department dept = createDepartment(tenant, "Pathology");
+        Tenant tenant = createTenant(tenantRepository, "Lab Hospital");
+        User user = createUser(userRepository, tenant, "lab@test.com", UserRole.LAB_TECHNICIAN);
+        Department dept = createDepartment(departmentRepository, tenant, "Pathology");
 
-        LabTechnician tech = createLabTechnician(user, dept, "MLT Certified");
+        LabTechnician tech = new LabTechnician();
+        tech.setUser(user);
+        tech.setDepartment(dept);
+        tech.setCertification("MLT Certified");
         LabTechnician saved = labTechnicianRepository.save(tech);
 
         assertNotNull(saved.getId());
@@ -51,11 +53,15 @@ class LabTechnicianRepositoryTest {
 
     @Test
     void findByUserId() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "lab@test.com");
-        Department dept = createDepartment(tenant, "Pathology");
+        Tenant tenant = createTenant(tenantRepository, "Lab Hospital");
+        User user = createUser(userRepository, tenant, "lab@test.com", UserRole.LAB_TECHNICIAN);
+        Department dept = createDepartment(departmentRepository, tenant, "Pathology");
 
-        labTechnicianRepository.save(createLabTechnician(user, dept, "MLT Certified"));
+        LabTechnician tech = new LabTechnician();
+        tech.setUser(user);
+        tech.setDepartment(dept);
+        tech.setCertification("MLT Certified");
+        labTechnicianRepository.save(tech);
 
         LabTechnician found = labTechnicianRepository.findByUserId(user.getId()).orElseThrow();
         assertEquals("MLT Certified", found.getCertification());
@@ -63,15 +69,24 @@ class LabTechnicianRepositoryTest {
 
     @Test
     void findByDepartmentId() {
-        Tenant tenant = createTenant();
-        Department pathology = createDepartment(tenant, "Pathology");
-        Department radiology = createDepartment(tenant, "Radiology");
+        Tenant tenant = createTenant(tenantRepository, "Lab Hospital");
+        Department pathology = createDepartment(departmentRepository, tenant, "Pathology");
+        Department radiology = createDepartment(departmentRepository, tenant, "Radiology");
 
-        User u1 = createUser(tenant, "lab1@test.com");
-        User u2 = createUser(tenant, "lab2@test.com");
+        User u1 = createUser(userRepository, tenant, "lab1@test.com", UserRole.LAB_TECHNICIAN);
+        User u2 = createUser(userRepository, tenant, "lab2@test.com", UserRole.LAB_TECHNICIAN);
 
-        labTechnicianRepository.save(createLabTechnician(u1, pathology, "MLT Certified"));
-        labTechnicianRepository.save(createLabTechnician(u2, radiology, "RT Certified"));
+        LabTechnician t1 = new LabTechnician();
+        t1.setUser(u1);
+        t1.setDepartment(pathology);
+        t1.setCertification("MLT Certified");
+        labTechnicianRepository.save(t1);
+
+        LabTechnician t2 = new LabTechnician();
+        t2.setUser(u2);
+        t2.setDepartment(radiology);
+        t2.setCertification("RT Certified");
+        labTechnicianRepository.save(t2);
 
         List<LabTechnician> pathTechs = labTechnicianRepository.findByDepartmentId(pathology.getId());
         assertEquals(1, pathTechs.size());
@@ -79,48 +94,19 @@ class LabTechnicianRepositoryTest {
 
     @Test
     void softDeleteFiltersFromFindAll() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "lab@test.com");
-        Department dept = createDepartment(tenant, "Pathology");
+        Tenant tenant = createTenant(tenantRepository, "Lab Hospital");
+        User user = createUser(userRepository, tenant, "lab@test.com", UserRole.LAB_TECHNICIAN);
+        Department dept = createDepartment(departmentRepository, tenant, "Pathology");
 
-        LabTechnician saved = labTechnicianRepository.save(createLabTechnician(user, dept, "MLT Certified"));
+        LabTechnician tech = new LabTechnician();
+        tech.setUser(user);
+        tech.setDepartment(dept);
+        tech.setCertification("MLT Certified");
+        LabTechnician saved = labTechnicianRepository.save(tech);
+
         labTechnicianRepository.deleteById(saved.getId());
 
         List<LabTechnician> all = labTechnicianRepository.findAll();
         assertTrue(all.isEmpty());
-    }
-
-    private Tenant createTenant() {
-        Tenant tenant = new Tenant();
-        tenant.setName("Lab Hospital");
-        tenant.setStatus(TenantStatus.ACTIVE);
-        return tenantRepository.save(tenant);
-    }
-
-    private User createUser(Tenant tenant, String email) {
-        User user = new User();
-        user.setTenant(tenant);
-        user.setEmail(email);
-        user.setPasswordHash("hashed");
-        user.setFirstName("Lab");
-        user.setLastName("Test");
-        user.setRole(UserRole.LAB_TECHNICIAN);
-        user.setStatus(UserStatus.ACTIVE);
-        return userRepository.save(user);
-    }
-
-    private Department createDepartment(Tenant tenant, String name) {
-        Department dept = new Department();
-        dept.setTenant(tenant);
-        dept.setName(name);
-        return departmentRepository.save(dept);
-    }
-
-    private LabTechnician createLabTechnician(User user, Department dept, String certification) {
-        LabTechnician tech = new LabTechnician();
-        tech.setUser(user);
-        tech.setDepartment(dept);
-        tech.setCertification(certification);
-        return tech;
     }
 }

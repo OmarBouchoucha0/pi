@@ -1,5 +1,6 @@
 package com.pi.backend.repository.user;
 
+import static com.pi.backend.repository.user.TestHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -10,12 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pi.backend.model.Tenant;
-import com.pi.backend.model.TenantStatus;
 import com.pi.backend.model.user.Admin;
 import com.pi.backend.model.user.User;
 import com.pi.backend.model.user.enums.AdminPrivilege;
 import com.pi.backend.model.user.enums.UserRole;
-import com.pi.backend.model.user.enums.UserStatus;
 import com.pi.backend.repository.TenantRepository;
 
 @SpringBootTest
@@ -33,8 +32,8 @@ class AdminRepositoryTest {
 
     @Test
     void saveAndRetrieveAdmin() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "admin@test.com");
+        Tenant tenant = createTenant(tenantRepository, "Admin Hospital");
+        User user = createUser(userRepository, tenant, "admin@test.com", UserRole.ADMIN);
 
         Admin admin = new Admin();
         admin.setUser(user);
@@ -48,8 +47,8 @@ class AdminRepositoryTest {
 
     @Test
     void findByUserId() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "admin@test.com");
+        Tenant tenant = createTenant(tenantRepository, "Admin Hospital");
+        User user = createUser(userRepository, tenant, "admin@test.com", UserRole.ADMIN);
 
         Admin admin = new Admin();
         admin.setUser(user);
@@ -62,9 +61,9 @@ class AdminRepositoryTest {
 
     @Test
     void findByPrivilegeLevel() {
-        Tenant tenant = createTenant();
-        User u1 = createUser(tenant, "super@test.com");
-        User u2 = createUser(tenant, "tenant@test.com");
+        Tenant tenant = createTenant(tenantRepository, "Admin Hospital");
+        User u1 = createUser(userRepository, tenant, "super@test.com", UserRole.ADMIN);
+        User u2 = createUser(userRepository, tenant, "tenant@test.com", UserRole.ADMIN);
 
         Admin a1 = new Admin();
         a1.setUser(u1);
@@ -83,8 +82,8 @@ class AdminRepositoryTest {
 
     @Test
     void softDeleteFiltersFromFindAll() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "admin@test.com");
+        Tenant tenant = createTenant(tenantRepository, "Admin Hospital");
+        User user = createUser(userRepository, tenant, "admin@test.com", UserRole.ADMIN);
 
         Admin admin = new Admin();
         admin.setUser(user);
@@ -95,24 +94,5 @@ class AdminRepositoryTest {
 
         List<Admin> all = adminRepository.findAll();
         assertTrue(all.isEmpty());
-    }
-
-    private Tenant createTenant() {
-        Tenant tenant = new Tenant();
-        tenant.setName("Admin Hospital");
-        tenant.setStatus(TenantStatus.ACTIVE);
-        return tenantRepository.save(tenant);
-    }
-
-    private User createUser(Tenant tenant, String email) {
-        User user = new User();
-        user.setTenant(tenant);
-        user.setEmail(email);
-        user.setPasswordHash("hashed");
-        user.setFirstName("Admin");
-        user.setLastName("Test");
-        user.setRole(UserRole.ADMIN);
-        user.setStatus(UserStatus.ACTIVE);
-        return userRepository.save(user);
     }
 }
