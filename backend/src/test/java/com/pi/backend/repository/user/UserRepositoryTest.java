@@ -17,6 +17,10 @@ import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.model.user.enums.UserStatus;
 import com.pi.backend.repository.TenantRepository;
 
+/**
+ * Integration tests for {@link UserRepository}. Verifies database operations
+ * including CRUD, unique constraints on tenant+email, enum persistence, and soft delete filtering.
+ */
 @SpringBootTest
 @Transactional
 class UserRepositoryTest {
@@ -27,6 +31,9 @@ class UserRepositoryTest {
     @Autowired
     private TenantRepository tenantRepository;
 
+    /**
+     * Verifies that a user can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveUser() {
         Tenant tenant = createTenant();
@@ -42,6 +49,9 @@ class UserRepositoryTest {
         assertNotNull(saved.getCreatedAt());
     }
 
+    /**
+     * Verifies that a unique constraint on tenant and email prevents duplicate emails within a tenant.
+     */
     @Test
     void uniqueConstraintOnTenantAndEmail() {
         Tenant tenant = createTenant();
@@ -56,6 +66,9 @@ class UserRepositoryTest {
         });
     }
 
+    /**
+     * Verifies that the same email is allowed across different tenants.
+     */
     @Test
     void sameEmailDifferentTenantsAllowed() {
         Tenant t1 = createTenant("Hospital A");
@@ -70,6 +83,9 @@ class UserRepositoryTest {
         assertNotNull(saved.getId());
     }
 
+    /**
+     * Verifies that UserRole and UserStatus enums are persisted and retrieved correctly.
+     */
     @Test
     void enumPersistence() {
         Tenant tenant = createTenant();
@@ -81,6 +97,9 @@ class UserRepositoryTest {
         assertEquals(UserStatus.ACTIVE, found.getStatus());
     }
 
+    /**
+     * Verifies that soft-deleted users are excluded from findAll results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         Tenant tenant = createTenant();

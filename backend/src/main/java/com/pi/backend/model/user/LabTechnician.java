@@ -10,6 +10,9 @@ import com.pi.backend.model.Department;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Represents a lab technician profile linked to a user account.
+ */
 @Entity
 @Table(name = "lab_technicians")
 @Data

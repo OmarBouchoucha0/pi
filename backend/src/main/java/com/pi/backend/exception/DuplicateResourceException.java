@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * Exception thrown when a resource already exists. Returns HTTP 409.
+ */
 @ResponseStatus(HttpStatus.CONFLICT)
 public class DuplicateResourceException extends RuntimeException {
 

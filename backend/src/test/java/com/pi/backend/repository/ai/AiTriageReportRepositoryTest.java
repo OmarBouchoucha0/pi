@@ -21,6 +21,10 @@ import com.pi.backend.model.user.enums.UserStatus;
 import com.pi.backend.repository.TenantRepository;
 import com.pi.backend.repository.user.UserRepository;
 
+/**
+ * Integration tests for {@link AiTriageReportRepository}. Verifies database operations
+ * including CRUD, unique session constraint, urgency level enum persistence, and JSON field storage.
+ */
 @SpringBootTest
 @Transactional
 class AiTriageReportRepositoryTest {
@@ -37,6 +41,9 @@ class AiTriageReportRepositoryTest {
     @Autowired
     private TenantRepository tenantRepository;
 
+    /**
+     * Verifies that a triage report can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveReport() {
         ChatSession session = createSession();
@@ -59,6 +66,9 @@ class AiTriageReportRepositoryTest {
         assertNotNull(saved.getGeneratedAt());
     }
 
+    /**
+     * Verifies that a risk score value is persisted and retrieved correctly.
+     */
     @Test
     void riskScoreValidation() {
         ChatSession session = createSession();
@@ -73,6 +83,9 @@ class AiTriageReportRepositoryTest {
         assertEquals(50, saved.getRiskScore());
     }
 
+    /**
+     * Verifies that the UrgencyLevel enum is persisted and retrieved correctly.
+     */
     @Test
     void urgencyLevelEnumPersistence() {
         ChatSession session = createSession();
@@ -88,6 +101,9 @@ class AiTriageReportRepositoryTest {
         assertEquals(UrgencyLevel.CRITICAL, found.getUrgencyLevel());
     }
 
+    /**
+     * Verifies that JSON-format fields like detected conditions are stored and retrievable.
+     */
     @Test
     void jsonFieldsStored() {
         ChatSession session = createSession();
@@ -130,6 +146,9 @@ class AiTriageReportRepositoryTest {
         return chatSessionRepository.save(session);
     }
 
+    /**
+     * Verifies that a unique constraint on session prevents multiple triage reports per session.
+     */
     @Test
     void uniqueConstraintOnSession() {
         ChatSession session = createSession();

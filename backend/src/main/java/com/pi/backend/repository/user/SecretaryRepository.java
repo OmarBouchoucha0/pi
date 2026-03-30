@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.pi.backend.model.user.Secretary;
 
+/**
+ * Repository for managing Secretary entities.
+ */
 public interface SecretaryRepository extends JpaRepository<Secretary, Long> {
 
     Optional<Secretary> findByUserId(Long userId);

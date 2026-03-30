@@ -21,6 +21,10 @@ import com.pi.backend.model.user.User;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.user.DoctorRepository;
 
+/**
+ * Unit tests for {@link DoctorService}. Uses Mockito to mock repositories
+ * and verify service logic for doctor CRUD operations and exception handling.
+ */
 @ExtendWith(MockitoExtension.class)
 class DoctorServiceTest {
 
@@ -36,6 +40,9 @@ class DoctorServiceTest {
     @InjectMocks
     private DoctorService doctorService;
 
+    /**
+     * Verifies that a doctor can be created successfully with valid license, user, and department.
+     */
     @Test
     void createDoctor_success() {
         User user = new User();
@@ -56,6 +63,9 @@ class DoctorServiceTest {
         verify(doctorRepository).save(any(Doctor.class));
     }
 
+    /**
+     * Verifies that creating a doctor with a duplicate license number throws a {@link DuplicateResourceException}.
+     */
     @Test
     void createDoctor_duplicateLicense() {
         when(doctorRepository.existsByLicenseNumber("LIC-001")).thenReturn(true);
@@ -65,6 +75,9 @@ class DoctorServiceTest {
         });
     }
 
+    /**
+     * Verifies that creating a doctor for a non-existent user throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createDoctor_userNotFound() {
         when(doctorRepository.existsByLicenseNumber("LIC-001")).thenReturn(false);
@@ -75,6 +88,9 @@ class DoctorServiceTest {
         });
     }
 
+    /**
+     * Verifies that creating a doctor with a non-existent department throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createDoctor_departmentNotFound() {
         User user = new User();
@@ -87,6 +103,9 @@ class DoctorServiceTest {
         });
     }
 
+    /**
+     * Verifies that a doctor can be retrieved by their ID.
+     */
     @Test
     void getDoctorById_success() {
         Doctor doctor = new Doctor();
@@ -97,6 +116,9 @@ class DoctorServiceTest {
         assertEquals(1L, result.getId());
     }
 
+    /**
+     * Verifies that retrieving a non-existent doctor by ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getDoctorById_notFound() {
         when(doctorRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -106,6 +128,9 @@ class DoctorServiceTest {
         });
     }
 
+    /**
+     * Verifies that a doctor can be retrieved by their associated user ID.
+     */
     @Test
     void getDoctorByUserId_success() {
         Doctor doctor = new Doctor();
@@ -115,6 +140,9 @@ class DoctorServiceTest {
         assertNotNull(result);
     }
 
+    /**
+     * Verifies that retrieving a doctor by a non-existent user ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getDoctorByUserId_notFound() {
         when(doctorRepository.findByUserIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -124,6 +152,9 @@ class DoctorServiceTest {
         });
     }
 
+    /**
+     * Verifies that a doctor can be retrieved by their license number.
+     */
     @Test
     void getDoctorByLicenseNumber_success() {
         Doctor doctor = new Doctor();
@@ -133,6 +164,9 @@ class DoctorServiceTest {
         assertNotNull(result);
     }
 
+    /**
+     * Verifies that all doctors assigned to a department can be retrieved.
+     */
     @Test
     void getDoctorsByDepartment() {
         when(doctorRepository.findByDepartmentIdAndDeletedAtIsNull(1L))
@@ -142,6 +176,9 @@ class DoctorServiceTest {
         assertEquals(2, result.size());
     }
 
+    /**
+     * Verifies that doctors can be retrieved filtered by their specialty.
+     */
     @Test
     void getDoctorsBySpecialty() {
         when(doctorRepository.findBySpecialty("Cardiology"))
@@ -151,6 +188,9 @@ class DoctorServiceTest {
         assertEquals(1, result.size());
     }
 
+    /**
+     * Verifies that a doctor's specialty and years of experience can be updated.
+     */
     @Test
     void updateDoctor_success() {
         Doctor doctor = new Doctor();
@@ -165,6 +205,9 @@ class DoctorServiceTest {
         assertEquals(10, result.getYearsOfExperience());
     }
 
+    /**
+     * Verifies that deleting a doctor removes the record from the database.
+     */
     @Test
     void deleteDoctor_success() {
         Doctor doctor = new Doctor();
@@ -176,6 +219,9 @@ class DoctorServiceTest {
         verify(doctorRepository).delete(doctor);
     }
 
+    /**
+     * Verifies that deleting a non-existent doctor throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void deleteDoctor_notFound() {
         when(doctorRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());

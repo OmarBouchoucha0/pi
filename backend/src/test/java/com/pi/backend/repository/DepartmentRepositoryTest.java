@@ -14,6 +14,10 @@ import com.pi.backend.model.Department;
 import com.pi.backend.model.Tenant;
 import com.pi.backend.model.TenantStatus;
 
+/**
+ * Integration tests for {@link DepartmentRepository}. Verifies database operations
+ * including CRUD, unique constraints on tenant+name, and soft delete filtering.
+ */
 @SpringBootTest
 @Transactional
 class DepartmentRepositoryTest {
@@ -24,6 +28,9 @@ class DepartmentRepositoryTest {
     @Autowired
     private TenantRepository tenantRepository;
 
+    /**
+     * Verifies that a department can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveDepartment() {
         Tenant tenant = createTenant();
@@ -39,6 +46,9 @@ class DepartmentRepositoryTest {
         assertNotNull(saved.getCreatedAt());
     }
 
+    /**
+     * Verifies that a unique constraint on tenant and name prevents duplicate department names.
+     */
     @Test
     void uniqueConstraintOnTenantAndName() {
         Tenant tenant = createTenant();
@@ -57,6 +67,9 @@ class DepartmentRepositoryTest {
         });
     }
 
+    /**
+     * Verifies that the same department name is allowed across different tenants.
+     */
     @Test
     void sameNameDifferentTenantsAllowed() {
         Tenant t1 = createTenant("Hospital A");
@@ -75,6 +88,9 @@ class DepartmentRepositoryTest {
         assertNotNull(saved.getId());
     }
 
+    /**
+     * Verifies that soft-deleted departments are excluded from findAll results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         Tenant tenant = createTenant();

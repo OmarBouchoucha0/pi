@@ -4,5 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.pi.backend.model.ai.ChatAlert;
 
+/**
+ * Repository for managing ChatAlert entities.
+ */
 public interface ChatAlertRepository extends JpaRepository<ChatAlert, Long> {
 }

@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.pi.backend.model.user.Nurse;
 import com.pi.backend.model.user.enums.NurseShift;
 
+/**
+ * Repository for managing Nurse entities.
+ */
 public interface NurseRepository extends JpaRepository<Nurse, Long> {
 
     Optional<Nurse> findByUserId(Long userId);

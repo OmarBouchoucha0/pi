@@ -19,6 +19,10 @@ import com.pi.backend.model.user.User;
 import com.pi.backend.model.user.enums.AdminPrivilege;
 import com.pi.backend.repository.user.AdminRepository;
 
+/**
+ * Unit tests for {@link AdminService}. Uses Mockito to mock repositories
+ * and verify service logic for admin CRUD operations and exception handling.
+ */
 @ExtendWith(MockitoExtension.class)
 class AdminServiceTest {
 
@@ -31,6 +35,9 @@ class AdminServiceTest {
     @InjectMocks
     private AdminService adminService;
 
+    /**
+     * Verifies that an admin can be created successfully with a valid user and privilege level.
+     */
     @Test
     void createAdmin_success() {
         User user = new User();
@@ -46,6 +53,9 @@ class AdminServiceTest {
         verify(adminRepository).save(any(Admin.class));
     }
 
+    /**
+     * Verifies that creating an admin for a non-existent user throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createAdmin_userNotFound() {
         when(userService.getUserById(999L)).thenThrow(new ResourceNotFoundException("User", 999L));
@@ -55,6 +65,9 @@ class AdminServiceTest {
         });
     }
 
+    /**
+     * Verifies that an admin can be retrieved by their ID.
+     */
     @Test
     void getAdminById_success() {
         Admin admin = new Admin();
@@ -65,6 +78,9 @@ class AdminServiceTest {
         assertEquals(1L, result.getId());
     }
 
+    /**
+     * Verifies that retrieving a non-existent admin by ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getAdminById_notFound() {
         when(adminRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -74,6 +90,9 @@ class AdminServiceTest {
         });
     }
 
+    /**
+     * Verifies that an admin can be retrieved by their associated user ID.
+     */
     @Test
     void getAdminByUserId_success() {
         Admin admin = new Admin();
@@ -83,6 +102,9 @@ class AdminServiceTest {
         assertNotNull(result);
     }
 
+    /**
+     * Verifies that retrieving an admin by a non-existent user ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getAdminByUserId_notFound() {
         when(adminRepository.findByUserIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -92,6 +114,9 @@ class AdminServiceTest {
         });
     }
 
+    /**
+     * Verifies that admins can be retrieved filtered by their privilege level.
+     */
     @Test
     void getAdminsByPrivilegeLevel() {
         when(adminRepository.findByPrivilegeLevelAndDeletedAtIsNull(AdminPrivilege.SUPER_ADMIN))
@@ -101,6 +126,9 @@ class AdminServiceTest {
         assertEquals(2, result.size());
     }
 
+    /**
+     * Verifies that an admin's privilege level can be updated successfully.
+     */
     @Test
     void updateAdminPrivilege_success() {
         Admin admin = new Admin();
@@ -114,6 +142,9 @@ class AdminServiceTest {
         assertEquals(AdminPrivilege.TENANT_ADMIN, result.getPrivilegeLevel());
     }
 
+    /**
+     * Verifies that deleting an admin removes the record from the database.
+     */
     @Test
     void deleteAdmin_success() {
         Admin admin = new Admin();
@@ -125,6 +156,9 @@ class AdminServiceTest {
         verify(adminRepository).delete(admin);
     }
 
+    /**
+     * Verifies that deleting a non-existent admin throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void deleteAdmin_notFound() {
         when(adminRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());

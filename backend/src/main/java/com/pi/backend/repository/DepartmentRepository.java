@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.pi.backend.model.Department;
 
+/**
+ * Repository for managing Department entities.
+ */
 public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
     List<Department> findByTenantId(Long tenantId);

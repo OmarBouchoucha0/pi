@@ -20,6 +20,10 @@ import com.pi.backend.model.user.User;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.user.LabTechnicianRepository;
 
+/**
+ * Unit tests for {@link LabTechnicianService}. Uses Mockito to mock repositories
+ * and verify service logic for lab technician CRUD operations and exception handling.
+ */
 @ExtendWith(MockitoExtension.class)
 class LabTechnicianServiceTest {
 
@@ -35,6 +39,9 @@ class LabTechnicianServiceTest {
     @InjectMocks
     private LabTechnicianService labTechnicianService;
 
+    /**
+     * Verifies that a lab technician can be created successfully with valid user, department, and certification.
+     */
     @Test
     void createLabTechnician_success() {
         User user = new User();
@@ -52,6 +59,9 @@ class LabTechnicianServiceTest {
         verify(labTechnicianRepository).save(any(LabTechnician.class));
     }
 
+    /**
+     * Verifies that creating a lab technician for a non-existent user throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createLabTechnician_userNotFound() {
         when(userService.getUserById(999L)).thenThrow(new ResourceNotFoundException("User", 999L));
@@ -61,6 +71,9 @@ class LabTechnicianServiceTest {
         });
     }
 
+    /**
+     * Verifies that creating a lab technician with a non-existent department throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void createLabTechnician_departmentNotFound() {
         User user = new User();
@@ -72,6 +85,9 @@ class LabTechnicianServiceTest {
         });
     }
 
+    /**
+     * Verifies that a lab technician can be retrieved by their ID.
+     */
     @Test
     void getLabTechnicianById_success() {
         LabTechnician tech = new LabTechnician();
@@ -82,6 +98,9 @@ class LabTechnicianServiceTest {
         assertEquals(1L, result.getId());
     }
 
+    /**
+     * Verifies that retrieving a non-existent lab technician by ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getLabTechnicianById_notFound() {
         when(labTechnicianRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -91,6 +110,9 @@ class LabTechnicianServiceTest {
         });
     }
 
+    /**
+     * Verifies that a lab technician can be retrieved by their associated user ID.
+     */
     @Test
     void getLabTechnicianByUserId_success() {
         LabTechnician tech = new LabTechnician();
@@ -100,6 +122,9 @@ class LabTechnicianServiceTest {
         assertNotNull(result);
     }
 
+    /**
+     * Verifies that retrieving a lab technician by a non-existent user ID throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void getLabTechnicianByUserId_notFound() {
         when(labTechnicianRepository.findByUserIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
@@ -109,6 +134,9 @@ class LabTechnicianServiceTest {
         });
     }
 
+    /**
+     * Verifies that all lab technicians assigned to a department can be retrieved.
+     */
     @Test
     void getLabTechniciansByDepartment() {
         when(labTechnicianRepository.findByDepartmentIdAndDeletedAtIsNull(1L))
@@ -118,6 +146,9 @@ class LabTechnicianServiceTest {
         assertEquals(2, result.size());
     }
 
+    /**
+     * Verifies that a lab technician's certification can be updated successfully.
+     */
     @Test
     void updateCertification_success() {
         LabTechnician tech = new LabTechnician();
@@ -131,6 +162,9 @@ class LabTechnicianServiceTest {
         assertEquals("RT Certified", result.getCertification());
     }
 
+    /**
+     * Verifies that deleting a lab technician removes the record from the database.
+     */
     @Test
     void deleteLabTechnician_success() {
         LabTechnician tech = new LabTechnician();
@@ -142,6 +176,9 @@ class LabTechnicianServiceTest {
         verify(labTechnicianRepository).delete(tech);
     }
 
+    /**
+     * Verifies that deleting a non-existent lab technician throws a {@link ResourceNotFoundException}.
+     */
     @Test
     void deleteLabTechnician_notFound() {
         when(labTechnicianRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());

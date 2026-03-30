@@ -10,6 +10,9 @@ import com.pi.backend.model.Department;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Represents a doctor profile linked to a user account.
+ */
 @Entity
 @Table(name = "doctors")
 @Data

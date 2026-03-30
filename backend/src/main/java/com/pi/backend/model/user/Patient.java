@@ -11,6 +11,9 @@ import com.pi.backend.model.Department;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Represents a patient profile linked to a user account. Contains medical information.
+ */
 @Entity
 @Table(name = "patients")
 @Data

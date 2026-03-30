@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * Exception thrown when a requested resource is not found. Returns HTTP 404.
+ */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException extends RuntimeException {
 

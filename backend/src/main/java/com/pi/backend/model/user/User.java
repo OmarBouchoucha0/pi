@@ -15,6 +15,9 @@ import com.pi.backend.model.user.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 
+/**
+ * Represents a user account in the system. Contains authentication, profile, and identity fields.
+ */
 @Entity
 @Table(name = "users", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"tenant_id", "email"})

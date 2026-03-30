@@ -18,6 +18,10 @@ import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.TenantRepository;
 
+/**
+ * Integration tests for {@link SecretaryRepository}. Verifies database operations
+ * including CRUD, lookup by department, and soft delete filtering.
+ */
 @SpringBootTest
 @Transactional
 class SecretaryRepositoryTest {
@@ -34,6 +38,9 @@ class SecretaryRepositoryTest {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    /**
+     * Verifies that a secretary can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveSecretary() {
         Tenant tenant = createTenant(tenantRepository, "Secretary Hospital");
@@ -50,6 +57,9 @@ class SecretaryRepositoryTest {
         assertEquals(dept.getId(), saved.getDepartment().getId());
     }
 
+    /**
+     * Verifies that a secretary can be looked up by their associated user ID.
+     */
     @Test
     void findByUserId() {
         Tenant tenant = createTenant(tenantRepository, "Secretary Hospital");
@@ -65,6 +75,9 @@ class SecretaryRepositoryTest {
         assertNotNull(found.getId());
     }
 
+    /**
+     * Verifies that secretaries can be retrieved filtered by their department ID.
+     */
     @Test
     void findByDepartmentId() {
         Tenant tenant = createTenant(tenantRepository, "Secretary Hospital");
@@ -88,6 +101,9 @@ class SecretaryRepositoryTest {
         assertEquals(1, frontDeskSecs.size());
     }
 
+    /**
+     * Verifies that soft-deleted secretaries are excluded from findAll results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         Tenant tenant = createTenant(tenantRepository, "Secretary Hospital");

@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.pi.backend.model.Tenant;
 import com.pi.backend.model.TenantStatus;
 
+/**
+ * Repository for managing Tenant entities.
+ */
 public interface TenantRepository extends JpaRepository<Tenant, Long> {
 
     Optional<Tenant> findByName(String name);

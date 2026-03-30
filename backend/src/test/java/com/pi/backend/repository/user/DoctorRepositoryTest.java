@@ -19,6 +19,10 @@ import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.TenantRepository;
 
+/**
+ * Integration tests for {@link DoctorRepository}. Verifies database operations
+ * including CRUD, unique license constraints, lookup by department/specialty, and soft delete filtering.
+ */
 @SpringBootTest
 @Transactional
 class DoctorRepositoryTest {
@@ -35,6 +39,9 @@ class DoctorRepositoryTest {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    /**
+     * Verifies that a doctor can be saved and retrieved from the database.
+     */
     @Test
     void saveAndRetrieveDoctor() {
         Tenant tenant = createTenant(tenantRepository, "Doctor Hospital");
@@ -56,6 +63,9 @@ class DoctorRepositoryTest {
         assertEquals(dept.getId(), saved.getDepartment().getId());
     }
 
+    /**
+     * Verifies that a doctor can be looked up by their associated user ID.
+     */
     @Test
     void findByUserId() {
         Tenant tenant = createTenant(tenantRepository, "Doctor Hospital");
@@ -73,6 +83,9 @@ class DoctorRepositoryTest {
         assertEquals("LIC-001", found.getLicenseNumber());
     }
 
+    /**
+     * Verifies that a doctor can be looked up by their license number.
+     */
     @Test
     void findByLicenseNumber() {
         Tenant tenant = createTenant(tenantRepository, "Doctor Hospital");
@@ -90,6 +103,9 @@ class DoctorRepositoryTest {
         assertEquals(user.getId(), found.getUser().getId());
     }
 
+    /**
+     * Verifies that the existence check by license number returns correct results.
+     */
     @Test
     void existsByLicenseNumber() {
         Tenant tenant = createTenant(tenantRepository, "Doctor Hospital");
@@ -107,6 +123,9 @@ class DoctorRepositoryTest {
         assertFalse(doctorRepository.existsByLicenseNumber("LIC-999"));
     }
 
+    /**
+     * Verifies that a unique constraint on license number prevents duplicate licenses.
+     */
     @Test
     void uniqueLicenseNumber() {
         Tenant tenant = createTenant(tenantRepository, "Doctor Hospital");
@@ -132,6 +151,9 @@ class DoctorRepositoryTest {
         });
     }
 
+    /**
+     * Verifies that doctors can be retrieved filtered by their department ID.
+     */
     @Test
     void findByDepartmentId() {
         Tenant tenant = createTenant(tenantRepository, "Doctor Hospital");
@@ -160,6 +182,9 @@ class DoctorRepositoryTest {
         assertEquals("LIC-001", cardiologists.get(0).getLicenseNumber());
     }
 
+    /**
+     * Verifies that doctors can be retrieved filtered by their specialty.
+     */
     @Test
     void findBySpecialty() {
         Tenant tenant = createTenant(tenantRepository, "Doctor Hospital");
@@ -186,6 +211,9 @@ class DoctorRepositoryTest {
         assertEquals(1, cardiologists.size());
     }
 
+    /**
+     * Verifies that soft-deleted doctors are excluded from findAll results.
+     */
     @Test
     void softDeleteFiltersFromFindAll() {
         Tenant tenant = createTenant(tenantRepository, "Doctor Hospital");
