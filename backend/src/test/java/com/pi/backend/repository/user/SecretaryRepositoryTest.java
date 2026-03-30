@@ -1,5 +1,6 @@
 package com.pi.backend.repository.user;
 
+import static com.pi.backend.repository.user.TestHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -11,11 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pi.backend.model.Department;
 import com.pi.backend.model.Tenant;
-import com.pi.backend.model.TenantStatus;
 import com.pi.backend.model.user.Secretary;
 import com.pi.backend.model.user.User;
 import com.pi.backend.model.user.enums.UserRole;
-import com.pi.backend.model.user.enums.UserStatus;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.TenantRepository;
 
@@ -37,9 +36,9 @@ class SecretaryRepositoryTest {
 
     @Test
     void saveAndRetrieveSecretary() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "secretary@test.com");
-        Department dept = createDepartment(tenant, "Front Desk");
+        Tenant tenant = createTenant(tenantRepository, "Secretary Hospital");
+        User user = createUser(userRepository, tenant, "secretary@test.com", UserRole.SECRETARY);
+        Department dept = createDepartment(departmentRepository, tenant, "Front Desk");
 
         Secretary secretary = new Secretary();
         secretary.setUser(user);
@@ -53,9 +52,9 @@ class SecretaryRepositoryTest {
 
     @Test
     void findByUserId() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "secretary@test.com");
-        Department dept = createDepartment(tenant, "Front Desk");
+        Tenant tenant = createTenant(tenantRepository, "Secretary Hospital");
+        User user = createUser(userRepository, tenant, "secretary@test.com", UserRole.SECRETARY);
+        Department dept = createDepartment(departmentRepository, tenant, "Front Desk");
 
         Secretary secretary = new Secretary();
         secretary.setUser(user);
@@ -68,12 +67,12 @@ class SecretaryRepositoryTest {
 
     @Test
     void findByDepartmentId() {
-        Tenant tenant = createTenant();
-        Department frontDesk = createDepartment(tenant, "Front Desk");
-        Department billing = createDepartment(tenant, "Billing");
+        Tenant tenant = createTenant(tenantRepository, "Secretary Hospital");
+        Department frontDesk = createDepartment(departmentRepository, tenant, "Front Desk");
+        Department billing = createDepartment(departmentRepository, tenant, "Billing");
 
-        User u1 = createUser(tenant, "sec1@test.com");
-        User u2 = createUser(tenant, "sec2@test.com");
+        User u1 = createUser(userRepository, tenant, "sec1@test.com", UserRole.SECRETARY);
+        User u2 = createUser(userRepository, tenant, "sec2@test.com", UserRole.SECRETARY);
 
         Secretary s1 = new Secretary();
         s1.setUser(u1);
@@ -91,9 +90,9 @@ class SecretaryRepositoryTest {
 
     @Test
     void softDeleteFiltersFromFindAll() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "secretary@test.com");
-        Department dept = createDepartment(tenant, "Front Desk");
+        Tenant tenant = createTenant(tenantRepository, "Secretary Hospital");
+        User user = createUser(userRepository, tenant, "secretary@test.com", UserRole.SECRETARY);
+        Department dept = createDepartment(departmentRepository, tenant, "Front Desk");
 
         Secretary secretary = new Secretary();
         secretary.setUser(user);
@@ -104,31 +103,5 @@ class SecretaryRepositoryTest {
 
         List<Secretary> all = secretaryRepository.findAll();
         assertTrue(all.isEmpty());
-    }
-
-    private Tenant createTenant() {
-        Tenant tenant = new Tenant();
-        tenant.setName("Secretary Hospital");
-        tenant.setStatus(TenantStatus.ACTIVE);
-        return tenantRepository.save(tenant);
-    }
-
-    private User createUser(Tenant tenant, String email) {
-        User user = new User();
-        user.setTenant(tenant);
-        user.setEmail(email);
-        user.setPasswordHash("hashed");
-        user.setFirstName("Secretary");
-        user.setLastName("Test");
-        user.setRole(UserRole.SECRETARY);
-        user.setStatus(UserStatus.ACTIVE);
-        return userRepository.save(user);
-    }
-
-    private Department createDepartment(Tenant tenant, String name) {
-        Department dept = new Department();
-        dept.setTenant(tenant);
-        dept.setName(name);
-        return departmentRepository.save(dept);
     }
 }

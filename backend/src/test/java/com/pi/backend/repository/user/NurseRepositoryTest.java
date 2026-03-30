@@ -1,5 +1,6 @@
 package com.pi.backend.repository.user;
 
+import static com.pi.backend.repository.user.TestHelper.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -11,12 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pi.backend.model.Department;
 import com.pi.backend.model.Tenant;
-import com.pi.backend.model.TenantStatus;
 import com.pi.backend.model.user.Nurse;
 import com.pi.backend.model.user.User;
 import com.pi.backend.model.user.enums.NurseShift;
 import com.pi.backend.model.user.enums.UserRole;
-import com.pi.backend.model.user.enums.UserStatus;
 import com.pi.backend.repository.DepartmentRepository;
 import com.pi.backend.repository.TenantRepository;
 
@@ -38,11 +37,14 @@ class NurseRepositoryTest {
 
     @Test
     void saveAndRetrieveNurse() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "nurse@test.com");
-        Department dept = createDepartment(tenant, "ICU");
+        Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
+        User user = createUser(userRepository, tenant, "nurse@test.com", UserRole.NURSE);
+        Department dept = createDepartment(departmentRepository, tenant, "ICU");
 
-        Nurse nurse = createNurse(user, dept, NurseShift.DAY);
+        Nurse nurse = new Nurse();
+        nurse.setUser(user);
+        nurse.setDepartment(dept);
+        nurse.setShift(NurseShift.DAY);
         Nurse saved = nurseRepository.save(nurse);
 
         assertNotNull(saved.getId());
@@ -53,11 +55,15 @@ class NurseRepositoryTest {
 
     @Test
     void findByUserId() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "nurse@test.com");
-        Department dept = createDepartment(tenant, "ICU");
+        Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
+        User user = createUser(userRepository, tenant, "nurse@test.com", UserRole.NURSE);
+        Department dept = createDepartment(departmentRepository, tenant, "ICU");
 
-        nurseRepository.save(createNurse(user, dept, NurseShift.DAY));
+        Nurse nurse = new Nurse();
+        nurse.setUser(user);
+        nurse.setDepartment(dept);
+        nurse.setShift(NurseShift.DAY);
+        nurseRepository.save(nurse);
 
         Nurse found = nurseRepository.findByUserId(user.getId()).orElseThrow();
         assertEquals(NurseShift.DAY, found.getShift());
@@ -65,15 +71,24 @@ class NurseRepositoryTest {
 
     @Test
     void findByDepartmentId() {
-        Tenant tenant = createTenant();
-        Department icu = createDepartment(tenant, "ICU");
-        Department er = createDepartment(tenant, "ER");
+        Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
+        Department icu = createDepartment(departmentRepository, tenant, "ICU");
+        Department er = createDepartment(departmentRepository, tenant, "ER");
 
-        User u1 = createUser(tenant, "nurse1@test.com");
-        User u2 = createUser(tenant, "nurse2@test.com");
+        User u1 = createUser(userRepository, tenant, "nurse1@test.com", UserRole.NURSE);
+        User u2 = createUser(userRepository, tenant, "nurse2@test.com", UserRole.NURSE);
 
-        nurseRepository.save(createNurse(u1, icu, NurseShift.DAY));
-        nurseRepository.save(createNurse(u2, er, NurseShift.NIGHT));
+        Nurse n1 = new Nurse();
+        n1.setUser(u1);
+        n1.setDepartment(icu);
+        n1.setShift(NurseShift.DAY);
+        nurseRepository.save(n1);
+
+        Nurse n2 = new Nurse();
+        n2.setUser(u2);
+        n2.setDepartment(er);
+        n2.setShift(NurseShift.NIGHT);
+        nurseRepository.save(n2);
 
         List<Nurse> icuNurses = nurseRepository.findByDepartmentId(icu.getId());
         assertEquals(1, icuNurses.size());
@@ -81,14 +96,23 @@ class NurseRepositoryTest {
 
     @Test
     void findByShift() {
-        Tenant tenant = createTenant();
-        Department dept = createDepartment(tenant, "ICU");
+        Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
+        Department dept = createDepartment(departmentRepository, tenant, "ICU");
 
-        User u1 = createUser(tenant, "nurse1@test.com");
-        User u2 = createUser(tenant, "nurse2@test.com");
+        User u1 = createUser(userRepository, tenant, "nurse1@test.com", UserRole.NURSE);
+        User u2 = createUser(userRepository, tenant, "nurse2@test.com", UserRole.NURSE);
 
-        nurseRepository.save(createNurse(u1, dept, NurseShift.DAY));
-        nurseRepository.save(createNurse(u2, dept, NurseShift.NIGHT));
+        Nurse n1 = new Nurse();
+        n1.setUser(u1);
+        n1.setDepartment(dept);
+        n1.setShift(NurseShift.DAY);
+        nurseRepository.save(n1);
+
+        Nurse n2 = new Nurse();
+        n2.setUser(u2);
+        n2.setDepartment(dept);
+        n2.setShift(NurseShift.NIGHT);
+        nurseRepository.save(n2);
 
         List<Nurse> dayNurses = nurseRepository.findByShift(NurseShift.DAY);
         assertEquals(1, dayNurses.size());
@@ -96,17 +120,31 @@ class NurseRepositoryTest {
 
     @Test
     void findByDepartmentIdAndShift() {
-        Tenant tenant = createTenant();
-        Department icu = createDepartment(tenant, "ICU");
-        Department er = createDepartment(tenant, "ER");
+        Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
+        Department icu = createDepartment(departmentRepository, tenant, "ICU");
+        Department er = createDepartment(departmentRepository, tenant, "ER");
 
-        User u1 = createUser(tenant, "nurse1@test.com");
-        User u2 = createUser(tenant, "nurse2@test.com");
-        User u3 = createUser(tenant, "nurse3@test.com");
+        User u1 = createUser(userRepository, tenant, "nurse1@test.com", UserRole.NURSE);
+        User u2 = createUser(userRepository, tenant, "nurse2@test.com", UserRole.NURSE);
+        User u3 = createUser(userRepository, tenant, "nurse3@test.com", UserRole.NURSE);
 
-        nurseRepository.save(createNurse(u1, icu, NurseShift.DAY));
-        nurseRepository.save(createNurse(u2, icu, NurseShift.NIGHT));
-        nurseRepository.save(createNurse(u3, er, NurseShift.DAY));
+        Nurse n1 = new Nurse();
+        n1.setUser(u1);
+        n1.setDepartment(icu);
+        n1.setShift(NurseShift.DAY);
+        nurseRepository.save(n1);
+
+        Nurse n2 = new Nurse();
+        n2.setUser(u2);
+        n2.setDepartment(icu);
+        n2.setShift(NurseShift.NIGHT);
+        nurseRepository.save(n2);
+
+        Nurse n3 = new Nurse();
+        n3.setUser(u3);
+        n3.setDepartment(er);
+        n3.setShift(NurseShift.DAY);
+        nurseRepository.save(n3);
 
         List<Nurse> icuDay = nurseRepository.findByDepartmentIdAndShift(icu.getId(), NurseShift.DAY);
         assertEquals(1, icuDay.size());
@@ -114,48 +152,19 @@ class NurseRepositoryTest {
 
     @Test
     void softDeleteFiltersFromFindAll() {
-        Tenant tenant = createTenant();
-        User user = createUser(tenant, "nurse@test.com");
-        Department dept = createDepartment(tenant, "ICU");
+        Tenant tenant = createTenant(tenantRepository, "Nurse Hospital");
+        User user = createUser(userRepository, tenant, "nurse@test.com", UserRole.NURSE);
+        Department dept = createDepartment(departmentRepository, tenant, "ICU");
 
-        Nurse saved = nurseRepository.save(createNurse(user, dept, NurseShift.DAY));
+        Nurse nurse = new Nurse();
+        nurse.setUser(user);
+        nurse.setDepartment(dept);
+        nurse.setShift(NurseShift.DAY);
+        Nurse saved = nurseRepository.save(nurse);
+
         nurseRepository.deleteById(saved.getId());
 
         List<Nurse> all = nurseRepository.findAll();
         assertTrue(all.isEmpty());
-    }
-
-    private Tenant createTenant() {
-        Tenant tenant = new Tenant();
-        tenant.setName("Nurse Hospital");
-        tenant.setStatus(TenantStatus.ACTIVE);
-        return tenantRepository.save(tenant);
-    }
-
-    private User createUser(Tenant tenant, String email) {
-        User user = new User();
-        user.setTenant(tenant);
-        user.setEmail(email);
-        user.setPasswordHash("hashed");
-        user.setFirstName("Nurse");
-        user.setLastName("Test");
-        user.setRole(UserRole.NURSE);
-        user.setStatus(UserStatus.ACTIVE);
-        return userRepository.save(user);
-    }
-
-    private Department createDepartment(Tenant tenant, String name) {
-        Department dept = new Department();
-        dept.setTenant(tenant);
-        dept.setName(name);
-        return departmentRepository.save(dept);
-    }
-
-    private Nurse createNurse(User user, Department dept, NurseShift shift) {
-        Nurse nurse = new Nurse();
-        nurse.setUser(user);
-        nurse.setDepartment(dept);
-        nurse.setShift(shift);
-        return nurse;
     }
 }
