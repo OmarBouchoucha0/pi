@@ -136,10 +136,10 @@ public class DoctorService {
     }
 
     /**
-     * Deletes a doctor record.
+     * Soft-deletes a doctor record by setting the deletedAt timestamp.
      *
-     * @param doctorId the ID of the doctor to delete
-     * @throws ResourceNotFoundException if no doctor with the given ID exists
+     * @param doctorId the ID of the doctor to soft-delete
+     * @throws ResourceNotFoundException if no active doctor with the given ID exists
      */
     @Transactional
     public void deleteDoctor(Long doctorId) {

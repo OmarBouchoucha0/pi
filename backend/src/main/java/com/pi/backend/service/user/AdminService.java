@@ -93,10 +93,10 @@ public class AdminService {
     }
 
     /**
-     * Deletes an administrator record.
+     * Soft-deletes an administrator record by setting the deletedAt timestamp.
      *
-     * @param adminId the ID of the admin to delete
-     * @throws ResourceNotFoundException if no admin with the given ID exists
+     * @param adminId the ID of the admin to soft-delete
+     * @throws ResourceNotFoundException if no active admin with the given ID exists
      */
     @Transactional
     public void deleteAdmin(Long adminId) {

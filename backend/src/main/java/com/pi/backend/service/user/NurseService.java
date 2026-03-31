@@ -121,10 +121,10 @@ public class NurseService {
     }
 
     /**
-     * Deletes a nurse record.
+     * Soft-deletes a nurse record by setting the deletedAt timestamp.
      *
-     * @param nurseId the ID of the nurse to delete
-     * @throws ResourceNotFoundException if no nurse with the given ID exists
+     * @param nurseId the ID of the nurse to soft-delete
+     * @throws ResourceNotFoundException if no active nurse with the given ID exists
      */
     @Transactional
     public void deleteNurse(Long nurseId) {
