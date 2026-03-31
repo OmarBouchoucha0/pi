@@ -8,7 +8,6 @@ import org.hibernate.annotations.SQLRestriction;
 
 import com.pi.backend.model.Tenant;
 import com.pi.backend.model.ai.enums.ChatSessionStatus;
-import com.pi.backend.model.ai.enums.SessionType;
 import com.pi.backend.model.user.User;
 
 import jakarta.persistence.*;
@@ -39,13 +38,6 @@ public class ChatSession {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ChatSessionStatus status;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "session_type", nullable = false)
-    private SessionType sessionType;
-
-    @Column(nullable = false)
-    private String language;
 
     @CreationTimestamp
     @Column(name = "started_at", updatable = false)
