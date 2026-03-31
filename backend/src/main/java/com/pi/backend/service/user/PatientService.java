@@ -9,12 +9,10 @@ import com.pi.backend.dto.patient.PatientResponse;
 import com.pi.backend.exception.DuplicateResourceException;
 import com.pi.backend.exception.ResourceNotFoundException;
 import com.pi.backend.model.Department;
-import com.pi.backend.model.Tenant;
 import com.pi.backend.model.user.Patient;
 import com.pi.backend.model.user.User;
 import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.repository.DepartmentRepository;
-import com.pi.backend.repository.TenantRepository;
 import com.pi.backend.repository.user.PatientRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +29,6 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final UserService userService;
     private final DepartmentRepository departmentRepository;
-    private final TenantRepository tenantRepository;
 
     /**
      * Creates a patient profile linked to an existing user.
@@ -155,9 +152,6 @@ public class PatientService {
     @Transactional
     public PatientResponse createEmptyPatient(Long tenantId, String firstName, String lastName,
             String email, String password) {
-
-        Tenant tenant = tenantRepository.findById(tenantId)
-                .orElseThrow(() -> new ResourceNotFoundException("Tenant", tenantId));
 
         User user = userService.createUser(tenantId, email, password,
                 firstName, lastName, UserRole.PATIENT);
