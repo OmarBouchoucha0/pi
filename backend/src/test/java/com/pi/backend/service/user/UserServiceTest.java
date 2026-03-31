@@ -170,6 +170,18 @@ class UserServiceTest {
     }
 
     /**
+     * Verifies that users can be filtered and retrieved by their status within a tenant.
+     */
+    @Test
+    void getUsersByStatus() {
+        when(userRepository.findByTenantIdAndStatusAndDeletedAtIsNull(1L, UserStatus.ACTIVE))
+            .thenReturn(List.of(new User(), new User()));
+
+        List<User> result = userService.getUsersByStatus(1L, UserStatus.ACTIVE);
+        assertEquals(2, result.size());
+    }
+
+    /**
      * Verifies that the existence check returns true when a user with the given email exists.
      */
     @Test
@@ -234,6 +246,18 @@ class UserServiceTest {
     }
 
     /**
+     * Verifies that updating a non-existent user's status throws a {@link ResourceNotFoundException}.
+     */
+    @Test
+    void updateUserStatus_notFound() {
+        when(userRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            userService.updateUserStatus(999L, UserStatus.LOCKED);
+        });
+    }
+
+    /**
      * Verifies that recording a login resets failed attempts and sets the last login timestamp.
      */
     @Test
@@ -249,6 +273,18 @@ class UserServiceTest {
     }
 
     /**
+     * Verifies that recording a login for a non-existent user throws a {@link ResourceNotFoundException}.
+     */
+    @Test
+    void recordLogin_notFound() {
+        when(userRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            userService.recordLogin(999L);
+        });
+    }
+
+    /**
      * Verifies that incrementing failed login attempts increases the count by one.
      */
     @Test
@@ -261,6 +297,18 @@ class UserServiceTest {
         userService.incrementFailedAttempts(1L);
 
         verify(userRepository).save(argThat(u -> u.getFailedAttempts() == 3));
+    }
+
+    /**
+     * Verifies that incrementing failed attempts for a non-existent user throws a {@link ResourceNotFoundException}.
+     */
+    @Test
+    void incrementFailedAttempts_notFound() {
+        when(userRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            userService.incrementFailedAttempts(999L);
+        });
     }
 
     /**

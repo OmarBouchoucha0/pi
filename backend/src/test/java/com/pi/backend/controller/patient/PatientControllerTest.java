@@ -141,6 +141,92 @@ class PatientControllerTest {
     }
 
     /**
+     * Verifies that POST /api/patients/full with duplicate MRN returns 409.
+     */
+    @Test
+    void createFullPatient_duplicateMRN() throws Exception {
+        CreateFullPatientRequest request = new CreateFullPatientRequest(
+            1L, "John", "Doe", "unique@test.com", "password123",
+            "MRN-001", null, null, null, null, null, null
+        );
+
+        when(patientService.createPatientWithUser(
+            eq(1L), eq("John"), eq("Doe"), eq("unique@test.com"), eq("password123"),
+            eq("MRN-001"), isNull(), isNull(), isNull(), isNull(), isNull(), isNull()
+        )).thenThrow(new DuplicateResourceException("Patient", "medicalRecordNumber", "MRN-001"));
+
+        mockMvc.perform(post("/api/patients/full")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error").value("Conflict"))
+            .andExpect(jsonPath("$.field").value("medicalRecordNumber"));
+    }
+
+    /**
+     * Verifies that POST /api/patients/full with non-existent tenant returns 404.
+     */
+    @Test
+    void createFullPatient_tenantNotFound() throws Exception {
+        CreateFullPatientRequest request = new CreateFullPatientRequest(
+            999L, "John", "Doe", "john@test.com", "password123",
+            null, null, null, null, null, null, null
+        );
+
+        when(patientService.createPatientWithUser(
+            eq(999L), eq("John"), eq("Doe"), eq("john@test.com"), eq("password123"),
+            isNull(), isNull(), isNull(), isNull(), isNull(), isNull(), isNull()
+        )).thenThrow(new ResourceNotFoundException("Tenant", 999L));
+
+        mockMvc.perform(post("/api/patients/full")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("Not Found"))
+            .andExpect(jsonPath("$.resource").value("Tenant"));
+    }
+
+    /**
+     * Verifies that POST /api/patients/empty with duplicate email returns 409.
+     */
+    @Test
+    void createEmptyPatient_duplicateEmail() throws Exception {
+        CreateEmptyPatientRequest request = new CreateEmptyPatientRequest(
+            1L, "John", "Doe", "existing@test.com", "password123"
+        );
+
+        when(patientService.createEmptyPatient(1L, "John", "Doe", "existing@test.com", "password123"))
+            .thenThrow(new DuplicateResourceException("User", "email", "existing@test.com"));
+
+        mockMvc.perform(post("/api/patients/empty")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.error").value("Conflict"))
+            .andExpect(jsonPath("$.field").value("email"));
+    }
+
+    /**
+     * Verifies that POST /api/patients/empty with non-existent tenant returns 404.
+     */
+    @Test
+    void createEmptyPatient_tenantNotFound() throws Exception {
+        CreateEmptyPatientRequest request = new CreateEmptyPatientRequest(
+            999L, "John", "Doe", "john@test.com", "password123"
+        );
+
+        when(patientService.createEmptyPatient(999L, "John", "Doe", "john@test.com", "password123"))
+            .thenThrow(new ResourceNotFoundException("Tenant", 999L));
+
+        mockMvc.perform(post("/api/patients/empty")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.error").value("Not Found"))
+            .andExpect(jsonPath("$.resource").value("Tenant"));
+    }
+
+    /**
      * Verifies that POST /api/patients/empty with missing fields returns 400.
      */
     @Test

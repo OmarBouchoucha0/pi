@@ -165,6 +165,18 @@ class DoctorServiceTest {
     }
 
     /**
+     * Verifies that retrieving a doctor by a non-existent license number throws a {@link ResourceNotFoundException}.
+     */
+    @Test
+    void getDoctorByLicenseNumber_notFound() {
+        when(doctorRepository.findByLicenseNumber("LIC-999")).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            doctorService.getDoctorByLicenseNumber("LIC-999");
+        });
+    }
+
+    /**
      * Verifies that all doctors assigned to a department can be retrieved.
      */
     @Test
@@ -203,6 +215,18 @@ class DoctorServiceTest {
 
         assertEquals("Neurology", result.getSpecialty());
         assertEquals(10, result.getYearsOfExperience());
+    }
+
+    /**
+     * Verifies that updating a non-existent doctor throws a {@link ResourceNotFoundException}.
+     */
+    @Test
+    void updateDoctor_notFound() {
+        when(doctorRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            doctorService.updateDoctor(999L, "Neurology", 10);
+        });
     }
 
     /**
