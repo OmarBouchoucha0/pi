@@ -16,8 +16,8 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
             .info(new Info()
-                .title("PI Healthcare API")
+                .title("PI API")
                 .version("1.0.0")
-                .description("Backend API for PI Healthcare System"));
+                .description("Backend API for PI"));
     }
 }
