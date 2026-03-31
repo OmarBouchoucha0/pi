@@ -20,6 +20,7 @@ import com.pi.backend.dto.patient.UpdatePatientRequest;
 import com.pi.backend.model.user.Patient;
 import com.pi.backend.service.user.PatientService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -40,7 +41,7 @@ public class PatientController {
      * @return the created patient
      */
     @PostMapping("/full")
-    public ResponseEntity<PatientResponse> createFullPatient(@RequestBody CreateFullPatientRequest request) {
+    public ResponseEntity<PatientResponse> createFullPatient(@Valid @RequestBody CreateFullPatientRequest request) {
         Patient patient = patientService.createPatientWithUser(
             request.tenantId(), request.firstName(), request.lastName(),
             request.email(), request.passwordHash(),
@@ -59,7 +60,7 @@ public class PatientController {
      * @return the created patient
      */
     @PostMapping("/empty")
-    public ResponseEntity<PatientResponse> createEmptyPatient(@RequestBody CreateEmptyPatientRequest request) {
+    public ResponseEntity<PatientResponse> createEmptyPatient(@Valid @RequestBody CreateEmptyPatientRequest request) {
         Patient patient = patientService.createEmptyPatient(
             request.tenantId(), request.firstName(), request.lastName(),
             request.email(), request.passwordHash()
