@@ -9,17 +9,20 @@ import com.pi.backend.dto.patient.PatientResponse;
 import com.pi.backend.exception.DuplicateResourceException;
 import com.pi.backend.exception.ResourceNotFoundException;
 import com.pi.backend.model.Department;
+import com.pi.backend.model.Tenant;
 import com.pi.backend.model.user.Patient;
 import com.pi.backend.model.user.User;
 import com.pi.backend.model.user.enums.UserRole;
 import com.pi.backend.repository.DepartmentRepository;
+import com.pi.backend.repository.TenantRepository;
 import com.pi.backend.repository.user.PatientRepository;
 
 import lombok.RequiredArgsConstructor;
 
 /**
  * Service for managing patient records. Handles creation, retrieval, updates,
- * and deletion of patient profiles, including medical record data and emergency contacts.
+ * and deletion of patient profiles, including medical record data and emergency
+ * contacts.
  */
 @Service
 @RequiredArgsConstructor
@@ -28,30 +31,34 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final UserService userService;
     private final DepartmentRepository departmentRepository;
+    private final TenantRepository tenantRepository;
 
     /**
      * Creates a patient profile linked to an existing user.
      *
-     * @param userId                 the ID of the user to link the patient to
-     * @param medicalRecordNumber    the patient's medical record number (must be unique)
-     * @param bloodType              the patient's blood type
-     * @param allergies              the patient's known allergies
-     * @param chronicConditions      the patient's chronic conditions
-     * @param emergencyContactName   the emergency contact's name
-     * @param emergencyContactPhone  the emergency contact's phone number
-     * @param primaryDepartmentId    the ID of the primary department (nullable)
+     * @param userId                the ID of the user to link the patient to
+     * @param medicalRecordNumber   the patient's medical record number (must be
+     *                              unique)
+     * @param bloodType             the patient's blood type
+     * @param allergies             the patient's known allergies
+     * @param chronicConditions     the patient's chronic conditions
+     * @param emergencyContactName  the emergency contact's name
+     * @param emergencyContactPhone the emergency contact's phone number
+     * @param primaryDepartmentId   the ID of the primary department (nullable)
      * @return the created PatientResponse
-     * @throws DuplicateResourceException if the medical record number already exists
+     * @throws DuplicateResourceException if the medical record number already
+     *                                    exists
      * @throws ResourceNotFoundException  if the user or department does not exist
      */
     @Transactional
     public PatientResponse createPatient(Long userId, String medicalRecordNumber,
-                                         String bloodType, String allergies,
-                                         String chronicConditions,
-                                         String emergencyContactName,
-                                         String emergencyContactPhone,
-                                         Long primaryDepartmentId) {
-        if (medicalRecordNumber != null && patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull(medicalRecordNumber)) {
+            String bloodType, String allergies,
+            String chronicConditions,
+            String emergencyContactName,
+            String emergencyContactPhone,
+            Long primaryDepartmentId) {
+        if (medicalRecordNumber != null
+                && patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull(medicalRecordNumber)) {
             throw new DuplicateResourceException("Patient", "medicalRecordNumber", medicalRecordNumber);
         }
 
@@ -68,7 +75,7 @@ public class PatientService {
 
         if (primaryDepartmentId != null) {
             Department dept = departmentRepository.findById(primaryDepartmentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", primaryDepartmentId));
+                    .orElseThrow(() -> new ResourceNotFoundException("Department", primaryDepartmentId));
             patient.setPrimaryDepartment(dept);
         }
 
@@ -76,36 +83,41 @@ public class PatientService {
     }
 
     /**
-     * Creates a new user account and patient profile together in a single transaction.
+     * Creates a new user account and patient profile together in a single
+     * transaction.
      *
-     * @param tenantId               the ID of the tenant the user belongs to
-     * @param firstName              the patient's first name
-     * @param lastName               the patient's last name
-     * @param email                  the patient's email address
-     * @param password               the plain text password (will be hashed before storing)
-     * @param medicalRecordNumber    the patient's medical record number (must be unique)
-     * @param bloodType              the patient's blood type
-     * @param allergies              the patient's known allergies
-     * @param chronicConditions      the patient's chronic conditions
-     * @param emergencyContactName   the emergency contact's name
-     * @param emergencyContactPhone  the emergency contact's phone number
-     * @param primaryDepartmentId    the ID of the primary department (nullable)
+     * @param tenantId              the ID of the tenant the user belongs to
+     * @param firstName             the patient's first name
+     * @param lastName              the patient's last name
+     * @param email                 the patient's email address
+     * @param password              the plain text password (will be hashed before
+     *                              storing)
+     * @param medicalRecordNumber   the patient's medical record number (must be
+     *                              unique)
+     * @param bloodType             the patient's blood type
+     * @param allergies             the patient's known allergies
+     * @param chronicConditions     the patient's chronic conditions
+     * @param emergencyContactName  the emergency contact's name
+     * @param emergencyContactPhone the emergency contact's phone number
+     * @param primaryDepartmentId   the ID of the primary department (nullable)
      * @return the created PatientResponse
-     * @throws DuplicateResourceException if the email or medical record number already exists
+     * @throws DuplicateResourceException if the email or medical record number
+     *                                    already exists
      * @throws ResourceNotFoundException  if the tenant or department does not exist
      */
     @Transactional
     public PatientResponse createPatientWithUser(Long tenantId, String firstName, String lastName,
-                                                 String email, String password,
-                                                 String medicalRecordNumber, String bloodType,
-                                                 String allergies, String chronicConditions,
-                                                 String emergencyContactName,
-                                                 String emergencyContactPhone,
-                                                 Long primaryDepartmentId) {
+            String email, String password,
+            String medicalRecordNumber, String bloodType,
+            String allergies, String chronicConditions,
+            String emergencyContactName,
+            String emergencyContactPhone,
+            Long primaryDepartmentId) {
         User user = userService.createUser(tenantId, email, password,
-            firstName, lastName, UserRole.PATIENT);
+                firstName, lastName, UserRole.PATIENT);
 
-        if (medicalRecordNumber != null && patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull(medicalRecordNumber)) {
+        if (medicalRecordNumber != null
+                && patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull(medicalRecordNumber)) {
             throw new DuplicateResourceException("Patient", "medicalRecordNumber", medicalRecordNumber);
         }
 
@@ -120,7 +132,7 @@ public class PatientService {
 
         if (primaryDepartmentId != null) {
             Department dept = departmentRepository.findById(primaryDepartmentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Department", primaryDepartmentId));
+                    .orElseThrow(() -> new ResourceNotFoundException("Department", primaryDepartmentId));
             patient.setPrimaryDepartment(dept);
         }
 
@@ -128,22 +140,27 @@ public class PatientService {
     }
 
     /**
-     * Creates a minimal patient profile with only a user account and no medical data.
+     * Creates a minimal patient profile with only a user account and no medical
+     * data.
      *
-     * @param tenantId     the ID of the tenant the user belongs to
-     * @param firstName    the patient's first name
-     * @param lastName     the patient's last name
-     * @param email        the patient's email address
-     * @param password     the plain text password (will be hashed before storing)
+     * @param tenantId  the ID of the tenant the user belongs to
+     * @param firstName the patient's first name
+     * @param lastName  the patient's last name
+     * @param email     the patient's email address
+     * @param password  the plain text password (will be hashed before storing)
      * @return the created PatientResponse with no medical information populated
      * @throws DuplicateResourceException if the email already exists
      * @throws ResourceNotFoundException  if the tenant does not exist
      */
     @Transactional
     public PatientResponse createEmptyPatient(Long tenantId, String firstName, String lastName,
-                                              String email, String password) {
+            String email, String password) {
+
+        Tenant tenant = tenantRepository.findById(tenantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Tenant", tenantId));
+
         User user = userService.createUser(tenantId, email, password,
-            firstName, lastName, UserRole.PATIENT);
+                firstName, lastName, UserRole.PATIENT);
 
         Patient patient = new Patient();
         patient.setUser(user);
@@ -159,8 +176,8 @@ public class PatientService {
     @Transactional(readOnly = true)
     public List<PatientResponse> getAllPatients() {
         return patientRepository.findAllWithAssociations().stream()
-            .map(this::toResponse)
-            .toList();
+                .map(this::toResponse)
+                .toList();
     }
 
     /**
@@ -173,7 +190,7 @@ public class PatientService {
     @Transactional(readOnly = true)
     public PatientResponse getPatientById(Long patientId) {
         Patient patient = patientRepository.findByIdAndDeletedAtIsNull(patientId)
-            .orElseThrow(() -> new ResourceNotFoundException("Patient", patientId));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", patientId));
         return toResponse(patient);
     }
 
@@ -187,7 +204,7 @@ public class PatientService {
     @Transactional(readOnly = true)
     public PatientResponse getPatientByUserId(Long userId) {
         Patient patient = patientRepository.findByUserIdAndDeletedAtIsNull(userId)
-            .orElseThrow(() -> new ResourceNotFoundException("Patient", "userId", userId));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "userId", userId));
         return toResponse(patient);
     }
 
@@ -201,7 +218,7 @@ public class PatientService {
     @Transactional(readOnly = true)
     public PatientResponse getPatientByMedicalRecordNumber(String mrn) {
         Patient patient = patientRepository.findByMedicalRecordNumberAndDeletedAtIsNull(mrn)
-            .orElseThrow(() -> new ResourceNotFoundException("Patient", "medicalRecordNumber", mrn));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "medicalRecordNumber", mrn));
         return toResponse(patient);
     }
 
@@ -214,30 +231,30 @@ public class PatientService {
     @Transactional(readOnly = true)
     public List<PatientResponse> getPatientsByDepartment(Long departmentId) {
         return patientRepository.findByPrimaryDepartmentIdAndDeletedAtIsNull(departmentId)
-            .stream()
-            .map(this::toResponse)
-            .toList();
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     /**
      * Updates the medical information of a patient.
      *
-     * @param patientId              the ID of the patient to update
-     * @param bloodType              the updated blood type
-     * @param allergies              the updated allergies
-     * @param chronicConditions      the updated chronic conditions
-     * @param emergencyContactName   the updated emergency contact name
-     * @param emergencyContactPhone  the updated emergency contact phone
+     * @param patientId             the ID of the patient to update
+     * @param bloodType             the updated blood type
+     * @param allergies             the updated allergies
+     * @param chronicConditions     the updated chronic conditions
+     * @param emergencyContactName  the updated emergency contact name
+     * @param emergencyContactPhone the updated emergency contact phone
      * @return the updated PatientResponse
      * @throws ResourceNotFoundException if no patient with the given ID exists
      */
     @Transactional
     public PatientResponse updatePatient(Long patientId, String bloodType,
-                                         String allergies, String chronicConditions,
-                                         String emergencyContactName,
-                                         String emergencyContactPhone) {
+            String allergies, String chronicConditions,
+            String emergencyContactName,
+            String emergencyContactPhone) {
         Patient patient = patientRepository.findByIdAndDeletedAtIsNull(patientId)
-            .orElseThrow(() -> new ResourceNotFoundException("Patient", patientId));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", patientId));
         patient.setBloodType(bloodType);
         patient.setAllergies(allergies);
         patient.setChronicConditions(chronicConditions);
@@ -255,7 +272,7 @@ public class PatientService {
     @Transactional
     public void deletePatient(Long patientId) {
         Patient patient = patientRepository.findByIdAndDeletedAtIsNull(patientId)
-            .orElseThrow(() -> new ResourceNotFoundException("Patient", patientId));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", patientId));
         patientRepository.delete(patient);
     }
 
@@ -266,19 +283,18 @@ public class PatientService {
      */
     private PatientResponse toResponse(Patient patient) {
         return new PatientResponse(
-            patient.getId(),
-            patient.getUser().getId(),
-            patient.getUser().getFirstName(),
-            patient.getUser().getLastName(),
-            patient.getUser().getEmail(),
-            patient.getMedicalRecordNumber(),
-            patient.getBloodType(),
-            patient.getAllergies(),
-            patient.getChronicConditions(),
-            patient.getEmergencyContactName(),
-            patient.getEmergencyContactPhone(),
-            patient.getPrimaryDepartment() != null ? patient.getPrimaryDepartment().getId() : null,
-            patient.getCreatedAt()
-        );
+                patient.getId(),
+                patient.getUser().getId(),
+                patient.getUser().getFirstName(),
+                patient.getUser().getLastName(),
+                patient.getUser().getEmail(),
+                patient.getMedicalRecordNumber(),
+                patient.getBloodType(),
+                patient.getAllergies(),
+                patient.getChronicConditions(),
+                patient.getEmergencyContactName(),
+                patient.getEmergencyContactPhone(),
+                patient.getPrimaryDepartment() != null ? patient.getPrimaryDepartment().getId() : null,
+                patient.getCreatedAt());
     }
 }
