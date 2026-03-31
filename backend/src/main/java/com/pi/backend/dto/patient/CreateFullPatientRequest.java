@@ -23,7 +23,7 @@ public record CreateFullPatientRequest(
     String email,
 
     @NotBlank(message = "Password is required")
-    String passwordHash,
+    String password,
 
     String medicalRecordNumber,
     String bloodType,

@@ -43,7 +43,7 @@ public class PatientController {
     public ResponseEntity<PatientResponse> createFullPatient(@Valid @RequestBody CreateFullPatientRequest request) {
         PatientResponse patient = patientService.createPatientWithUser(
             request.tenantId(), request.firstName(), request.lastName(),
-            request.email(), request.passwordHash(),
+            request.email(), request.password(),
             request.medicalRecordNumber(), request.bloodType(),
             request.allergies(), request.chronicConditions(),
             request.emergencyContactName(), request.emergencyContactPhone(),
@@ -62,7 +62,7 @@ public class PatientController {
     public ResponseEntity<PatientResponse> createEmptyPatient(@Valid @RequestBody CreateEmptyPatientRequest request) {
         PatientResponse patient = patientService.createEmptyPatient(
             request.tenantId(), request.firstName(), request.lastName(),
-            request.email(), request.passwordHash()
+            request.email(), request.password()
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(patient);
     }

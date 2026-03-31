@@ -23,5 +23,5 @@ public record CreateEmptyPatientRequest(
     String email,
 
     @NotBlank(message = "Password is required")
-    String passwordHash
+    String password
 ) {}
