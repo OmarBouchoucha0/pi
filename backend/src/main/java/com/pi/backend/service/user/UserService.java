@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,13 +30,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final TenantRepository tenantRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * Creates a new user account for the specified tenant.
      *
      * @param tenantId       the ID of the tenant the user belongs to
      * @param email          the user's email address
-     * @param passwordHash   the hashed password
+     * @param password       the plain text password (will be hashed before storing)
      * @param firstName      the user's first name
      * @param lastName       the user's last name
      * @param role           the user's role (DOCTOR, PATIENT, NURSE, etc.)
@@ -44,7 +46,7 @@ public class UserService {
      * @throws ResourceNotFoundException  if the tenant does not exist
      */
     @Transactional
-    public User createUser(Long tenantId, String email, String passwordHash,
+    public User createUser(Long tenantId, String email, String password,
                            String firstName, String lastName, UserRole role) {
         if (userRepository.existsByTenantIdAndEmail(tenantId, email)) {
             throw new DuplicateResourceException("User", "email", email);
@@ -56,7 +58,7 @@ public class UserService {
         User user = new User();
         user.setTenant(tenant);
         user.setEmail(email);
-        user.setPasswordHash(passwordHash);
+        user.setPasswordHash(passwordEncoder.encode(password));
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setRole(role);

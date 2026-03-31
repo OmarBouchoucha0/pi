@@ -82,7 +82,7 @@ public class PatientService {
      * @param firstName              the patient's first name
      * @param lastName               the patient's last name
      * @param email                  the patient's email address
-     * @param passwordHash           the hashed password
+     * @param password               the plain text password (will be hashed before storing)
      * @param medicalRecordNumber    the patient's medical record number (must be unique)
      * @param bloodType              the patient's blood type
      * @param allergies              the patient's known allergies
@@ -96,13 +96,13 @@ public class PatientService {
      */
     @Transactional
     public PatientResponse createPatientWithUser(Long tenantId, String firstName, String lastName,
-                                                 String email, String passwordHash,
+                                                 String email, String password,
                                                  String medicalRecordNumber, String bloodType,
                                                  String allergies, String chronicConditions,
                                                  String emergencyContactName,
                                                  String emergencyContactPhone,
                                                  Long primaryDepartmentId) {
-        User user = userService.createUser(tenantId, email, passwordHash,
+        User user = userService.createUser(tenantId, email, password,
             firstName, lastName, UserRole.PATIENT);
 
         if (medicalRecordNumber != null && patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull(medicalRecordNumber)) {
@@ -134,15 +134,15 @@ public class PatientService {
      * @param firstName    the patient's first name
      * @param lastName     the patient's last name
      * @param email        the patient's email address
-     * @param passwordHash the hashed password
+     * @param password     the plain text password (will be hashed before storing)
      * @return the created PatientResponse with no medical information populated
      * @throws DuplicateResourceException if the email already exists
      * @throws ResourceNotFoundException  if the tenant does not exist
      */
     @Transactional
     public PatientResponse createEmptyPatient(Long tenantId, String firstName, String lastName,
-                                              String email, String passwordHash) {
-        User user = userService.createUser(tenantId, email, passwordHash,
+                                              String email, String password) {
+        User user = userService.createUser(tenantId, email, password,
             firstName, lastName, UserRole.PATIENT);
 
         Patient patient = new Patient();

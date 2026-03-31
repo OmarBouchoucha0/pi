@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.pi.backend.exception.DuplicateResourceException;
 import com.pi.backend.exception.ResourceNotFoundException;
@@ -37,6 +38,9 @@ class UserServiceTest {
     @Mock
     private TenantRepository tenantRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UserService userService;
 
@@ -54,11 +58,13 @@ class UserServiceTest {
 
         when(userRepository.existsByTenantIdAndEmail(1L, "test@test.com")).thenReturn(false);
         when(tenantRepository.findById(1L)).thenReturn(Optional.of(tenant));
+        when(passwordEncoder.encode("password123")).thenReturn("hashed_password");
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User result = userService.createUser(1L, "test@test.com", "hash", "John", "Doe", UserRole.DOCTOR);
+        User result = userService.createUser(1L, "test@test.com", "password123", "John", "Doe", UserRole.DOCTOR);
 
         assertNotNull(result);
+        verify(passwordEncoder).encode("password123");
         verify(userRepository).save(any(User.class));
     }
 
@@ -70,7 +76,7 @@ class UserServiceTest {
         when(userRepository.existsByTenantIdAndEmail(1L, "test@test.com")).thenReturn(true);
 
         assertThrows(DuplicateResourceException.class, () -> {
-            userService.createUser(1L, "test@test.com", "hash", "John", "Doe", UserRole.DOCTOR);
+            userService.createUser(1L, "test@test.com", "password123", "John", "Doe", UserRole.DOCTOR);
         });
     }
 
@@ -83,7 +89,7 @@ class UserServiceTest {
         when(tenantRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            userService.createUser(1L, "test@test.com", "hash", "John", "Doe", UserRole.DOCTOR);
+            userService.createUser(1L, "test@test.com", "password123", "John", "Doe", UserRole.DOCTOR);
         });
     }
 
