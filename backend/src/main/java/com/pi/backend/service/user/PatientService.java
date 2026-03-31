@@ -151,6 +151,15 @@ public class PatientService {
     }
 
     /**
+     * Retrieves all non-deleted patients.
+     *
+     * @return list of all patients
+     */
+    public List<Patient> getAllPatients() {
+        return patientRepository.findAll();
+    }
+
+    /**
      * Retrieves a patient by their unique ID.
      *
      * @param patientId the ID of the patient to retrieve
