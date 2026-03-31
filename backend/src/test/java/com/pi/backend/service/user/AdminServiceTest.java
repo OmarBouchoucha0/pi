@@ -143,6 +143,18 @@ class AdminServiceTest {
     }
 
     /**
+     * Verifies that updating a non-existent admin's privilege throws a {@link ResourceNotFoundException}.
+     */
+    @Test
+    void updateAdminPrivilege_notFound() {
+        when(adminRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            adminService.updateAdminPrivilege(999L, AdminPrivilege.TENANT_ADMIN);
+        });
+    }
+
+    /**
      * Verifies that deleting an admin removes the record from the database.
      */
     @Test

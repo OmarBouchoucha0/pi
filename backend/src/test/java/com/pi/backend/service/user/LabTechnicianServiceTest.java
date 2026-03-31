@@ -163,6 +163,18 @@ class LabTechnicianServiceTest {
     }
 
     /**
+     * Verifies that updating a non-existent lab technician's certification throws a {@link ResourceNotFoundException}.
+     */
+    @Test
+    void updateCertification_notFound() {
+        when(labTechnicianRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            labTechnicianService.updateCertification(999L, "RT Certified");
+        });
+    }
+
+    /**
      * Verifies that deleting a lab technician removes the record from the database.
      */
     @Test

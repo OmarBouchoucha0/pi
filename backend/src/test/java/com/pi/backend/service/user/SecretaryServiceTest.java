@@ -182,6 +182,18 @@ class SecretaryServiceTest {
     }
 
     /**
+     * Verifies that updating a non-existent secretary's department throws a {@link ResourceNotFoundException}.
+     */
+    @Test
+    void updateSecretaryDepartment_secretaryNotFound() {
+        when(secretaryRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            secretaryService.updateSecretaryDepartment(999L, 1L);
+        });
+    }
+
+    /**
      * Verifies that deleting a secretary removes the record from the database.
      */
     @Test

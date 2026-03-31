@@ -333,6 +333,20 @@ class PatientServiceTest {
     }
 
     /**
+     * Verifies that all patients can be retrieved with their associations.
+     */
+    @Test
+    void getAllPatients() {
+        User user = createMockUser();
+        Patient p1 = createMockPatient(user, null);
+        Patient p2 = createMockPatient(user, null);
+        when(patientRepository.findAllWithAssociations()).thenReturn(List.of(p1, p2));
+
+        List<PatientResponse> result = patientService.getAllPatients();
+        assertEquals(2, result.size());
+    }
+
+    /**
      * Verifies that a patient's medical details can be updated successfully.
      */
     @Test
@@ -346,6 +360,18 @@ class PatientServiceTest {
 
         assertEquals("A+", result.bloodType());
         assertEquals("Peanuts", result.allergies());
+    }
+
+    /**
+     * Verifies that updating a non-existent patient throws a {@link ResourceNotFoundException}.
+     */
+    @Test
+    void updatePatient_notFound() {
+        when(patientRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            patientService.updatePatient(999L, "A+", "Peanuts", "Asthma", "John Doe", "9876543210");
+        });
     }
 
     /**

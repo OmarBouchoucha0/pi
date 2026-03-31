@@ -188,6 +188,18 @@ class NurseServiceTest {
     }
 
     /**
+     * Verifies that updating a non-existent nurse's shift throws a {@link ResourceNotFoundException}.
+     */
+    @Test
+    void updateNurseShift_notFound() {
+        when(nurseRepository.findByIdAndDeletedAtIsNull(999L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            nurseService.updateNurseShift(999L, NurseShift.NIGHT);
+        });
+    }
+
+    /**
      * Verifies that deleting a nurse removes the record from the database.
      */
     @Test

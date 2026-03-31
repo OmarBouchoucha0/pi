@@ -2,7 +2,6 @@ package com.pi.backend.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,10 +36,5 @@ public class TenantController {
     public ResponseEntity<Tenant> createTenant(@Valid @RequestBody CreateTenantRequest request) {
         Tenant tenant = tenantService.createTenant(request.name(), request.status());
         return ResponseEntity.status(HttpStatus.CREATED).body(tenant);
-    }
-
-    @GetMapping
-    public String test() {
-        return "ok";
     }
 }
