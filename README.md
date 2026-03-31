@@ -109,8 +109,8 @@ journalctl -f -u backend
 
 Make sure you have the following installed before getting started:
 
-- **Node** (v20+) -
-- **npm** -
+- **Node 20** -
+- **npm 11** -
 
 Verify your installs:
 
