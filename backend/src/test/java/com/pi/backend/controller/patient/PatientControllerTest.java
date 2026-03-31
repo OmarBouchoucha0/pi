@@ -263,6 +263,9 @@ class PatientControllerTest {
             .andExpect(status().isNotFound());
     }
 
+    /**
+     * Creates a mock PatientResponse for testing.
+     */
     private PatientResponse createMockResponse() {
         return new PatientResponse(
             1L, 1L, "John", "Doe", "john@test.com",

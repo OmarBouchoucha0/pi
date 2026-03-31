@@ -33,7 +33,7 @@ public class ChatContext {
     @Column(nullable = false)
     private String key;
 
-    @Column(columnDefinition = "JSON")
+    @Column(name = "`value`", columnDefinition = "JSON")
     private String value;
 
     @UpdateTimestamp
