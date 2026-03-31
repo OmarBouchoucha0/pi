@@ -152,13 +152,13 @@ public class PatientService {
     }
 
     /**
-     * Retrieves all non-deleted patients.
+     * Retrieves all non-deleted patients with their associations loaded.
      *
      * @return list of all patients as PatientResponse DTOs
      */
     @Transactional(readOnly = true)
     public List<PatientResponse> getAllPatients() {
-        return patientRepository.findAll().stream()
+        return patientRepository.findAllWithAssociations().stream()
             .map(this::toResponse)
             .toList();
     }
