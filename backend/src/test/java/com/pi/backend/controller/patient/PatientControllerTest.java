@@ -55,13 +55,13 @@ class PatientControllerTest {
     @Test
     void createFullPatient_success() throws Exception {
         CreateFullPatientRequest request = new CreateFullPatientRequest(
-            1L, "John", "Doe", "john@test.com", "hash",
+            1L, "John", "Doe", "john@test.com", "password123",
             "MRN-001", "O+", "Peanuts", null, null, null, null
         );
 
         PatientResponse response = createMockResponse();
         when(patientService.createPatientWithUser(
-            eq(1L), eq("John"), eq("Doe"), eq("john@test.com"), eq("hash"),
+            eq(1L), eq("John"), eq("Doe"), eq("john@test.com"), eq("password123"),
             eq("MRN-001"), eq("O+"), eq("Peanuts"), isNull(), isNull(), isNull(), isNull()
         )).thenReturn(response);
 
@@ -102,12 +102,12 @@ class PatientControllerTest {
     @Test
     void createFullPatient_duplicateEmail() throws Exception {
         CreateFullPatientRequest request = new CreateFullPatientRequest(
-            1L, "John", "Doe", "existing@test.com", "hash",
+            1L, "John", "Doe", "existing@test.com", "password123",
             null, null, null, null, null, null, null
         );
 
         when(patientService.createPatientWithUser(
-            eq(1L), eq("John"), eq("Doe"), eq("existing@test.com"), eq("hash"),
+            eq(1L), eq("John"), eq("Doe"), eq("existing@test.com"), eq("password123"),
             isNull(), isNull(), isNull(), isNull(), isNull(), isNull(), isNull()
         )).thenThrow(new DuplicateResourceException("User", "email", "existing@test.com"));
 
@@ -125,11 +125,11 @@ class PatientControllerTest {
     @Test
     void createEmptyPatient_success() throws Exception {
         CreateEmptyPatientRequest request = new CreateEmptyPatientRequest(
-            1L, "John", "Doe", "john@test.com", "hash"
+            1L, "John", "Doe", "john@test.com", "password123"
         );
 
         PatientResponse response = createMockResponse();
-        when(patientService.createEmptyPatient(1L, "John", "Doe", "john@test.com", "hash"))
+        when(patientService.createEmptyPatient(1L, "John", "Doe", "john@test.com", "password123"))
             .thenReturn(response);
 
         mockMvc.perform(post("/api/patients/empty")

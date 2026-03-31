@@ -1,0 +1,23 @@
+package com.pi.backend.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+/**
+ * Security configuration providing password encoding.
+ */
+@Configuration
+public class SecurityConfig {
+
+    /**
+     * Provides a BCrypt password encoder for hashing passwords.
+     *
+     * @return the BCryptPasswordEncoder instance
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}

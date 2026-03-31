@@ -130,18 +130,18 @@ class PatientServiceTest {
         User user = createMockUser();
         Patient patient = createMockPatient(user, null);
 
-        when(userService.createUser(1L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+        when(userService.createUser(1L, "patient@test.com", "password123", "John", "Doe", UserRole.PATIENT))
             .thenReturn(user);
         when(patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull("MRN-001")).thenReturn(false);
         when(patientRepository.save(any(Patient.class))).thenReturn(patient);
 
         PatientResponse result = patientService.createPatientWithUser(1L, "John", "Doe",
-            "patient@test.com", "hash", "MRN-001", "O+", "Peanuts",
+            "patient@test.com", "password123", "MRN-001", "O+", "Peanuts",
             "Diabetes", "Jane Doe", "1234567890", null);
 
         assertNotNull(result);
         assertEquals("John", result.firstName());
-        verify(userService).createUser(1L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT);
+        verify(userService).createUser(1L, "patient@test.com", "password123", "John", "Doe", UserRole.PATIENT);
         verify(patientRepository).save(any(Patient.class));
     }
 
@@ -150,12 +150,12 @@ class PatientServiceTest {
      */
     @Test
     void createPatientWithUser_duplicateEmail() {
-        when(userService.createUser(1L, "existing@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+        when(userService.createUser(1L, "existing@test.com", "password123", "John", "Doe", UserRole.PATIENT))
             .thenThrow(new DuplicateResourceException("User", "email", "existing@test.com"));
 
         assertThrows(DuplicateResourceException.class, () -> {
             patientService.createPatientWithUser(1L, "John", "Doe",
-                "existing@test.com", "hash", null, null, null, null, null, null, null);
+                "existing@test.com", "password123", null, null, null, null, null, null, null);
         });
     }
 
@@ -166,13 +166,13 @@ class PatientServiceTest {
     void createPatientWithUser_duplicateMRN() {
         User user = createMockUser();
 
-        when(userService.createUser(1L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+        when(userService.createUser(1L, "patient@test.com", "password123", "John", "Doe", UserRole.PATIENT))
             .thenReturn(user);
         when(patientRepository.existsByMedicalRecordNumberAndDeletedAtIsNull("MRN-001")).thenReturn(true);
 
         assertThrows(DuplicateResourceException.class, () -> {
             patientService.createPatientWithUser(1L, "John", "Doe",
-                "patient@test.com", "hash", "MRN-001", null, null, null, null, null, null);
+                "patient@test.com", "password123", "MRN-001", null, null, null, null, null, null);
         });
     }
 
@@ -181,12 +181,12 @@ class PatientServiceTest {
      */
     @Test
     void createPatientWithUser_tenantNotFound() {
-        when(userService.createUser(999L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+        when(userService.createUser(999L, "patient@test.com", "password123", "John", "Doe", UserRole.PATIENT))
             .thenThrow(new ResourceNotFoundException("Tenant", 999L));
 
         assertThrows(ResourceNotFoundException.class, () -> {
             patientService.createPatientWithUser(999L, "John", "Doe",
-                "patient@test.com", "hash", null, null, null, null, null, null, null);
+                "patient@test.com", "password123", null, null, null, null, null, null, null);
         });
     }
 
@@ -198,16 +198,16 @@ class PatientServiceTest {
         User user = createMockUser();
         Patient patient = createMockPatient(user, null);
 
-        when(userService.createUser(1L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+        when(userService.createUser(1L, "patient@test.com", "password123", "John", "Doe", UserRole.PATIENT))
             .thenReturn(user);
         when(patientRepository.save(any(Patient.class))).thenReturn(patient);
 
         PatientResponse result = patientService.createEmptyPatient(1L, "John", "Doe",
-            "patient@test.com", "hash");
+            "patient@test.com", "password123");
 
         assertNotNull(result);
         assertEquals("John", result.firstName());
-        verify(userService).createUser(1L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT);
+        verify(userService).createUser(1L, "patient@test.com", "password123", "John", "Doe", UserRole.PATIENT);
         verify(patientRepository).save(any(Patient.class));
     }
 
@@ -216,11 +216,11 @@ class PatientServiceTest {
      */
     @Test
     void createEmptyPatient_duplicateEmail() {
-        when(userService.createUser(1L, "existing@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+        when(userService.createUser(1L, "existing@test.com", "password123", "John", "Doe", UserRole.PATIENT))
             .thenThrow(new DuplicateResourceException("User", "email", "existing@test.com"));
 
         assertThrows(DuplicateResourceException.class, () -> {
-            patientService.createEmptyPatient(1L, "John", "Doe", "existing@test.com", "hash");
+            patientService.createEmptyPatient(1L, "John", "Doe", "existing@test.com", "password123");
         });
     }
 
@@ -229,11 +229,11 @@ class PatientServiceTest {
      */
     @Test
     void createEmptyPatient_tenantNotFound() {
-        when(userService.createUser(999L, "patient@test.com", "hash", "John", "Doe", UserRole.PATIENT))
+        when(userService.createUser(999L, "patient@test.com", "password123", "John", "Doe", UserRole.PATIENT))
             .thenThrow(new ResourceNotFoundException("Tenant", 999L));
 
         assertThrows(ResourceNotFoundException.class, () -> {
-            patientService.createEmptyPatient(999L, "John", "Doe", "patient@test.com", "hash");
+            patientService.createEmptyPatient(999L, "John", "Doe", "patient@test.com", "password123");
         });
     }
 
