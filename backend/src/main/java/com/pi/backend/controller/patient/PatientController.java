@@ -17,7 +17,6 @@ import com.pi.backend.dto.patient.CreateEmptyPatientRequest;
 import com.pi.backend.dto.patient.CreateFullPatientRequest;
 import com.pi.backend.dto.patient.PatientResponse;
 import com.pi.backend.dto.patient.UpdatePatientRequest;
-import com.pi.backend.model.user.Patient;
 import com.pi.backend.service.user.PatientService;
 
 import jakarta.validation.Valid;
@@ -42,7 +41,7 @@ public class PatientController {
      */
     @PostMapping("/full")
     public ResponseEntity<PatientResponse> createFullPatient(@Valid @RequestBody CreateFullPatientRequest request) {
-        Patient patient = patientService.createPatientWithUser(
+        PatientResponse patient = patientService.createPatientWithUser(
             request.tenantId(), request.firstName(), request.lastName(),
             request.email(), request.passwordHash(),
             request.medicalRecordNumber(), request.bloodType(),
@@ -50,7 +49,7 @@ public class PatientController {
             request.emergencyContactName(), request.emergencyContactPhone(),
             request.primaryDepartmentId()
         );
-        return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(patient));
+        return ResponseEntity.status(HttpStatus.CREATED).body(patient);
     }
 
     /**
@@ -61,11 +60,11 @@ public class PatientController {
      */
     @PostMapping("/empty")
     public ResponseEntity<PatientResponse> createEmptyPatient(@Valid @RequestBody CreateEmptyPatientRequest request) {
-        Patient patient = patientService.createEmptyPatient(
+        PatientResponse patient = patientService.createEmptyPatient(
             request.tenantId(), request.firstName(), request.lastName(),
             request.email(), request.passwordHash()
         );
-        return ResponseEntity.status(HttpStatus.CREATED).body(toResponse(patient));
+        return ResponseEntity.status(HttpStatus.CREATED).body(patient);
     }
 
     /**
@@ -75,11 +74,8 @@ public class PatientController {
      */
     @GetMapping
     public ResponseEntity<List<PatientResponse>> getAllPatients() {
-        List<Patient> patients = patientService.getAllPatients();
-        List<PatientResponse> response = patients.stream()
-            .map(this::toResponse)
-            .toList();
-        return ResponseEntity.ok(response);
+        List<PatientResponse> patients = patientService.getAllPatients();
+        return ResponseEntity.ok(patients);
     }
 
     /**
@@ -90,8 +86,8 @@ public class PatientController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<PatientResponse> getPatientById(@PathVariable Long id) {
-        Patient patient = patientService.getPatientById(id);
-        return ResponseEntity.ok(toResponse(patient));
+        PatientResponse patient = patientService.getPatientById(id);
+        return ResponseEntity.ok(patient);
     }
 
     /**
@@ -104,12 +100,12 @@ public class PatientController {
     @PutMapping("/{id}")
     public ResponseEntity<PatientResponse> updatePatient(@PathVariable Long id,
                                                          @RequestBody UpdatePatientRequest request) {
-        Patient patient = patientService.updatePatient(
+        PatientResponse patient = patientService.updatePatient(
             id, request.bloodType(), request.allergies(),
             request.chronicConditions(), request.emergencyContactName(),
             request.emergencyContactPhone()
         );
-        return ResponseEntity.ok(toResponse(patient));
+        return ResponseEntity.ok(patient);
     }
 
     /**
@@ -122,26 +118,5 @@ public class PatientController {
     public ResponseEntity<Void> deletePatient(@PathVariable Long id) {
         patientService.deletePatient(id);
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Converts a Patient entity to a PatientResponse DTO.
-     */
-    private PatientResponse toResponse(Patient patient) {
-        return new PatientResponse(
-            patient.getId(),
-            patient.getUser().getId(),
-            patient.getUser().getFirstName(),
-            patient.getUser().getLastName(),
-            patient.getUser().getEmail(),
-            patient.getMedicalRecordNumber(),
-            patient.getBloodType(),
-            patient.getAllergies(),
-            patient.getChronicConditions(),
-            patient.getEmergencyContactName(),
-            patient.getEmergencyContactPhone(),
-            patient.getPrimaryDepartment() != null ? patient.getPrimaryDepartment().getId() : null,
-            patient.getCreatedAt()
-        );
     }
 }
