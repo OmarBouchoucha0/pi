@@ -2,6 +2,7 @@ package com.pi.backend.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import com.pi.backend.dto.CreateTenantRequest;
 import com.pi.backend.model.Tenant;
 import com.pi.backend.service.TenantService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/tenants")
 @RequiredArgsConstructor
+@Tag(name = "Tenant", description = "Tenant management APIs")
 public class TenantController {
 
     private final TenantService tenantService;
@@ -34,5 +37,10 @@ public class TenantController {
     public ResponseEntity<Tenant> createTenant(@Valid @RequestBody CreateTenantRequest request) {
         Tenant tenant = tenantService.createTenant(request.name(), request.status());
         return ResponseEntity.status(HttpStatus.CREATED).body(tenant);
+    }
+
+    @GetMapping
+    public String test() {
+        return "ok";
     }
 }
