@@ -12,6 +12,9 @@ import io.swagger.v3.oas.models.info.Info;
 @Configuration
 public class OpenApiConfig {
 
+    /**
+     * Provides custom OpenAPI metadata (title, version, description) for Swagger UI.
+     */
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()

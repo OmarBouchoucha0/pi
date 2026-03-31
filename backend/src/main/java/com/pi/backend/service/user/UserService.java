@@ -115,11 +115,11 @@ public class UserService {
     }
 
     /**
-     * Retrieves all users with a specific status within a tenant.
+     * Retrieves all active (non-deleted) users with a specific status within a tenant.
      *
      * @param tenantId the ID of the tenant
      * @param status   the user status to filter by
-     * @return a list of users matching the status
+     * @return a list of active users matching the status
      */
     public List<User> getUsersByStatus(Long tenantId, UserStatus status) {
         return userRepository.findByTenantIdAndStatusAndDeletedAtIsNull(tenantId, status);

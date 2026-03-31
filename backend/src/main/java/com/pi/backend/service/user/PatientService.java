@@ -258,10 +258,10 @@ public class PatientService {
     }
 
     /**
-     * Deletes a patient record.
+     * Soft-deletes a patient record by setting the deletedAt timestamp.
      *
-     * @param patientId the ID of the patient to delete
-     * @throws ResourceNotFoundException if no patient with the given ID exists
+     * @param patientId the ID of the patient to soft-delete
+     * @throws ResourceNotFoundException if no active patient with the given ID exists
      */
     @Transactional
     public void deletePatient(Long patientId) {

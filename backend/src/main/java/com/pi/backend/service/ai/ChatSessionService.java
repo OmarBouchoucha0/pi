@@ -71,7 +71,8 @@ public class ChatSessionService {
      * @param confidence  the confidence score (nullable)
      * @param replyToId   the ID of the message being replied to (nullable)
      * @return the created ChatMessage
-     * @throws ResourceNotFoundException if session not found
+     * @throws ResourceNotFoundException if the session is not found, or if replyToId
+     *         is provided but the referenced message does not exist
      */
     @Transactional
     public ChatMessage addMessage(Long sessionId, SenderType senderType,

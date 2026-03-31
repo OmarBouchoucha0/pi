@@ -100,10 +100,10 @@ public class LabTechnicianService {
     }
 
     /**
-     * Deletes a lab technician record.
+     * Soft-deletes a lab technician record by setting the deletedAt timestamp.
      *
-     * @param techId the ID of the lab technician to delete
-     * @throws ResourceNotFoundException if no lab technician with the given ID exists
+     * @param techId the ID of the lab technician to soft-delete
+     * @throws ResourceNotFoundException if no active lab technician with the given ID exists
      */
     @Transactional
     public void deleteLabTechnician(Long techId) {

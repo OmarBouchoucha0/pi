@@ -15,11 +15,23 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+     * Provides a BCrypt password encoder for hashing user passwords.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures the HTTP security filter chain.
+     * Currently permits all requests to /api/**, Swagger UI, and API docs.
+     * CSRF protection is disabled.
+     *
+     * @param http the HttpSecurity to configure
+     * @return the built SecurityFilterChain
+     * @throws Exception if configuration fails
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

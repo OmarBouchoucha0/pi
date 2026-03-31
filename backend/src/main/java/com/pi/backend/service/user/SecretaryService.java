@@ -99,10 +99,10 @@ public class SecretaryService {
     }
 
     /**
-     * Deletes a secretary record.
+     * Soft-deletes a secretary record by setting the deletedAt timestamp.
      *
-     * @param secretaryId the ID of the secretary to delete
-     * @throws ResourceNotFoundException if no secretary with the given ID exists
+     * @param secretaryId the ID of the secretary to soft-delete
+     * @throws ResourceNotFoundException if no active secretary with the given ID exists
      */
     @Transactional
     public void deleteSecretary(Long secretaryId) {

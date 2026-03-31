@@ -23,6 +23,12 @@ public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    /**
+     * Handles ResourceNotFoundException and returns HTTP 404.
+     *
+     * @param ex the caught exception
+     * @return response body containing error, message, resource, field, and timestamp
+     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleResourceNotFound(ResourceNotFoundException ex) {
         Map<String, Object> body = Map.of(
@@ -35,6 +41,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
 
+    /**
+     * Handles DuplicateResourceException and returns HTTP 409.
+     *
+     * @param ex the caught exception
+     * @return response body containing error, message, resource, field, and timestamp
+     */
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<Map<String, Object>> handleDuplicateResource(DuplicateResourceException ex) {
         Map<String, Object> body = Map.of(
@@ -47,6 +59,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
+    /**
+     * Handles validation failures and returns HTTP 400.
+     *
+     * @param ex the caught exception
+     * @return response body containing error, message, per-field errors map, and timestamp
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
         Map<String, String> fieldErrors = ex.getBindingResult().getFieldErrors().stream()
@@ -65,6 +83,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    /**
+     * Handles malformed JSON requests and returns HTTP 400.
+     *
+     * @param ex the caught exception
+     * @return response body containing error, message, and timestamp
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Map<String, Object>> handleJsonParse(HttpMessageNotReadableException ex) {
         Map<String, Object> body = Map.of(
@@ -75,6 +99,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    /**
+     * Handles all uncaught exceptions and returns HTTP 500.
+     * Logs the full stack trace before responding.
+     *
+     * @param ex the caught exception
+     * @return response body containing error, message, and timestamp
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneric(Exception ex) {
         //since we are returning a error 500(server side) here we need to log it
