@@ -21,12 +21,10 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pi.backend.dto.patient.CreateEmptyPatientRequest;
 import com.pi.backend.dto.patient.CreateFullPatientRequest;
+import com.pi.backend.dto.patient.PatientResponse;
 import com.pi.backend.dto.patient.UpdatePatientRequest;
 import com.pi.backend.exception.DuplicateResourceException;
 import com.pi.backend.exception.ResourceNotFoundException;
-import com.pi.backend.model.Tenant;
-import com.pi.backend.model.user.Patient;
-import com.pi.backend.model.user.User;
 import com.pi.backend.service.user.PatientService;
 
 /**
@@ -61,11 +59,11 @@ class PatientControllerTest {
             "MRN-001", "O+", "Peanuts", null, null, null, null
         );
 
-        Patient patient = createMockPatient();
+        PatientResponse response = createMockResponse();
         when(patientService.createPatientWithUser(
             eq(1L), eq("John"), eq("Doe"), eq("john@test.com"), eq("hash"),
             eq("MRN-001"), eq("O+"), eq("Peanuts"), isNull(), isNull(), isNull(), isNull()
-        )).thenReturn(patient);
+        )).thenReturn(response);
 
         mockMvc.perform(post("/api/patients/full")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -130,9 +128,9 @@ class PatientControllerTest {
             1L, "John", "Doe", "john@test.com", "hash"
         );
 
-        Patient patient = createMockPatient();
+        PatientResponse response = createMockResponse();
         when(patientService.createEmptyPatient(1L, "John", "Doe", "john@test.com", "hash"))
-            .thenReturn(patient);
+            .thenReturn(response);
 
         mockMvc.perform(post("/api/patients/empty")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -163,7 +161,7 @@ class PatientControllerTest {
      */
     @Test
     void getAllPatients_success() throws Exception {
-        when(patientService.getAllPatients()).thenReturn(List.of(createMockPatient()));
+        when(patientService.getAllPatients()).thenReturn(List.of(createMockResponse()));
 
         mockMvc.perform(get("/api/patients"))
             .andExpect(status().isOk())
@@ -176,7 +174,7 @@ class PatientControllerTest {
      */
     @Test
     void getPatientById_success() throws Exception {
-        when(patientService.getPatientById(1L)).thenReturn(createMockPatient());
+        when(patientService.getPatientById(1L)).thenReturn(createMockResponse());
 
         mockMvc.perform(get("/api/patients/1"))
             .andExpect(status().isOk())
@@ -207,10 +205,15 @@ class PatientControllerTest {
             "A+", "Peanuts", "Diabetes", "Jane Doe", "1234567890"
         );
 
-        Patient patient = createMockPatient();
-        patient.setBloodType("A+");
+        PatientResponse response = createMockResponse();
+        response = new PatientResponse(
+            response.id(), response.userId(), response.firstName(), response.lastName(),
+            response.email(), response.medicalRecordNumber(), "A+",
+            "Peanuts", "Diabetes", "Jane Doe", "1234567890",
+            response.primaryDepartmentId(), response.createdAt()
+        );
         when(patientService.updatePatient(1L, "A+", "Peanuts", "Diabetes", "Jane Doe", "1234567890"))
-            .thenReturn(patient);
+            .thenReturn(response);
 
         mockMvc.perform(put("/api/patients/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -261,28 +264,13 @@ class PatientControllerTest {
     }
 
     /**
-     * Creates a mock Patient entity for testing.
+     * Creates a mock PatientResponse for testing.
      */
-    private Patient createMockPatient() {
-        Tenant tenant = new Tenant();
-        tenant.setId(1L);
-        tenant.setName("Hospital A");
-
-        User user = new User();
-        user.setId(1L);
-        user.setTenant(tenant);
-        user.setEmail("john@test.com");
-        user.setFirstName("John");
-        user.setLastName("Doe");
-
-        Patient patient = new Patient();
-        patient.setId(1L);
-        patient.setUser(user);
-        patient.setMedicalRecordNumber("MRN-001");
-        patient.setBloodType("O+");
-        patient.setAllergies("Peanuts");
-        patient.setCreatedAt(LocalDateTime.now());
-
-        return patient;
+    private PatientResponse createMockResponse() {
+        return new PatientResponse(
+            1L, 1L, "John", "Doe", "john@test.com",
+            "MRN-001", "O+", "Peanuts", null, null, null,
+            null, LocalDateTime.now()
+        );
     }
 }
