@@ -20,7 +20,8 @@ import com.pi.backend.repository.TenantRepository;
 
 /**
  * Integration tests for {@link PatientRepository}. Verifies database operations
- * including CRUD, unique MRN constraints, allergy/chronic condition persistence, and soft delete filtering.
+ * including CRUD, unique MRN constraints, allergy/chronic condition
+ * persistence, and soft delete filtering.
  */
 @SpringBootTest
 @Transactional
@@ -52,7 +53,8 @@ class PatientRepositoryTest {
     }
 
     /**
-     * Verifies that a unique constraint on medical record number prevents duplicate MRNs.
+     * Verifies that a unique constraint on medical record number prevents duplicate
+     * MRNs.
      */
     @Test
     void uniqueMedicalRecordNumber() {
@@ -85,7 +87,8 @@ class PatientRepositoryTest {
     }
 
     /**
-     * Verifies that patient allergies and chronic conditions are persisted and retrieved correctly.
+     * Verifies that patient allergies and chronic conditions are persisted and
+     * retrieved correctly.
      */
     @Test
     void allergiesAndChronicConditionsStored() {
