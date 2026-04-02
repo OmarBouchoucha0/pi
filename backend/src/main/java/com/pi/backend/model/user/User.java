@@ -16,11 +16,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 /**
- * Represents a user account in the system. Contains authentication, profile, and identity fields.
+ * Represents a user account in the system. Contains authentication, profile,
+ * and identity fields.
  */
 @Entity
 @Table(name = "users", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"tenant_id", "email"})
+        @UniqueConstraint(columnNames = { "tenant_id", "email" })
 })
 @Data
 @SQLDelete(sql = "UPDATE users SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
@@ -51,6 +52,7 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "phone")
     private String phone;
 
     @Column(name = "date_of_birth")
