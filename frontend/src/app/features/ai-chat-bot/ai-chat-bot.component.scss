@@ -1,8 +1,13 @@
 ::ng-deep .p-splitter {
-  border: none;
+  border: 1px solid #e5e7eb !important;
+  background: transparent !important;
 }
 
 ::ng-deep .p-splitter-gutter {
+  background: #e5e7eb !important;
+}
+
+::ng-deep .p-splitter-gutter:hover {
   background: #e5e7eb;
 }
 
