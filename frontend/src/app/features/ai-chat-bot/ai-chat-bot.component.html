@@ -1,0 +1,133 @@
+<p-splitter [style]="{ height: '100%' }" [panelSizes]="[20, 80]" [minSizes]="[12, 60]">
+  <!-- Session History Panel -->
+  <ng-template #panel>
+    <div class="h-full w-full bg-white flex flex-col overflow-hidden">
+      <div
+        class="px-4 py-3 border-b border-black/10 flex-shrink-0 flex items-center justify-between"
+      >
+        <h2 class="text-sm font-semibold text-[#0a0a0a]">Sessions</h2>
+        <button
+          class="flex items-center justify-center w-6 h-6 rounded-lg text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white transition-colors duration-100"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="w-4 h-4"
+          >
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+        </button>
+      </div>
+      <div class="flex-1 overflow-y-auto min-h-0">
+        @for (session of sessions; track session.id) {
+          <div
+            class="group flex items-center justify-between px-4 py-3 hover:bg-black/5 cursor-pointer transition-colors border-b border-black/5 last:border-b-0"
+          >
+            <div class="flex flex-col min-w-0">
+              <span class="text-sm font-medium text-[#0a0a0a] truncate">{{ session.title }}</span>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0 ml-2">
+              <span class="text-xs text-black/40 group-hover:hidden">{{ session.lastActive }}</span>
+              <button
+                class="hidden group-hover:flex items-center justify-center w-4 h-4 rounded-full bg-black/10 hover:bg-red-400 text-black/20 hover:text-red-500 transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  class="w-2.5 h-2.5"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- Chat Panel -->
+  <ng-template #panel>
+    <p-splitter
+      layout="vertical"
+      [style]="{ height: '100%' }"
+      [panelSizes]="[82, 18]"
+      [minSizes]="[70, 15]"
+    >
+      <!-- Messages Area -->
+      <ng-template #panel>
+        <div class="h-full w-full bg-white flex flex-col overflow-hidden">
+          <div class="flex-1 overflow-y-auto min-h-0">
+            @for (message of messages; track $index) {
+              <div
+                class="px-6 py-4"
+                [ngClass]="message.role === 'user' ? 'text-right' : 'text-left'"
+              >
+                <div
+                  class="inline-block px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap max-w-[70%]"
+                  [ngClass]="
+                    message.role === 'user'
+                      ? 'bg-[#0b84fe] text-white rounded-tr-sm'
+                      : 'bg-[#e9e9eb] text-[#0a0a0a] rounded-tl-sm'
+                  "
+                >
+                  {{ message.content }}
+                </div>
+                <div
+                  class="text-[10px] text-black/30 mt-1 px-1"
+                  [ngClass]="message.role === 'user' ? 'text-right' : 'text-left'"
+                >
+                  {{ message.timestamp }}
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- Editor Area -->
+      <ng-template #panel>
+        <div class="h-full w-full bg-white flex items-center overflow-hidden p-4">
+          <div
+            class="flex items-center w-full rounded-2xl border border-black bg-white overflow-hidden pr-2"
+          >
+            <textarea
+              pTextarea
+              [(ngModel)]="userInput"
+              (keydown)="onKeydown($event)"
+              placeholder="Ask Anything"
+              rows="2"
+              class="flex-1 resize-none !border-none !bg-transparent !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!shadow-none focus:!outline-none !p-3"
+            ></textarea>
+            <button
+              (click)="sendMessage()"
+              [disabled]="!userInput.trim()"
+              class="flex-shrink-0 flex items-center justify-center w-7 h-7 rounded-lg bg-[#0a0a0a] disabled:bg-black/15 transition-colors duration-200"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-4 h-4 text-white"
+              >
+                <path d="M12 19V5M5 12l7-7 7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </p-splitter>
+  </ng-template>
+</p-splitter>

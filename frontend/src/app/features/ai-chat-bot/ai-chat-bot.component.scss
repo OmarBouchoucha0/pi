@@ -1,0 +1,26 @@
+::ng-deep .p-splitter {
+  border: 1px solid #e5e7eb !important;
+  background: transparent !important;
+}
+
+::ng-deep .p-splitter-panel > .p-splitter {
+  border: none !important;
+}
+
+::ng-deep .p-splitter-gutter {
+  background: #e5e7eb !important;
+}
+
+::ng-deep .p-splitter-gutter:hover {
+  background: #e5e7eb;
+}
+
+::ng-deep .p-splitter-gutter-handle {
+  background: #9ca3af;
+  /* gray-400 — the drag handle inside the gutter */
+}
+
+::ng-deep .p-splitter-panel {
+  overflow: hidden;
+  /* prevents panels from leaking content */
+}

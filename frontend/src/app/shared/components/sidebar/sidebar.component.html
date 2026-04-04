@@ -39,8 +39,11 @@
   <!-- Menu Items -->
   <nav class="flex-1 flex flex-col gap-0 px-3 py-4">
     @for (item of menuItems; track item.icon) {
-      <button
-        class="flex items-center w-full h-10 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white group px-3 gap-3"
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="bg-[#0a0a0a] text-white"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex items-center w-full h-10 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] bg-white hover:bg-[#0a0a0a] hover:text-white group px-3 gap-3"
         [pTooltip]="collapsed ? item.label : undefined"
         tooltipPosition="right"
         [showDelay]="500"
@@ -63,8 +66,8 @@
               />
             </svg>
           }
-          <!-- Patients -->
-          @if (item.icon === 'users') {
+          <!-- AI Chat Bot -->
+          @if (item.icon === 'robot') {
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-100"
@@ -76,7 +79,7 @@
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
+                d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"
               />
             </svg>
           }
@@ -156,22 +159,22 @@
         </span>
 
         <span
-          class="text-sm font-medium text-[#0a0a0a] group-hover:text-white transition-all duration-2000 ease-in-out overflow-hidden whitespace-nowrap"
+          class="text-sm font-medium text-[#0a0a0a] group-hover:text-white transition-all duration-200 ease-in-out overflow-hidden whitespace-nowrap"
           [ngClass]="collapsed ? 'opacity-0 max-w-0' : 'opacity-100 max-w-[200px]'"
           >{{ item.label }}</span
         >
-      </button>
+      </a>
     }
   </nav>
 
   <!-- Logout -->
   <div class="border-t border-black/30 px-3 py-2">
-    <button
-      class="flex items-center gap-3 w-full px-3 h-10 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-white group"
+    <a
+      routerLink="/login"
+      class="flex items-center gap-3 w-full px-3 h-10 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] bg-white hover:bg-[#0a0a0a] hover:text-white group"
       [pTooltip]="collapsed ? 'Logout' : undefined"
       tooltipPosition="right"
       [showDelay]="500"
-      (click)="logout()"
     >
       <span class="shrink-0 flex items-center justify-center w-[18px] h-[18px]">
         <svg
@@ -194,6 +197,6 @@
         [ngClass]="collapsed ? 'opacity-0 max-w-0' : 'opacity-100 max-w-[200px]'"
         >Logout</span
       >
-    </button>
+    </a>
   </div>
 </aside>

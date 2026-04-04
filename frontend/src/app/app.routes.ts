@@ -1,16 +1,33 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { NotfoundComponent } from './shared/components/notfound/notfound.component';
-import { DumpComponent } from './shared/components/dump/dump.component';
+import { LayoutComponent } from './shared/components/layout/layout.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  {
+    path: '',
+    component: LayoutComponent,
+    children: [
+      { path: '', redirectTo: 'placeholder', pathMatch: 'full' },
+      {
+        path: 'placeholder',
+        loadComponent: () =>
+          import('./features/placeholder/placeholder.component').then(
+            (m) => m.PlaceholderComponent,
+          ),
+      },
+      {
+        path: 'ai-chat-bot',
+        loadComponent: () =>
+          import('./features/ai-chat-bot/ai-chat-bot.component').then((m) => m.AiChatBotComponent),
+      },
+    ],
+  },
   { path: 'login', component: LoginComponent },
   {
     path: 'signup',
     loadComponent: () =>
       import('./features/auth/signup/signup.component').then((m) => m.SignupComponent),
   },
-  { path: 'dump', component: DumpComponent },
   { path: '**', component: NotfoundComponent },
 ];
