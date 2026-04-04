@@ -13,15 +13,15 @@ import { HostListener } from '@angular/core';
   styleUrl: './topbar.component.scss',
 })
 export class TopbarComponent {
-  notificationsOpen = true;
+  notificationsOpen = false;
   settingsOpen = false;
 
   toggleNotifications(): void {
-    this.notificationsOpen = !this.notificationsOpen;
+    this.notificationsOpen = true;
   }
 
   toggleSettings(): void {
-    this.settingsOpen = !this.settingsOpen;
+    this.settingsOpen = true;
   }
 
   @HostListener('document:click', ['$event'])
