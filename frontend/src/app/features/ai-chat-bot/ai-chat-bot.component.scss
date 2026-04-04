@@ -3,6 +3,10 @@
   background: transparent !important;
 }
 
+::ng-deep .p-splitter-panel > .p-splitter {
+  border: none !important;
+}
+
 ::ng-deep .p-splitter-gutter {
   background: #e5e7eb !important;
 }
