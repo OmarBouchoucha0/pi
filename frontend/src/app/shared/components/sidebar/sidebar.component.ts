@@ -14,7 +14,7 @@ export class SidebarComponent {
 
   menuItems = [
     { icon: 'home', label: 'Dashboard', route: '/placeholder' },
-    { icon: 'users', label: 'Patients', route: '/placeholder' },
+    { icon: 'robot', label: 'Chat Bot', route: '/ai-chat-bot' },
     { icon: 'calendar', label: 'Appointments', route: '/placeholder' },
     { icon: 'chart', label: 'Analytics', route: '/placeholder' },
     { icon: 'inbox', label: 'Messages', route: '/placeholder' },

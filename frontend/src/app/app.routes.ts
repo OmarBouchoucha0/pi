@@ -16,6 +16,11 @@ export const routes: Routes = [
             (m) => m.PlaceholderComponent,
           ),
       },
+      {
+        path: 'ai-chat-bot',
+        loadComponent: () =>
+          import('./features/ai-chat-bot/ai-chat-bot.component').then((m) => m.AiChatBotComponent),
+      },
     ],
   },
   { path: 'login', component: LoginComponent },
