@@ -33,13 +33,11 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminLayoutComponent,
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
       {
-        path: 'dashboard',
+        path: 'users',
         loadComponent: () =>
-          import('./features/admin/dashboard/dashboard.component').then(
-            (m) => m.AdminDashboardComponent,
-          ),
+          import('./features/admin/users/users.component').then((m) => m.UsersComponent),
       },
     ],
   },

@@ -12,10 +12,7 @@ import { Tooltip } from 'primeng/tooltip';
 export class AdminSidebarComponent {
   collapsed = false;
 
-  menuItems = [
-    { icon: 'home', label: 'Dashboard', route: '/admin/dashboard' },
-    { icon: 'users', label: 'Users', route: '/admin/users' },
-  ];
+  menuItems = [{ icon: 'users', label: 'Users', route: '/admin/users' }];
 
   toggle(): void {
     this.collapsed = !this.collapsed;

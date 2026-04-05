@@ -5,12 +5,12 @@ import { AvatarModule } from 'primeng/avatar';
 import { ChartModule } from 'primeng/chart';
 
 @Component({
-  selector: 'app-admin-dashboard',
+  selector: 'app-admin-users',
   imports: [CommonModule, TableModule, AvatarModule, ChartModule],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
+  templateUrl: './users.component.html',
+  styleUrl: './users.component.scss',
 })
-export class AdminDashboardComponent {
+export class UsersComponent {
   view: 'table' | 'chart' = 'table';
 
   users = [
