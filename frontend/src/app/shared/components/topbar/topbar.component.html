@@ -90,7 +90,13 @@
     <div class="w-px h-8 bg-black/30 mx-1"></div>
 
     <!-- Avatar -->
-    <div class="flex items-center gap-2.5 cursor-pointer group">
+    <div
+      class="flex items-center gap-2.5 cursor-pointer group"
+      (click)="goToProfile()"
+      (keydown.enter)="goToProfile()"
+      tabindex="0"
+      role="button"
+    >
       <p-avatar
         label="OB"
         shape="circle"

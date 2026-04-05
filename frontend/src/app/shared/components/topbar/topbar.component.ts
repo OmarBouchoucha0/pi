@@ -5,9 +5,12 @@ import { DrawerModule } from 'primeng/drawer';
 import { ToolbarModule } from 'primeng/toolbar';
 import { Tooltip } from 'primeng/tooltip';
 import { HostListener } from '@angular/core';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-topbar',
+  standalone: true,
   imports: [AvatarModule, ButtonModule, DrawerModule, ToolbarModule, Tooltip],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss',
@@ -15,6 +18,7 @@ import { HostListener } from '@angular/core';
 export class TopbarComponent {
   notificationsOpen = false;
   settingsOpen = false;
+  private router = inject(Router);
 
   toggleNotifications(): void {
     this.notificationsOpen = true;
@@ -22,6 +26,10 @@ export class TopbarComponent {
 
   toggleSettings(): void {
     this.settingsOpen = true;
+  }
+
+  goToProfile(): void {
+    this.router.navigate(['/profile']);
   }
 
   @HostListener('document:click', ['$event'])
