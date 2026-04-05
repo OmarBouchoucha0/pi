@@ -1,14 +1,20 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Avatar } from 'primeng/avatar';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  template: `
-    <div class="flex items-center justify-center h-full">
-      <h1 class="text-[60px] font-bold tracking-tighter leading-none text-[#0a0a0a] select-none">
-        Profile Settings
-      </h1>
-    </div>
-  `,
+  imports: [CommonModule, Avatar],
+  templateUrl: './profile.component.html',
 })
-export class ProfileComponent {}
+export class ProfileComponent {
+  prefs = {
+    notifications: true,
+    twoFactor: false,
+  };
+
+  togglePref(key: keyof typeof this.prefs) {
+    this.prefs[key] = !this.prefs[key];
+  }
+}
