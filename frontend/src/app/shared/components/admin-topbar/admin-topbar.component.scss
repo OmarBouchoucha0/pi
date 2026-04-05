@@ -1,0 +1,53 @@
+::ng-deep .p-drawer {
+  background: white !important;
+  opacity: 1 !important;
+}
+
+::ng-deep .p-drawer-mask {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+::ng-deep .p-drawer-mask .p-drawer {
+  background: white !important;
+  opacity: 1 !important;
+  isolation: isolate;
+}
+
+::ng-deep .p-drawer-header {
+  padding: 20px 16px !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+::ng-deep .p-drawer-header-content {
+  display: flex !important;
+  align-items: center !important;
+}
+
+::ng-deep .p-drawer-header-content span {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .p-drawer-content {
+  padding: 0 !important;
+}
+
+::ng-deep .p-drawer-close-button {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 8px !important;
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+::ng-deep .p-drawer-close-button:hover {
+  background: #0a0a0a !important;
+  color: white !important;
+}

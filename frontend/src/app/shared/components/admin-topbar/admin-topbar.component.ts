@@ -1,9 +1,10 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { ToolbarModule } from 'primeng/toolbar';
 import { Tooltip } from 'primeng/tooltip';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-topbar',
@@ -12,8 +13,13 @@ import { Tooltip } from 'primeng/tooltip';
   styleUrl: './admin-topbar.component.scss',
 })
 export class AdminTopbarComponent {
+  private router = inject(Router);
   notificationsOpen = false;
   settingsOpen = false;
+
+  goToProfile(): void {
+    this.router.navigate(['/admin/profile']);
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {

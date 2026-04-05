@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UsersComponent } from './users.component';
+import { TableModule } from 'primeng/table';
+import { AvatarModule } from 'primeng/avatar';
+import { ChartModule } from 'primeng/chart';
 
 describe('UsersComponent', () => {
   let component: UsersComponent;
@@ -8,7 +11,7 @@ describe('UsersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UsersComponent],
+      imports: [UsersComponent, TableModule, AvatarModule, ChartModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(UsersComponent);
