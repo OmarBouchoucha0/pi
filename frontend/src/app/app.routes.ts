@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { NotfoundComponent } from './shared/components/notfound/notfound.component';
 import { LayoutComponent } from './shared/components/layout/layout.component';
+import { AdminLayoutComponent } from './shared/components/admin-layout/admin-layout.component';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,19 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/profile.component').then((m) => m.ProfileComponent),
+      },
+    ],
+  },
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/admin/dashboard/dashboard.component').then(
+            (m) => m.AdminDashboardComponent,
+          ),
       },
     ],
   },
