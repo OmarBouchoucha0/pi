@@ -30,7 +30,7 @@ export class AdminDashboardComponent {
       initials: 'SM',
       role: 'Editor',
       status: 'Active',
-      joined: '2024-02-14',
+      joined: '2024-01-15',
     },
     {
       id: 3,
@@ -39,7 +39,7 @@ export class AdminDashboardComponent {
       initials: 'JC',
       role: 'Viewer',
       status: 'Inactive',
-      joined: '2024-03-05',
+      joined: '2024-02-03',
     },
     {
       id: 4,
@@ -48,7 +48,7 @@ export class AdminDashboardComponent {
       initials: 'LF',
       role: 'Editor',
       status: 'Pending',
-      joined: '2024-04-20',
+      joined: '2024-02-20',
     },
     {
       id: 5,
@@ -57,7 +57,7 @@ export class AdminDashboardComponent {
       initials: 'KN',
       role: 'Viewer',
       status: 'Active',
-      joined: '2024-04-22',
+      joined: '2024-03-05',
     },
     {
       id: 6,
@@ -66,7 +66,7 @@ export class AdminDashboardComponent {
       initials: 'AD',
       role: 'Admin',
       status: 'Active',
-      joined: '2024-05-01',
+      joined: '2024-03-12',
     },
     {
       id: 7,
@@ -75,7 +75,124 @@ export class AdminDashboardComponent {
       initials: 'TW',
       role: 'Viewer',
       status: 'Inactive',
+      joined: '2024-03-18',
+    },
+    {
+      id: 8,
+      name: 'Maria Garcia',
+      email: 'maria@example.com',
+      initials: 'MG',
+      role: 'Editor',
+      status: 'Active',
+      joined: '2024-04-01',
+    },
+    {
+      id: 9,
+      name: 'John Smith',
+      email: 'john@example.com',
+      initials: 'JS',
+      role: 'Viewer',
+      status: 'Active',
+      joined: '2024-04-10',
+    },
+    {
+      id: 10,
+      name: 'Anna Schmidt',
+      email: 'anna@example.com',
+      initials: 'AS',
+      role: 'Editor',
+      status: 'Pending',
+      joined: '2024-04-22',
+    },
+    {
+      id: 11,
+      name: 'David Lee',
+      email: 'david@example.com',
+      initials: 'DL',
+      role: 'Viewer',
+      status: 'Active',
+      joined: '2024-05-05',
+    },
+    {
+      id: 12,
+      name: 'Sophie Brown',
+      email: 'sophie@example.com',
+      initials: 'SB',
+      role: 'Viewer',
+      status: 'Inactive',
+      joined: '2024-05-14',
+    },
+    {
+      id: 13,
+      name: 'Michael Chen',
+      email: 'michael@example.com',
+      initials: 'MC',
+      role: 'Admin',
+      status: 'Active',
+      joined: '2024-05-20',
+    },
+    {
+      id: 14,
+      name: 'Emma Wilson',
+      email: 'emma@example.com',
+      initials: 'EW',
+      role: 'Editor',
+      status: 'Active',
+      joined: '2024-06-01',
+    },
+    {
+      id: 15,
+      name: 'Robert Taylor',
+      email: 'robert@example.com',
+      initials: 'RT',
+      role: 'Viewer',
+      status: 'Pending',
+      joined: '2024-06-10',
+    },
+    {
+      id: 16,
+      name: 'Lisa Anderson',
+      email: 'lisa@example.com',
+      initials: 'LA',
+      role: 'Viewer',
+      status: 'Active',
       joined: '2024-06-15',
+    },
+    {
+      id: 17,
+      name: 'Chris Martin',
+      email: 'chris@example.com',
+      initials: 'CM',
+      role: 'Editor',
+      status: 'Inactive',
+      joined: '2024-07-02',
+    },
+    {
+      id: 18,
+      name: 'Rachel Green',
+      email: 'rachel@example.com',
+      initials: 'RG',
+      role: 'Viewer',
+      status: 'Active',
+      joined: '2024-07-12',
+    },
+    {
+      id: 19,
+      name: 'Daniel White',
+      email: 'daniel@example.com',
+      initials: 'DW',
+      role: 'Editor',
+      status: 'Active',
+      joined: '2024-07-20',
+    },
+    {
+      id: 20,
+      name: 'Jennifer Davis',
+      email: 'jennifer@example.com',
+      initials: 'JD',
+      role: 'Viewer',
+      status: 'Pending',
+      joined: '2024-08-01',
     },
   ];
 
@@ -92,37 +209,34 @@ export class AdminDashboardComponent {
         value: this.users.filter((u) => u.status === 'Pending').length,
         sub: 'Awaiting approval',
       },
+      {
+        label: 'Inactive',
+        value: this.users.filter((u) => u.status === 'Inactive').length,
+        sub: 'Inactive accounts',
+      },
     ];
   }
 
   roleChartData = {
     labels: ['Admin', 'Editor', 'Viewer'],
     datasets: [
-      {
-        data: [2, 2, 3],
-        backgroundColor: ['#0a0a0a', '#6b7280', '#d1d5db'],
-        borderWidth: 0,
-      },
+      { data: [3, 7, 10], backgroundColor: ['#0a0a0a', '#6b7280', '#d1d5db'], borderWidth: 0 },
     ],
   };
 
   statusChartData = {
     labels: ['Active', 'Inactive', 'Pending'],
     datasets: [
-      {
-        data: [4, 2, 1],
-        backgroundColor: ['#22c55e', '#d1d5db', '#f59e0b'],
-        borderWidth: 0,
-      },
+      { data: [12, 5, 3], backgroundColor: ['#22c55e', '#d1d5db', '#f59e0b'], borderWidth: 0 },
     ],
   };
 
   joinedChartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
     datasets: [
       {
         label: 'New Users',
-        data: [1, 1, 1, 2, 1, 1],
+        data: [2, 2, 4, 3, 3, 4, 3, 1],
         backgroundColor: '#0a0a0a',
         borderRadius: 4,
       },
@@ -131,10 +245,7 @@ export class AdminDashboardComponent {
 
   doughnutOptions = {
     plugins: {
-      legend: {
-        position: 'bottom',
-        labels: { font: { size: 11 }, padding: 16, boxWidth: 12 },
-      },
+      legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 16, boxWidth: 12 } },
     },
     cutout: '70%',
   };
