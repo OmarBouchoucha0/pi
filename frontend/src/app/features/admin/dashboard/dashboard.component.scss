@@ -1,0 +1,63 @@
+::ng-deep .p-datatable-header {
+  background: white !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  padding: 12px 24px !important;
+}
+
+::ng-deep .p-datatable-thead > tr > th {
+  padding: 12px 24px !important;
+}
+
+::ng-deep .p-datatable-tbody > tr > td {
+  padding: 0 24px !important;
+}
+
+::ng-deep .p-paginator {
+  border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+  border-bottom: none !important;
+  padding: 8px 24px !important;
+  font-size: 11px !important;
+  color: #0a0a0a !important;
+  background: white !important;
+}
+
+::ng-deep .p-paginator .p-paginator-page,
+::ng-deep .p-paginator .p-paginator-first,
+::ng-deep .p-paginator .p-paginator-prev,
+::ng-deep .p-paginator .p-paginator-next,
+::ng-deep .p-paginator .p-paginator-last {
+  color: #0a0a0a !important;
+}
+
+::ng-deep .p-paginator .p-paginator-current {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+
+::ng-deep .p-paginator-page.p-highlight {
+  background: #0a0a0a !important;
+  color: white !important;
+  border-radius: 6px !important;
+}
+
+::ng-deep .p-sortable-column:not(.p-highlight):hover {
+  background: transparent !important;
+}
+
+::ng-deep .p-sortable-column.p-highlight {
+  background: transparent !important;
+  color: #0a0a0a !important;
+}
+
+::ng-deep .p-datatable-tbody > tr {
+  background: white !important;
+}
+
+::ng-deep .p-datatable-tbody > tr:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+::ng-deep .p-datatable-tbody > tr > td {
+  background: inherit !important;
+  padding: 4px 24px !important;
+}
