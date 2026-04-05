@@ -1,0 +1,211 @@
+<div class="h-full w-full bg-white flex flex-col overflow-hidden">
+  <!-- Header -->
+  <div class="px-6 py-4 border-b border-black/10 flex-shrink-0">
+    <h1 class="text-sm font-semibold text-[#0a0a0a]">Profile Settings</h1>
+    <p class="text-xs text-black/40 mt-0.5">Manage your account information and preferences</p>
+  </div>
+
+  <!-- Body -->
+  <div class="flex-1 overflow-y-auto min-h-0">
+    <div class="max-w-2xl mx-auto py-6 px-6 flex flex-col gap-6">
+      <!-- Section: Avatar -->
+      <div class="flex flex-col gap-1">
+        <span class="text-[10px] font-semibold text-black/30 uppercase tracking-wider px-1"
+          >Avatar</span
+        >
+        <div class="border border-black/10 rounded-xl overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-4">
+            <div class="flex items-center gap-4">
+              <p-avatar
+                label="OB"
+                shape="circle"
+                [style]="{
+                  width: '48px',
+                  height: '48px',
+                  'background-color': '#0a0a0a',
+                  color: 'white',
+                  'font-size': '13px',
+                  'font-weight': '600',
+                }"
+              />
+              <div class="flex flex-col gap-0.5">
+                <span class="text-xs font-medium text-[#0a0a0a]">Profile Picture</span>
+                <span class="text-[11px] text-black/40">JPG or PNG, max 2MB</span>
+              </div>
+            </div>
+            <button
+              class="text-xs font-medium text-[#0a0a0a] border border-black/15 rounded-lg px-3 py-1.5 hover:bg-black/5 transition-colors"
+            >
+              Upload
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Personal Info -->
+      <div class="flex flex-col gap-1">
+        <span class="text-[10px] font-semibold text-black/30 uppercase tracking-wider px-1"
+          >Personal Info</span
+        >
+        <div class="border border-black/10 rounded-xl overflow-hidden">
+          <div class="flex items-center justify-between gap-4 px-4 py-3 border-b border-black/5">
+            <div class="flex flex-col gap-0.5 w-28 flex-shrink-0">
+              <span class="text-xs font-medium text-[#0a0a0a]">First Name</span>
+            </div>
+            <input
+              type="text"
+              value="Omar"
+              class="flex-1 text-xs text-[#0a0a0a] text-right bg-transparent border-none outline-none placeholder:text-black/30 focus:outline-none"
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-4 px-4 py-3 border-b border-black/5">
+            <div class="flex flex-col gap-0.5 w-28 flex-shrink-0">
+              <span class="text-xs font-medium text-[#0a0a0a]">Last Name</span>
+            </div>
+            <input
+              type="text"
+              value="Bouchoucha"
+              class="flex-1 text-xs text-[#0a0a0a] text-right bg-transparent border-none outline-none placeholder:text-black/30 focus:outline-none"
+            />
+          </div>
+
+          <div class="flex items-center justify-between gap-4 px-4 py-3">
+            <div class="flex flex-col gap-0.5 w-28 flex-shrink-0">
+              <span class="text-xs font-medium text-[#0a0a0a]">Email</span>
+            </div>
+            <input
+              type="email"
+              value="omar@example.com"
+              class="flex-1 text-xs text-[#0a0a0a] text-right bg-transparent border-none outline-none placeholder:text-black/30 focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Security -->
+      <div class="flex flex-col gap-1">
+        <span class="text-[10px] font-semibold text-black/30 uppercase tracking-wider px-1"
+          >Security</span
+        >
+        <div class="border border-black/10 rounded-xl overflow-hidden">
+          <div
+            class="flex items-center justify-between px-4 py-3 hover:bg-black/5 transition-colors cursor-pointer border-b border-black/5"
+          >
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs font-medium text-[#0a0a0a]">Password</span>
+              <span class="text-[11px] text-black/40">Last changed 3 months ago</span>
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-3.5 h-3.5 text-black/30"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs font-medium text-[#0a0a0a]">Two-Factor Authentication</span>
+              <span class="text-[11px] text-black/40">Add an extra layer of security</span>
+            </div>
+            <button
+              (click)="togglePref('twoFactor')"
+              class="w-9 h-5 rounded-full relative transition-colors duration-200"
+              [ngClass]="prefs.twoFactor ? 'bg-[#0a0a0a]' : 'bg-black/15'"
+            >
+              <div
+                class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-all duration-200"
+                [ngClass]="prefs.twoFactor ? 'left-[18px]' : 'left-0.5'"
+              ></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Preferences -->
+      <div class="flex flex-col gap-1">
+        <span class="text-[10px] font-semibold text-black/30 uppercase tracking-wider px-1"
+          >Preferences</span
+        >
+        <div class="border border-black/10 rounded-xl overflow-hidden">
+          <div class="flex items-center justify-between px-4 py-3 border-b border-black/5">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs font-medium text-[#0a0a0a]">Notifications</span>
+              <span class="text-[11px] text-black/40">Receive in-app alerts</span>
+            </div>
+            <button
+              (click)="togglePref('notifications')"
+              class="w-9 h-5 rounded-full relative transition-colors duration-200"
+              [ngClass]="prefs.notifications ? 'bg-[#0a0a0a]' : 'bg-black/15'"
+            >
+              <div
+                class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-all duration-200"
+                [ngClass]="prefs.notifications ? 'left-[18px]' : 'left-0.5'"
+              ></div>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs font-medium text-[#0a0a0a]">Language</span>
+              <span class="text-[11px] text-black/40">English (US)</span>
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-3.5 h-3.5 text-black/30"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Danger Zone -->
+      <div class="flex flex-col gap-1">
+        <span class="text-[10px] font-semibold text-black/30 uppercase tracking-wider px-1"
+          >Danger Zone</span
+        >
+        <div class="border border-red-100 rounded-xl overflow-hidden">
+          <div
+            class="flex items-center justify-between px-4 py-3 hover:bg-red-50 transition-colors cursor-pointer"
+          >
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs font-medium text-red-500">Delete Account</span>
+              <span class="text-[11px] text-black/40"
+                >Permanently remove your account and all data</span
+              >
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-3.5 h-3.5 text-red-300"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <div class="flex justify-end pb-2">
+        <button
+          class="text-xs font-medium text-white bg-[#0a0a0a] rounded-lg px-4 py-2 hover:opacity-80 transition-opacity"
+        >
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

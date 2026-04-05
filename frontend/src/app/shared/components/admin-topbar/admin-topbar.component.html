@@ -1,5 +1,5 @@
 <div class="w-full bg-white border-b border-black/30 px-4 py-3 grid grid-cols-3 items-center">
-  <!-- Left: PlaceHolder -->
+  <!-- Left: Page Title -->
   <div></div>
   <!-- Middle: Search -->
   <div class="relative flex justify-center items-center w-full max-w-sm">
@@ -31,7 +31,7 @@
   <div class="flex items-center justify-end gap-1">
     <!-- Notifications -->
     <button
-      (click)="toggleNotifications()"
+      (click)="notificationsOpen = true"
       data-drawer="notifications"
       pTooltip="Notifications"
       tooltipPosition="bottom"
@@ -59,7 +59,7 @@
 
     <!-- Settings -->
     <button
-      (click)="toggleSettings()"
+      (click)="settingsOpen = true"
       data-drawer="settings"
       pTooltip="Settings"
       tooltipPosition="bottom"
@@ -90,15 +90,9 @@
     <div class="w-px h-8 bg-black/30 mx-1"></div>
 
     <!-- Avatar -->
-    <div
-      class="flex items-center gap-2.5 cursor-pointer group"
-      (click)="goToProfile()"
-      (keydown.enter)="goToProfile()"
-      tabindex="0"
-      role="button"
-    >
+    <div class="flex items-center gap-2.5">
       <p-avatar
-        label="OB"
+        label="A"
         shape="circle"
         [style]="{
           width: '28px',
@@ -108,15 +102,10 @@
           'font-size': '11px',
           'font-weight': '600',
         }"
-        class="group-hover:opacity-80 transition-opacity"
       />
       <div class="flex flex-col leading-none gap-0.5">
-        <span class="text-xs font-medium text-[#0a0a0a] group-hover:opacity-80 transition-opacity"
-          >Omar</span
-        >
-        <span class="text-xs font-medium text-[#0a0a0a] group-hover:opacity-80 transition-opacity"
-          >Bouchoucha</span
-        >
+        <span class="text-xs font-medium text-[#0a0a0a]">Admin</span>
+        <span class="text-xs font-medium text-[#0a0a0a]/60">Administrator</span>
       </div>
     </div>
   </div>

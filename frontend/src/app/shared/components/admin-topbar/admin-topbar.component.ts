@@ -1,36 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { ToolbarModule } from 'primeng/toolbar';
 import { Tooltip } from 'primeng/tooltip';
-import { HostListener } from '@angular/core';
-import { inject } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-topbar',
-  standalone: true,
+  selector: 'app-admin-topbar',
   imports: [AvatarModule, ButtonModule, DrawerModule, ToolbarModule, Tooltip],
-  templateUrl: './topbar.component.html',
-  styleUrl: './topbar.component.scss',
+  templateUrl: './admin-topbar.component.html',
+  styleUrl: './admin-topbar.component.scss',
 })
-export class TopbarComponent {
+export class AdminTopbarComponent {
   notificationsOpen = false;
   settingsOpen = false;
-  private router = inject(Router);
-
-  toggleNotifications(): void {
-    this.notificationsOpen = true;
-  }
-
-  toggleSettings(): void {
-    this.settingsOpen = true;
-  }
-
-  goToProfile(): void {
-    this.router.navigate(['/profile']);
-  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
