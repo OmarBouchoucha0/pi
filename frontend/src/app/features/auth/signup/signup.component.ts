@@ -73,12 +73,13 @@ export class SignupComponent {
 
     this.loading = true;
     this.authService
-      .createPatient({
+      .register({
         email: this.email,
         password: this.password,
         firstName: this.firstName,
         lastName: this.lastName,
         phone: this.phone,
+        tenantId: 1,
       })
       .subscribe({
         next: (response) => {

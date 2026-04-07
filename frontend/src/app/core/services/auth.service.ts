@@ -36,6 +36,8 @@ export interface RegisterRequest {
   password: string;
   firstName: string;
   lastName: string;
+  phone: string;
+  tenantId: number;
 }
 
 export interface CreatePatientRequest {
@@ -120,33 +122,40 @@ export class AuthService {
   }
 
   register(credentials: RegisterRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${API_BASE}/api/users/auth/register`, credentials).pipe(
-      tap((response) => {
-        this.storeTokens(response);
-        this.currentUserSubject.next({
-          id: response.userId,
-          email: response.email,
-          firstName: '',
-          lastName: '',
-          role: response.role,
-        });
-      }),
-    );
+    return this.http
+      .post<LoginResponse>(`${API_BASE}/api/users/register/patient`, credentials)
+      .pipe(
+        tap((response) => {
+          this.storeTokens(response);
+          this.currentUserSubject.next({
+            id: response.userId,
+            email: response.email,
+            firstName: '',
+            lastName: '',
+            role: response.role,
+          });
+        }),
+      );
   }
 
   createPatient(data: CreatePatientRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${API_BASE}/api/users/patients`, data).pipe(
-      tap((response) => {
-        this.storeTokens(response);
-        this.currentUserSubject.next({
-          id: response.userId,
-          email: response.email,
-          firstName: '',
-          lastName: '',
-          role: response.role,
-        });
-      }),
-    );
+    return this.http
+      .post<LoginResponse>(`${API_BASE}/api/users/register/patient`, {
+        ...data,
+        tenantId: 1,
+      })
+      .pipe(
+        tap((response) => {
+          this.storeTokens(response);
+          this.currentUserSubject.next({
+            id: response.userId,
+            email: response.email,
+            firstName: '',
+            lastName: '',
+            role: response.role,
+          });
+        }),
+      );
   }
 
   getAccessToken(): string | null {

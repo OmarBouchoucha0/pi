@@ -40,7 +40,7 @@ export class LoginComponent {
     this.submitted = true;
     this.loginError = '';
     this.emailInvalid = !this.email || !this.validateEmail(this.email);
-    this.passwordInvalid = !this.password || this.password.length < 6;
+    this.passwordInvalid = !this.password || this.password.length < 4;
     if (this.emailInvalid || this.passwordInvalid) {
       return;
     }
