@@ -31,6 +31,21 @@ export interface User {
   [key: string]: unknown;
 }
 
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface CreatePatientRequest {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+}
+
 const API_BASE = 'http://localhost:8082/pi';
 const TOKEN_KEYS = {
   ACCESS: 'accessToken',
@@ -100,6 +115,36 @@ export class AuthService {
       tap((user) => {
         localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(user));
         this.currentUserSubject.next(user);
+      }),
+    );
+  }
+
+  register(credentials: RegisterRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${API_BASE}/api/users/auth/register`, credentials).pipe(
+      tap((response) => {
+        this.storeTokens(response);
+        this.currentUserSubject.next({
+          id: response.userId,
+          email: response.email,
+          firstName: '',
+          lastName: '',
+          role: response.role,
+        });
+      }),
+    );
+  }
+
+  createPatient(data: CreatePatientRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${API_BASE}/api/users/patients`, data).pipe(
+      tap((response) => {
+        this.storeTokens(response);
+        this.currentUserSubject.next({
+          id: response.userId,
+          email: response.email,
+          firstName: '',
+          lastName: '',
+          role: response.role,
+        });
       }),
     );
   }
