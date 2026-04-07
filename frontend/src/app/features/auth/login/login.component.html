@@ -7,6 +7,10 @@
     <p class="text-sm font-light text-black/40 mb-8">Sign in to your account to continue</p>
 
     <form #loginForm="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
+      @if (loginError) {
+        <p-message severity="error" [text]="loginError" styleClass="!w-full" />
+      }
+
       <!-- Email -->
       <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
@@ -59,6 +63,7 @@
       <p-button
         label="Sign In"
         type="submit"
+        [loading]="loading"
         styleClass="!w-full !rounded-lg !bg-black !border !border-black/15 !text-[#ffffff] !text-sm !font-medium !py-[9px] !shadow-none !transition-all !duration-300 hover:!opacity-85"
       />
 

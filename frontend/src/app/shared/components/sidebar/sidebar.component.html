@@ -169,8 +169,8 @@
 
   <!-- Logout -->
   <div class="border-t border-black/30 px-3 py-2">
-    <a
-      routerLink="/login"
+    <button
+      (click)="logout()"
       class="flex items-center gap-3 w-full px-3 h-10 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] bg-white hover:bg-[#0a0a0a] hover:text-white group"
       [pTooltip]="collapsed ? 'Logout' : undefined"
       tooltipPosition="right"
@@ -197,6 +197,6 @@
         [ngClass]="collapsed ? 'opacity-0 max-w-0' : 'opacity-100 max-w-[200px]'"
         >Logout</span
       >
-    </a>
+    </button>
   </div>
 </aside>

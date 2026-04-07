@@ -3,11 +3,13 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { NotfoundComponent } from './shared/components/notfound/notfound.component';
 import { LayoutComponent } from './shared/components/layout/layout.component';
 import { AdminLayoutComponent } from './shared/components/admin-layout/admin-layout.component';
+import { authGuard, adminGuard, guestGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
+    canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'placeholder', pathMatch: 'full' },
       {
@@ -32,6 +34,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
+    canActivate: [adminGuard],
     children: [
       { path: '', redirectTo: 'users', pathMatch: 'full' },
       {
@@ -46,9 +49,14 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: 'login', component: LoginComponent },
+  {
+    path: 'login',
+    canActivate: [guestGuard],
+    component: LoginComponent,
+  },
   {
     path: 'signup',
+    canActivate: [guestGuard],
     loadComponent: () =>
       import('./features/auth/signup/signup.component').then((m) => m.SignupComponent),
   },

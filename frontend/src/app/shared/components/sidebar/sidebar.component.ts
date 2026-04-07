@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Tooltip } from 'primeng/tooltip';
+import { inject } from '@angular/core';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,6 +12,8 @@ import { Tooltip } from 'primeng/tooltip';
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
+  private authService = inject(AuthService);
+
   collapsed = false;
 
   menuItems = [
@@ -23,5 +27,9 @@ export class SidebarComponent {
 
   toggle(): void {
     this.collapsed = !this.collapsed;
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

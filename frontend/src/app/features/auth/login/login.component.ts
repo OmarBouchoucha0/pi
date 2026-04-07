@@ -7,6 +7,8 @@ import { FormsModule } from '@angular/forms';
 import { Component, inject } from '@angular/core';
 import { TiltDirective } from '../../../shared/directives/tilt.directive';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-login',
@@ -17,11 +19,13 @@ import { Router } from '@angular/router';
     FormsModule,
     FloatLabelModule,
     TiltDirective,
+    MessageModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
+  private authService = inject(AuthService);
   router = inject(Router);
 
   email = '';
@@ -29,15 +33,30 @@ export class LoginComponent {
   emailInvalid = false;
   passwordInvalid = false;
   submitted = false;
+  loginError = '';
+  loading = false;
 
   onSubmit() {
     this.submitted = true;
+    this.loginError = '';
     this.emailInvalid = !this.email || !this.validateEmail(this.email);
     this.passwordInvalid = !this.password || this.password.length < 6;
-    if (!this.emailInvalid && !this.passwordInvalid) {
-      console.log('Login submitted', { email: this.email, password: this.password });
-      this.router.navigate(['/patient']);
+    if (this.emailInvalid || this.passwordInvalid) {
+      return;
     }
+
+    this.loading = true;
+    this.authService.login({ email: this.email, password: this.password }).subscribe({
+      next: (response) => {
+        this.loading = false;
+        const redirectUrl = response.role === 'ADMIN' ? '/admin' : '/';
+        this.router.navigate([redirectUrl]);
+      },
+      error: (error) => {
+        this.loading = false;
+        this.loginError = error.error?.message || 'Login failed. Please check your credentials.';
+      },
+    });
   }
 
   private validateEmail(email: string): boolean {
