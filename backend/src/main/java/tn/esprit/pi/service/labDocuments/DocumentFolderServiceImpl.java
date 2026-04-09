@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import tn.esprit.pi.dto.labDocumentsDTO.DocumentFolderDTO;
 import tn.esprit.pi.entity.labDocuments.DocumentFolder;
+import tn.esprit.pi.exception.ResourceNotFoundException;
 import tn.esprit.pi.mapper.labDocumentsMapper.DocumentFolderMapper;
 import tn.esprit.pi.repository.labDocuments.DocumentFolderRepository;
 
@@ -30,7 +31,7 @@ public class DocumentFolderServiceImpl implements DocumentFolderService {
     @Override
     public DocumentFolderDTO getFolderById(Long id) {
         DocumentFolder folder = folderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Document Folder not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Document Folder not found with id: " + id));
         return folderMapper.toDto(folder);
     }
 
@@ -52,7 +53,7 @@ public class DocumentFolderServiceImpl implements DocumentFolderService {
     @Transactional
     public DocumentFolderDTO updateFolder(Long id, DocumentFolderDTO dto) {
         DocumentFolder existingFolder = folderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Document Folder not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Document Folder not found with id: " + id));
 
         // Update fields (excluding patient/createdAt to maintain integrity)
         existingFolder.setCategoryName(dto.getCategoryName());
@@ -66,7 +67,7 @@ public class DocumentFolderServiceImpl implements DocumentFolderService {
     @Transactional
     public void deleteFolder(Long id) {
         if (!folderRepository.existsById(id)) {
-            throw new RuntimeException("Document Folder not found with id: " + id);
+            throw new ResourceNotFoundException("Document Folder not found with id: " + id);
         }
         folderRepository.deleteById(id);
     }

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import tn.esprit.pi.dto.appointmentsDTO.VisitSummaryDTO;
 import tn.esprit.pi.entity.appointments.Appointment;
 import tn.esprit.pi.entity.appointments.VisitSummary;
+import tn.esprit.pi.exception.DuplicateResourceException;
+import tn.esprit.pi.exception.ResourceNotFoundException;
 import tn.esprit.pi.mapper.appointmentsMapper.VisitSummaryMapper;
 import tn.esprit.pi.repository.appointments.AppointmentRepository;
 import tn.esprit.pi.repository.appointments.VisitSummaryRepository;
@@ -25,11 +27,11 @@ public class VisitSummaryServiceImpl implements IVisitSummaryService {
     public VisitSummaryDTO createVisitSummary(VisitSummaryDTO dto) {
         // 1. Validate that the Appointment exists
         Appointment appointment = appointmentRepository.findById(dto.getAppointmentId())
-                .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + dto.getAppointmentId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with ID: " + dto.getAppointmentId()));
 
         // 2. Optional but recommended: Check if a summary already exists for this appointment
         if (visitSummaryRepository.findByAppointmentId(dto.getAppointmentId()).isPresent()) {
-            throw new RuntimeException("A visit summary already exists for appointment ID: " + dto.getAppointmentId());
+            throw new DuplicateResourceException("A visit summary already exists for appointment ID: " + dto.getAppointmentId());
         }
 
         // 3. Build and save the entity
@@ -46,14 +48,14 @@ public class VisitSummaryServiceImpl implements IVisitSummaryService {
     @Override
     public VisitSummaryDTO getVisitSummaryById(Long id) {
         VisitSummary summary = visitSummaryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Visit Summary not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Visit Summary not found with id: " + id));
         return visitSummaryMapper.toDto(summary);
     }
 
     @Override
     public VisitSummaryDTO getVisitSummaryByAppointmentId(Long appointmentId) {
         VisitSummary summary = visitSummaryRepository.findByAppointmentId(appointmentId)
-                .orElseThrow(() -> new RuntimeException("Visit Summary not found for appointment id: " + appointmentId));
+                .orElseThrow(() -> new ResourceNotFoundException("Visit Summary not found for appointment id: " + appointmentId));
         return visitSummaryMapper.toDto(summary);
     }
 
@@ -67,7 +69,7 @@ public class VisitSummaryServiceImpl implements IVisitSummaryService {
     @Override
     public VisitSummaryDTO updateVisitSummary(Long id, VisitSummaryDTO dto) {
         VisitSummary existingSummary = visitSummaryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Visit Summary not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Visit Summary not found with id: " + id));
 
         // Update the text fields
         existingSummary.setDiagnosisNotes(dto.getDiagnosisNotes());
@@ -76,7 +78,7 @@ public class VisitSummaryServiceImpl implements IVisitSummaryService {
         // Update Appointment if the ID changed (rare, but good to handle)
         if (dto.getAppointmentId() != null && !existingSummary.getAppointment().getId().equals(dto.getAppointmentId())) {
             Appointment newAppointment = appointmentRepository.findById(dto.getAppointmentId())
-                    .orElseThrow(() -> new RuntimeException("Appointment not found with ID: " + dto.getAppointmentId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with ID: " + dto.getAppointmentId()));
             existingSummary.setAppointment(newAppointment);
         }
 
@@ -87,7 +89,7 @@ public class VisitSummaryServiceImpl implements IVisitSummaryService {
     @Override
     public void deleteVisitSummary(Long id) {
         VisitSummary existingSummary = visitSummaryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Visit Summary not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Visit Summary not found with id: " + id));
         visitSummaryRepository.delete(existingSummary);
     }
 }

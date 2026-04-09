@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import tn.esprit.pi.dto.labDocumentsDTO.MedicalDocumentDTO;
 import tn.esprit.pi.entity.labDocuments.MedicalDocument;
+import tn.esprit.pi.exception.ResourceNotFoundException;
 import tn.esprit.pi.mapper.labDocumentsMapper.MedicalDocumentMapper;
 import tn.esprit.pi.repository.labDocuments.MedicalDocumentRepository;
 
@@ -30,7 +31,7 @@ public class MedicalDocumentServiceImpl implements MedicalDocumentService {
     @Override
     public MedicalDocumentDTO getDocumentById(Long id) {
         MedicalDocument document = documentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medical Document not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Medical Document not found with id: " + id));
         return documentMapper.toDto(document);
     }
 
@@ -59,7 +60,7 @@ public class MedicalDocumentServiceImpl implements MedicalDocumentService {
     @Transactional
     public MedicalDocumentDTO updateDocument(Long id, MedicalDocumentDTO dto) {
         MedicalDocument existingDocument = documentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Medical Document not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Medical Document not found with id: " + id));
 
         // Update fields (excluding folder, patient, and uploadDate for safety)
         existingDocument.setFileName(dto.getFileName());
@@ -74,7 +75,7 @@ public class MedicalDocumentServiceImpl implements MedicalDocumentService {
     @Transactional
     public void deleteDocument(Long id) {
         if (!documentRepository.existsById(id)) {
-            throw new RuntimeException("Medical Document not found with id: " + id);
+            throw new ResourceNotFoundException("Medical Document not found with id: " + id);
         }
         documentRepository.deleteById(id);
     }

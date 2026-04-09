@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.*;
 import tn.esprit.pi.entity.user.User;
-import tn.esprit.pi.enums.AppointmentStatus;
+import tn.esprit.pi.enums.appointments.AppointmentStatus;
 
 @Entity
 @Table(name = "appointments")
@@ -34,6 +34,7 @@ public class Appointment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private AppointmentStatus status = AppointmentStatus.SCHEDULED;
 
     @Column(name = "reason_for_visit", columnDefinition = "TEXT")

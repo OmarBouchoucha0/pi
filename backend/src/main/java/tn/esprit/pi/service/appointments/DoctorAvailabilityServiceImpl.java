@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import tn.esprit.pi.dto.appointmentsDTO.DoctorAvailabilityDTO;
 import tn.esprit.pi.entity.appointments.DoctorAvailability;
 import tn.esprit.pi.entity.user.User;
+import tn.esprit.pi.exception.ResourceNotFoundException;
 import tn.esprit.pi.mapper.appointmentsMapper.DoctorAvailabilityMapper;
 import tn.esprit.pi.repository.appointments.DoctorAvailabilityRepository;
 import tn.esprit.pi.repository.user.UserRepository;
@@ -25,7 +26,7 @@ public class DoctorAvailabilityServiceImpl implements IDoctorAvailabilityService
     public DoctorAvailabilityDTO createAvailability(DoctorAvailabilityDTO dto) {
         // Fetch the doctor using standard Long ID
         User doctor = userRepository.findById(dto.getDoctorId())
-                .orElseThrow(() -> new RuntimeException("Doctor not found with ID: " + dto.getDoctorId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with ID: " + dto.getDoctorId()));
 
         DoctorAvailability availability = DoctorAvailability.builder()
                 .doctor(doctor)
@@ -41,7 +42,7 @@ public class DoctorAvailabilityServiceImpl implements IDoctorAvailabilityService
     @Override
     public DoctorAvailabilityDTO getAvailabilityById(Long id) {
         DoctorAvailability availability = availabilityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Availability not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Availability not found with id: " + id));
         return availabilityMapper.toDto(availability);
     }
 
@@ -55,7 +56,7 @@ public class DoctorAvailabilityServiceImpl implements IDoctorAvailabilityService
     @Override
     public DoctorAvailabilityDTO updateAvailability(Long id, DoctorAvailabilityDTO dto) {
         DoctorAvailability existingAvailability = availabilityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Availability not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Availability not found with id: " + id));
 
         // Update times and status
         existingAvailability.setStartTime(dto.getStartTime());
@@ -67,7 +68,7 @@ public class DoctorAvailabilityServiceImpl implements IDoctorAvailabilityService
         // Update Doctor if the ID changed
         if (dto.getDoctorId() != null && !existingAvailability.getDoctor().getId().equals(dto.getDoctorId())) {
             User newDoctor = userRepository.findById(dto.getDoctorId())
-                    .orElseThrow(() -> new RuntimeException("Doctor not found with ID: " + dto.getDoctorId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Doctor not found with ID: " + dto.getDoctorId()));
             existingAvailability.setDoctor(newDoctor);
         }
 
@@ -78,7 +79,7 @@ public class DoctorAvailabilityServiceImpl implements IDoctorAvailabilityService
     @Override
     public void deleteAvailability(Long id) {
         DoctorAvailability existingAvailability = availabilityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Availability not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Availability not found with id: " + id));
         availabilityRepository.delete(existingAvailability);
     }
 }

@@ -43,6 +43,7 @@ public class LabTestResult {
     private Double normalRangeMax;
 
     @Column(name = "is_abnormal")
+    @Builder.Default
     private Boolean isAbnormal = false;
 
     @CreationTimestamp

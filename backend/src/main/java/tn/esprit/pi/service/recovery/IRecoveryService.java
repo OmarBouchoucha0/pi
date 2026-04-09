@@ -2,9 +2,12 @@ package tn.esprit.pi.service.recovery;
 
 import java.util.List;
 
-import tn.esprit.pi.dto.request.RecoveryCheckInRequest;
-import tn.esprit.pi.dto.request.RecoveryPlanRequest;
-import tn.esprit.pi.dto.response.*;
+import tn.esprit.pi.dto.recovery.RecoveryCheckInRequest;
+import tn.esprit.pi.dto.recovery.RecoveryCheckInResponse;
+import tn.esprit.pi.dto.recovery.RecoveryPlanRequest;
+import tn.esprit.pi.dto.recovery.RecoveryPlanResponse;
+import tn.esprit.pi.dto.recovery.RecoveryTrajectoryResponse;
+import tn.esprit.pi.dto.recovery.ReturnScoreResponse;
 
 public interface IRecoveryService {
 
@@ -23,9 +26,4 @@ public interface IRecoveryService {
     RecoveryTrajectoryResponse getTrajectory(Long patientId, Long tenantId);
     ReturnScoreResponse getReturnScore(Long patientId, Long tenantId);
     List<ReturnScoreResponse> getAtRiskPatients(Long tenantId, Double minScore);
-
-    // ── Forecast ──
-    // Runs linear regression over existing check-in scores and projects
-    // what the return score will be in the next `horizonDays` days.
-    ScoreForecastResponse getScoreForecast(Long patientId, Long tenantId, int horizonDays);
 }

@@ -30,5 +30,6 @@ public class DoctorAvailability {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private AvailabilityStatus status = AvailabilityStatus.AVAILABLE;
 }

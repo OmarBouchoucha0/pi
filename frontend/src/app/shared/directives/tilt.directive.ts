@@ -5,8 +5,8 @@ import { Directive, ElementRef, Input, NgZone, OnInit, OnDestroy, inject } from 
   standalone: true,
 })
 export class TiltDirective implements OnInit, OnDestroy {
-  @Input() tiltStrength = 1; // degrees of rotation at screen edge
-  @Input() tiltLerp = 0.1; // smoothing — lower is slower
+  @Input() tiltStrength = 4; // degrees of rotation at screen edge
+  @Input() tiltLerp = 0.05; // smoothing — lower is slower
 
   private el = inject(ElementRef<HTMLElement>);
   private ngZone = inject(NgZone);

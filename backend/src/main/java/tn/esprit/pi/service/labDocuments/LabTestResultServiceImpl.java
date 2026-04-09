@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import tn.esprit.pi.dto.labDocumentsDTO.LabTestResultDTO;
 import tn.esprit.pi.entity.labDocuments.LabTestResult;
+import tn.esprit.pi.exception.ResourceNotFoundException;
 import tn.esprit.pi.mapper.labDocumentsMapper.LabTestResultMapper;
 import tn.esprit.pi.repository.labDocuments.LabTestResultRepository;
 
@@ -30,7 +31,7 @@ public class LabTestResultServiceImpl implements LabTestResultService {
     @Override
     public LabTestResultDTO getTestResultById(Long id) {
         LabTestResult testResult = testResultRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Lab Test Result not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Lab Test Result not found with id: " + id));
         return testResultMapper.toDto(testResult);
     }
 
@@ -59,7 +60,7 @@ public class LabTestResultServiceImpl implements LabTestResultService {
     @Transactional
     public LabTestResultDTO updateTestResult(Long id, LabTestResultDTO dto) {
         LabTestResult existingResult = testResultRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Lab Test Result not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Lab Test Result not found with id: " + id));
 
         // Update data fields
         existingResult.setTestName(dto.getTestName());
@@ -80,7 +81,7 @@ public class LabTestResultServiceImpl implements LabTestResultService {
     @Transactional
     public void deleteTestResult(Long id) {
         if (!testResultRepository.existsById(id)) {
-            throw new RuntimeException("Lab Test Result not found with id: " + id);
+            throw new ResourceNotFoundException("Lab Test Result not found with id: " + id);
         }
         testResultRepository.deleteById(id);
     }

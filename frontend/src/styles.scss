@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lexend:wght@300;400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,10 +8,10 @@ html,
 body {
   height: 100%;
   margin: 0;
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-family: 'Lexend', sans-serif;
   background-color: #ffffff;
   background-image:
     linear-gradient(to right, #00000015 1px, transparent 1px),
     linear-gradient(to bottom, #00000015 1px, transparent 1px);
-  background-size: 120px 120px;
+  background-size: 80px 80px;
 }

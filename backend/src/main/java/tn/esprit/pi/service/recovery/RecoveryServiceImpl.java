@@ -13,19 +13,22 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
-import tn.esprit.pi.dto.request.RecoveryCheckInRequest;
-import tn.esprit.pi.dto.request.RecoveryPlanRequest;
-import tn.esprit.pi.dto.response.*;
-import tn.esprit.pi.entity.RecoveryCheckIn;
-import tn.esprit.pi.entity.RecoveryPlan;
+import tn.esprit.pi.dto.recovery.RecoveryCheckInRequest;
+import tn.esprit.pi.dto.recovery.RecoveryCheckInResponse;
+import tn.esprit.pi.dto.recovery.RecoveryPlanRequest;
+import tn.esprit.pi.dto.recovery.RecoveryPlanResponse;
+import tn.esprit.pi.dto.recovery.RecoveryTrajectoryResponse;
+import tn.esprit.pi.dto.recovery.ReturnScoreResponse;
+import tn.esprit.pi.entity.recovery.RecoveryCheckIn;
+import tn.esprit.pi.entity.recovery.RecoveryPlan;
 import tn.esprit.pi.entity.user.Tenant;
 import tn.esprit.pi.entity.user.User;
-import tn.esprit.pi.enums.DeviationLevel;
-import tn.esprit.pi.enums.RecoveryStatus;
-import tn.esprit.pi.enums.VitalType;
+import tn.esprit.pi.enums.recovery.DeviationLevel;
+import tn.esprit.pi.enums.recovery.RecoveryStatus;
+import tn.esprit.pi.enums.vital.VitalType;
 import tn.esprit.pi.exception.ResourceNotFoundException;
-import tn.esprit.pi.repository.RecoveryCheckInRepository;
-import tn.esprit.pi.repository.RecoveryPlanRepository;
+import tn.esprit.pi.repository.recovery.RecoveryCheckInRepository;
+import tn.esprit.pi.repository.recovery.RecoveryPlanRepository;
 import tn.esprit.pi.repository.user.TenantRepository;
 import tn.esprit.pi.repository.user.UserRepository;
 
@@ -326,135 +329,6 @@ public class RecoveryServiceImpl implements IRecoveryService {
                 .stream()
                 .map(plan -> getReturnScore(plan.getPatient().getId(), tenantId))
                 .collect(Collectors.toList());
-    }
-
-    // ══════════════════════════════════════════════════════════════════
-
-    // ══════════════════════════════════════════════════════════════════
-    // FORECAST
-    // ══════════════════════════════════════════════════════════════════
-
-    /**
-     * Linear-regression forecast of the return score over the next horizonDays.
-     *
-     * HOW IT WORKS (simple words):
-     *  1. Pull all check-ins for the active plan, ordered by dayNumber.
-     *  2. Treat each check-in as a data point: x = dayNumber, y = returnScoreSnapshot.
-     *  3. Fit a straight line through those points (least-squares regression).
-     *     The line has a slope (score change per day) and an intercept.
-     *  4. Plug future day numbers into the line to get predicted scores.
-     *     Values are clamped to [0, 100].
-     *
-     * Minimum 2 check-ins needed. If fewer exist, we return current score flat.
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public ScoreForecastResponse getScoreForecast(Long patientId, Long tenantId, int horizonDays) {
-
-        RecoveryPlan plan = planRepo.findByPatientIdAndTenantIdAndActiveTrue(patientId, tenantId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "No active recovery plan for patient: " + patientId));
-
-        List<RecoveryCheckIn> checkIns =
-                checkInRepo.findByPlanIdOrderByDayNumberAsc(plan.getId());
-
-        int daysSince = (int) ChronoUnit.DAYS.between(plan.getDischargeDate(), LocalDate.now());
-        User patient  = plan.getPatient();
-
-        // Build x/y arrays for regression.
-        // We use submission ORDER (0,1,2,...) as x — NOT dayNumber.
-        // Reason: if multiple check-ins fall on the same day (e.g. all on day 0
-        // during testing), dayNumber gives identical x values which makes the
-        // regression denominator = 0 and the slope = 0 (flat line, wrong).
-        // Using index always gives distinct x values, so the trend is always
-        // computed correctly regardless of how many check-ins share the same day.
-        double[] x = new double[checkIns.size()];
-        for (int i = 0; i < checkIns.size(); i++) { x[i] = i; }
-        double[] y = checkIns.stream()
-                .mapToDouble(RecoveryCheckIn::getReturnScoreSnapshot).toArray();
-
-        // Run regression -> [intercept, slope]
-        double[] coeffs   = linearRegression(x, y);
-        double intercept  = coeffs[0];
-        double slope      = coeffs[1];
-
-        // Project scores for each future check-in step.
-        // x continues from where the last check-in left off.
-        // e.g. if there were 5 check-ins (indices 0-4), the next ones are 5, 6, 7.
-        Map<String, Double> forecasted = new LinkedHashMap<>();
-        double worstForecast = plan.getReturnScore();
-        int lastIndex = checkIns.size(); // next check-in would be at this index
-
-        for (int d = 1; d <= horizonDays; d++) {
-            double futureIndex = lastIndex + d - 1;
-            double predicted   = intercept + slope * futureIndex;
-            predicted = Math.max(0.0, Math.min(100.0, predicted));
-            predicted = Math.round(predicted * 100.0) / 100.0;
-            forecasted.put("day_" + d, predicted);
-            if (predicted > worstForecast) worstForecast = predicted;
-        }
-
-        // Classify trend from slope
-        String trend;
-        if      (slope >  1.5) trend = "WORSENING";
-        else if (slope < -1.5) trend = "IMPROVING";
-        else                   trend = "STABLE";
-
-        // Recommendation based on worst projected score
-        String recommendation;
-        if      (worstForecast >= 70) recommendation = "RETURN_TO_HOSPITAL_LIKELY";
-        else if (worstForecast >= 40) recommendation = "CONTACT_PATIENT";
-        else                          recommendation = "MONITOR";
-
-        return ScoreForecastResponse.builder()
-                .planId(plan.getId())
-                .patientId(patientId)
-                .patientName(patient.getFirstName() + " " + patient.getLastName())
-                .currentScore(Math.round(plan.getReturnScore() * 100.0) / 100.0)
-                .currentStatus(plan.getCurrentStatus())
-                .daysSinceDischarge(daysSince)
-                .plannedDurationDays(plan.getPlannedDurationDays())
-                .checkInsUsedForForecast(checkIns.size())
-                .slopePerDay(Math.round(slope * 1000.0) / 1000.0) // slope per check-in submission
-                .trend(trend)
-                .forecastedScores(forecasted)
-                .forecastRecommendation(recommendation)
-                .dischargeDate(plan.getDischargeDate())
-                .build();
-    }
-
-    /**
-     * Ordinary least-squares linear regression.
-     * Returns double[]{intercept, slope} for the line y = intercept + slope*x.
-     *
-     * Formula:
-     *   slope     = ( n*Σ(x*y) - Σx*Σy ) / ( n*Σ(x²) - (Σx)² )
-     *   intercept = ( Σy - slope*Σx )    / n
-     *
-     * Edge cases:
-     *   - 0 points  -> intercept=0, slope=0
-     *   - 1 point   -> intercept=y[0], slope=0  (flat line through the single point)
-     *   - all x equal (vertical line) -> slope=0, intercept=mean(y)
-     */
-    private double[] linearRegression(double[] x, double[] y) {
-        int n = x.length;
-        if (n == 0) return new double[]{0.0, 0.0};
-        if (n == 1) return new double[]{y[0], 0.0};
-
-        double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
-        for (int i = 0; i < n; i++) {
-            sumX  += x[i];
-            sumY  += y[i];
-            sumXY += x[i] * y[i];
-            sumX2 += x[i] * x[i];
-        }
-
-        double denom = n * sumX2 - sumX * sumX;
-        if (denom == 0) return new double[]{sumY / n, 0.0}; // all x identical
-
-        double slope     = (n * sumXY - sumX * sumY) / denom;
-        double intercept = (sumY - slope * sumX) / n;
-        return new double[]{intercept, slope};
     }
 
     // CORE ALGORITHM METHODS
