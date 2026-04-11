@@ -1,54 +1,19 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import {
+  User,
+  UserRole,
+  LoginRequest,
+  AuthResponse,
+  RefreshResponse,
+  RegisterRequest,
+  CreatePatientRequest,
+} from '../../shared/types/user';
 
-export interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  userId: number;
-  email: string;
-  role: string;
-}
-
-export interface RefreshResponse {
-  accessToken: string;
-  refreshToken: string;
-  userId: number;
-}
-
-export interface User {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  [key: string]: unknown;
-}
-
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  tenantId: number;
-}
-
-export interface CreatePatientRequest {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-}
-
-const API_BASE = 'http://localhost:8082/pi';
+const API_BASE = 'http://localhost:8080';
 const TOKEN_KEYS = {
   ACCESS: 'accessToken',
   REFRESH: 'refreshToken',
@@ -66,8 +31,24 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(this.getUser());
   currentUser$ = this.currentUserSubject.asObservable();
 
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${API_BASE}/api/users/auth/login`, credentials).pipe(
+  initialize(): Observable<boolean> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      return of(false);
+    }
+    return this.refreshToken().pipe(
+      switchMap(() => this.getCurrentUser()),
+      map(() => true),
+      catchError((error) => {
+        console.error('[Auth] Initialization failed:', error);
+        this.clearStorage();
+        return of(false);
+      }),
+    );
+  }
+
+  login(credentials: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${API_BASE}/api/users/auth/login`, credentials).pipe(
       tap((response) => {
         this.storeTokens(response);
         this.currentUserSubject.next({
@@ -75,7 +56,11 @@ export class AuthService {
           email: response.email,
           firstName: '',
           lastName: '',
+          phone: '',
+          status: 'ACTIVE',
+          createdAt: '',
           role: response.role,
+          tenantId: 1,
         });
       }),
     );
@@ -95,19 +80,30 @@ export class AuthService {
 
   refreshToken(): Observable<RefreshResponse> {
     const refreshToken = this.getRefreshToken();
+    const currentRole = this.getRole() as UserRole | null;
     return this.http
       .post<RefreshResponse>(`${API_BASE}/api/users/auth/refresh`, {
         refreshToken,
       })
       .pipe(
         tap((response) => {
-          this.storeTokens({
-            accessToken: response.accessToken,
-            refreshToken: response.refreshToken,
-            userId: response.userId,
+          localStorage.setItem(TOKEN_KEYS.ACCESS, response.accessToken);
+          localStorage.setItem(TOKEN_KEYS.REFRESH, response.refreshToken);
+          if (currentRole) {
+            localStorage.setItem(TOKEN_KEYS.ROLE, currentRole);
+          }
+          const user: User = {
+            id: response.userId,
             email: '',
-            role: '',
-          });
+            firstName: '',
+            lastName: '',
+            phone: '',
+            status: 'ACTIVE',
+            createdAt: '',
+            role: currentRole || 'PATIENT',
+            tenantId: 1,
+          };
+          localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(user));
         }),
       );
   }
@@ -116,31 +112,34 @@ export class AuthService {
     return this.http.get<User>(`${API_BASE}/api/users/auth/me`).pipe(
       tap((user) => {
         localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(user));
+        localStorage.setItem(TOKEN_KEYS.ROLE, user.role);
         this.currentUserSubject.next(user);
       }),
     );
   }
 
-  register(credentials: RegisterRequest): Observable<LoginResponse> {
-    return this.http
-      .post<LoginResponse>(`${API_BASE}/api/users/register/patient`, credentials)
-      .pipe(
-        tap((response) => {
-          this.storeTokens(response);
-          this.currentUserSubject.next({
-            id: response.userId,
-            email: response.email,
-            firstName: '',
-            lastName: '',
-            role: response.role,
-          });
-        }),
-      );
+  register(credentials: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${API_BASE}/api/users/register/patient`, credentials).pipe(
+      tap((response) => {
+        this.storeTokens(response);
+        this.currentUserSubject.next({
+          id: response.userId,
+          email: response.email,
+          firstName: '',
+          lastName: '',
+          phone: '',
+          status: 'ACTIVE',
+          createdAt: '',
+          role: response.role,
+          tenantId: 1,
+        });
+      }),
+    );
   }
 
-  createPatient(data: CreatePatientRequest): Observable<LoginResponse> {
+  createPatient(data: CreatePatientRequest): Observable<AuthResponse> {
     return this.http
-      .post<LoginResponse>(`${API_BASE}/api/users/register/patient`, {
+      .post<AuthResponse>(`${API_BASE}/api/users/register/patient`, {
         ...data,
         tenantId: 1,
       })
@@ -152,7 +151,11 @@ export class AuthService {
             email: response.email,
             firstName: '',
             lastName: '',
+            phone: '',
+            status: 'ACTIVE',
+            createdAt: '',
             role: response.role,
+            tenantId: 1,
           });
         }),
       );
@@ -191,7 +194,15 @@ export class AuthService {
     return this.getRole() === 'PATIENT';
   }
 
-  private storeTokens(response: LoginResponse): void {
+  isLab(): boolean {
+    return this.getRole() === 'LAB';
+  }
+
+  isNurse(): boolean {
+    return this.getRole() === 'NURSE';
+  }
+
+  private storeTokens(response: AuthResponse): void {
     localStorage.setItem(TOKEN_KEYS.ACCESS, response.accessToken);
     localStorage.setItem(TOKEN_KEYS.REFRESH, response.refreshToken);
     localStorage.setItem(TOKEN_KEYS.ROLE, response.role);
@@ -200,7 +211,11 @@ export class AuthService {
       email: response.email,
       firstName: '',
       lastName: '',
+      phone: '',
+      status: 'ACTIVE',
+      createdAt: '',
       role: response.role,
+      tenantId: 1,
     };
     localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(user));
   }

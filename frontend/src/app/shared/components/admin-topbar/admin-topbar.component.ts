@@ -1,21 +1,32 @@
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { ToolbarModule } from 'primeng/toolbar';
 import { Tooltip } from 'primeng/tooltip';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+import { User } from '../../types/user';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-admin-topbar',
-  imports: [AvatarModule, ButtonModule, DrawerModule, ToolbarModule, Tooltip],
+  imports: [CommonModule, AvatarModule, ButtonModule, DrawerModule, ToolbarModule, Tooltip],
   templateUrl: './admin-topbar.component.html',
   styleUrl: './admin-topbar.component.scss',
 })
-export class AdminTopbarComponent {
+export class AdminTopbarComponent implements OnInit {
   private router = inject(Router);
+  private authService = inject(AuthService);
   notificationsOpen = false;
   settingsOpen = false;
+  user$!: Observable<User | null>;
+
+  ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe();
+    this.user$ = this.authService.currentUser$;
+  }
 
   goToProfile(): void {
     this.router.navigate(['/admin/profile']);

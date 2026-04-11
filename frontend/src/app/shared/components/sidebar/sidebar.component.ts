@@ -20,9 +20,6 @@ export class SidebarComponent {
     { icon: 'home', label: 'Dashboard', route: '/placeholder' },
     { icon: 'robot', label: 'Chat Bot', route: '/ai-chat-bot' },
     { icon: 'calendar', label: 'Appointments', route: '/placeholder' },
-    { icon: 'chart', label: 'Analytics', route: '/placeholder' },
-    { icon: 'inbox', label: 'Messages', route: '/placeholder' },
-    { icon: 'settings', label: 'Settings', route: '/placeholder' },
   ];
 
   toggle(): void {

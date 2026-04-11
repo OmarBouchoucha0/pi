@@ -25,7 +25,7 @@ describe('SignupComponent', () => {
 
   it('should render Create account heading', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h2')?.textContent).toContain('Create account');
+    expect(compiled.querySelector('h2')?.textContent).toContain('Create Account');
   });
 
   it('should render firstname input', () => {

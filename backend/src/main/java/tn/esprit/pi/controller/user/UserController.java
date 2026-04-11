@@ -48,6 +48,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Invalid email or password. Authentication failed.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Bad request. Invalid input format.", content = @Content(mediaType = "application/json"))
     })
+    @Operation(summary = "User Login", description = "Authenticates a user with email and password and returns JWT access and refresh tokens")
     @PostMapping("/auth/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(userService.login(request));
@@ -59,6 +60,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Conflict. Email already registered.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Tenant not found.", content = @Content(mediaType = "application/json"))
     })
+    @Operation(summary = "Register Patient", description = "Registers a new patient user with tenant association")
     @PostMapping("/register/patient")
     public ResponseEntity<UserResponse> registerPatient(@Valid @RequestBody PatientRegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerPatient(request));
@@ -69,6 +71,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Bad request. Invalid input format.", content = @Content(mediaType = "application/json"))
     })
+    @Operation(summary = "Refresh Access Token", description = "Exchanges a valid refresh token for a new access token")
     @PostMapping("/auth/refresh")
     public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
         return ResponseEntity.ok(userService.refresh(request));
@@ -79,6 +82,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Invalid refresh token format.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Bad request. Invalid input format.", content = @Content(mediaType = "application/json"))
     })
+    @Operation(summary = "User Logout", description = "Logs out the user by blacklisting the refresh token")
     @PostMapping("/auth/logout")
     public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
         userService.logout(request);
@@ -89,6 +93,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "User profile retrieved successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json"))
     })
+    @Operation(summary = "Get Current User", description = "Retrieves the profile of the currently authenticated user")
     @GetMapping("/auth/me")
     public ResponseEntity<UserResponse> getCurrentUser() {
         Long userId = SecurityUtils.getCurrentUserId();
@@ -100,6 +105,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "403", description = "Forbidden. Only ADMIN role can access this endpoint.", content = @Content(mediaType = "application/json"))
     })
+    @Operation(summary = "Get All Users", description = "Retrieves all users in the system (ADMIN only)")
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponse>> findAll() {
@@ -112,6 +118,7 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "Forbidden. Patients can only view their own profile.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "User not found.", content = @Content(mediaType = "application/json"))
     })
+    @Operation(summary = "Get User by ID", description = "Retrieves a user by their unique identifier")
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findById(
             @Parameter(description = "The unique identifier of the user", required = true) @PathVariable Long id) {

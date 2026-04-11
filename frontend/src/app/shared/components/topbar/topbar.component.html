@@ -1,4 +1,4 @@
-<div class="w-full bg-white border-b border-black/30 px-4 py-3 grid grid-cols-3 items-center">
+<div class="w-full bg-white border-b border-[#0a0a0a] px-4 py-3 grid grid-cols-3 items-center">
   <!-- Left: PlaceHolder -->
   <div></div>
   <!-- Middle: Search -->
@@ -90,35 +90,42 @@
     <div class="w-px h-8 bg-black/30 mx-1"></div>
 
     <!-- Avatar -->
-    <div
-      class="flex items-center gap-2.5 cursor-pointer group"
-      (click)="goToProfile()"
-      (keydown.enter)="goToProfile()"
-      tabindex="0"
-      role="button"
-    >
-      <p-avatar
-        label="OB"
-        shape="circle"
-        [style]="{
-          width: '28px',
-          height: '28px',
-          'background-color': '#0a0a0a',
-          color: 'white',
-          'font-size': '11px',
-          'font-weight': '600',
-        }"
-        class="group-hover:opacity-80 transition-opacity"
-      />
-      <div class="flex flex-col leading-none gap-0.5">
-        <span class="text-xs font-medium text-[#0a0a0a] group-hover:opacity-80 transition-opacity"
-          >Omar</span
-        >
-        <span class="text-xs font-medium text-[#0a0a0a] group-hover:opacity-80 transition-opacity"
-          >Bouchoucha</span
-        >
+    @if (user$ | async; as user) {
+      <div
+        class="flex items-center gap-2.5 cursor-pointer group"
+        (click)="goToProfile()"
+        (keydown.enter)="goToProfile()"
+        tabindex="0"
+        role="button"
+      >
+        <p-avatar
+          [label]="
+            (user.firstName ? user.firstName[0].toUpperCase() : '') +
+            (user.lastName ? user.lastName[0].toUpperCase() : '')
+          "
+          shape="circle"
+          [style]="{
+            width: '28px',
+            height: '28px',
+            'background-color': '#0a0a0a',
+            color: 'white',
+            'font-size': '11px',
+            'font-weight': '600',
+          }"
+          class="group-hover:opacity-80 transition-opacity"
+        />
+        <div class="flex flex-col leading-none gap-0.5">
+          <span
+            class="text-xs font-medium text-[#0a0a0a] group-hover:opacity-80 transition-opacity"
+            >{{ user.firstName || 'User' }}</span
+          >
+          <span
+            class="text-xs font-medium text-[#0a0a0a] group-hover:opacity-80 transition-opacity"
+            >{{ user.lastName || '' }}</span
+          >
+        </div>
       </div>
-    </div>
+    }
   </div>
 </div>
 

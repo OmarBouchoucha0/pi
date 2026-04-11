@@ -16,7 +16,11 @@ export class AdminSidebarComponent {
 
   collapsed = false;
 
-  menuItems = [{ icon: 'users', label: 'Users', route: '/admin/users' }];
+  menuItems = [
+    { icon: 'users', label: 'Users', route: '/admin/users' },
+    { icon: 'patients', label: 'Patients', route: '/admin/patients' },
+    { icon: 'doctors', label: 'Doctors', route: '/admin/doctors' },
+  ];
 
   toggle(): void {
     this.collapsed = !this.collapsed;

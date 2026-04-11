@@ -17,10 +17,8 @@
 
 ::ng-deep .p-splitter-gutter-handle {
   background: #9ca3af;
-  /* gray-400 — the drag handle inside the gutter */
 }
 
 ::ng-deep .p-splitter-panel {
   overflow: hidden;
-  /* prevents panels from leaking content */
 }

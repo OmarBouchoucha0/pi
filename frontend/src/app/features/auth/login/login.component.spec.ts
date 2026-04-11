@@ -25,7 +25,7 @@ describe('LoginComponent', () => {
 
   it('should render Welcome back heading', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h2')?.textContent).toContain('Welcome back');
+    expect(compiled.querySelector('h2')?.textContent).toContain('Welcome Back');
   });
 
   it('should render email input', () => {

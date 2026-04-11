@@ -1,24 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { ToolbarModule } from 'primeng/toolbar';
 import { Tooltip } from 'primeng/tooltip';
-import { HostListener } from '@angular/core';
-import { inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+import { User } from '../../types/user';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [AvatarModule, ButtonModule, DrawerModule, ToolbarModule, Tooltip],
+  imports: [CommonModule, AvatarModule, ButtonModule, DrawerModule, ToolbarModule, Tooltip],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss',
 })
-export class TopbarComponent {
+export class TopbarComponent implements OnInit {
   notificationsOpen = false;
   settingsOpen = false;
+  user$!: Observable<User | null>;
   private router = inject(Router);
+  private authService = inject(AuthService);
+
+  ngOnInit(): void {
+    this.authService.getCurrentUser().subscribe();
+    this.user$ = this.authService.currentUser$;
+  }
 
   toggleNotifications(): void {
     this.notificationsOpen = true;
