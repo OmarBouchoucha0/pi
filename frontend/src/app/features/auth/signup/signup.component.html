@@ -1,14 +1,20 @@
 <div class="min-h-screen min-w-screen flex items-center justify-center">
   <div
     appTilt
-    class="w-[400px] bg-white rounded-[4px] border-2 border-[#0a0a0a] px-10 py-12 will-change-transform"
+    class="w-[400px] bg-white rounded-lg border-2 border-[#0a0a0a] px-10 py-12 will-change-transform"
   >
     <h2 class="text-[36px] font-bold tracking-tight leading-tight text-[#0a0a0a]">
-      Create account
+      Create Account
     </h2>
     <p class="text-sm font-light text-black/40 mb-8">Fill in your details to get started</p>
 
-    <form #registerForm="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    <form #registerForm="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
+      @if (error) {
+        <small class="text-red-500 text-[12px] font-medium pl-1">
+          {{ error }}
+        </small>
+      }
+
       <!-- First Name + Last Name -->
       <div class="flex flex-row gap-4">
         <div class="flex flex-col w-[calc(50%-8px)]">
@@ -41,6 +47,23 @@
             <small class="text-red-500 text-[12px] font-light pl-1">Last name is required</small>
           }
         </div>
+      </div>
+
+      <!-- Phone -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <input
+            pInputText
+            [(ngModel)]="phone"
+            name="phone"
+            inputId="phone"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label for="phone" class="!text-xs !font-light">Phone</label>
+        </p-floatlabel>
+        @if (phoneInvalid && submitted) {
+          <small class="text-red-500 text-[12px] font-light pl-1">Phone is required</small>
+        }
       </div>
 
       <!-- Email -->
@@ -92,7 +115,7 @@
             autocomplete="off"
             [toggleMask]="true"
             [feedback]="false"
-            styleClass="w-full"
+            Class="w-full"
             inputStyleClass="!w-full !p-1 !rounded-xs !border !border-black/15 !bg-white !text-m !font-light !text-[#0a0a0a] !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
           />
           <label for="confirmPassword" class="!text-xs !font-light">Confirm Password</label>
@@ -106,14 +129,15 @@
       <p-button
         label="Create Account"
         type="submit"
-        styleClass="!w-full !rounded-lg !bg-black !border !border-black/15 !text-[#ffffff] !text-sm !font-medium !py-[9px] !shadow-none !transition-all !duration-300 hover:!opacity-85"
+        [loading]="loading"
+        styleClass="!mt-2 !w-full !rounded-lg !bg-black !border !border-black/15 !text-[#ffffff] !text-sm !font-medium !py-[9px] !shadow-none !transition-all !duration-50 hover:!opacity-95"
       />
 
       <!-- Footer -->
       <p class="text-center text-xs font-light text-black/40">
         Already have an account?
         <span
-          class="text-[#0a0a0a] font-medium border-b border-[#0a0a0a] cursor-pointer hover:opacity-70 transition-opacity"
+          class="text-[#0a0a0a] font-medium border-b border-[#0a0a0a] cursor-pointer duration-50 hover:opacity-80 transition-opacity"
           tabindex="0"
           role="button"
           (click)="goToLogin()"

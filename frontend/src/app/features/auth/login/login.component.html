@@ -3,10 +3,16 @@
     appTilt
     class="w-[400px] bg-white rounded-lg border-2 border-[#0a0a0a] px-10 py-12 will-change-transform"
   >
-    <h2 class="text-[36px] font-bold tracking-tight leading-tight text-[#0a0a0a]">Welcome back</h2>
+    <h2 class="text-[36px] font-bold tracking-tight leading-tight text-[#0a0a0a]">Welcome Back</h2>
     <p class="text-sm font-light text-black/40 mb-8">Sign in to your account to continue</p>
 
     <form #loginForm="ngForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-3">
+      @if (loginError) {
+        <small class="text-red-500 text-[12px] font-light pl-1">
+          {{ loginError }}
+        </small>
+      }
+
       <!-- Email -->
       <div class="flex flex-col">
         <p-floatlabel variant="on" class="w-full">
@@ -47,7 +53,7 @@
       </div>
 
       <!-- Forgot password -->
-      <div class="flex justify-end -mt-2 mb-0">
+      <div class="flex justify-end -mt-2 mb-3">
         <span
           class="text-xs text-black/40 cursor-pointer hover:text-black/70 transition-colors leading-none"
         >
@@ -59,7 +65,8 @@
       <p-button
         label="Sign In"
         type="submit"
-        styleClass="!w-full !rounded-lg !bg-black !border !border-black/15 !text-[#ffffff] !text-sm !font-medium !py-[9px] !shadow-none !transition-all !duration-300 hover:!opacity-85"
+        [loading]="loading"
+        styleClass="!w-full !rounded-lg !bg-black !border !border-black/15 !text-[#ffffff] !text-sm !font-medium !py-[9px] !shadow-none !transition-all !duration-50 hover:!opacity-95 "
       />
 
       <!-- Divider -->
@@ -72,7 +79,7 @@
       <!-- Google -->
       <p-button
         type="button"
-        styleClass="!w-full !rounded-lg !bg-white !border !border-black/15 !text-[#0a0a0a] !text-sm !font-medium !py-[9px] !shadow-none !transition-all !duration-300 hover:!bg-black/5"
+        styleClass="!w-full !rounded-lg !bg-white !border !border-black/15 !text-[#0a0a0a] !text-sm !font-medium !py-[9px] !shadow-none !transition-all !duration-50 hover:!bg-black/5"
       >
         <ng-template pTemplate="content">
           <div class="flex items-center justify-center gap-3 w-full">
@@ -103,7 +110,7 @@
       <p class="text-center text-xs font-light text-black/40 mt-1">
         Don't have an account?
         <span
-          class="text-[#0a0a0a] rounded-xs font-medium border-b border-[#0a0a0a] cursor-pointer hover:opacity-70 transition-opacity"
+          class="text-[#0a0a0a] rounded-xs font-medium border-b border-[#0a0a0a] cursor-pointer duration-50 hover:opacity-80 transition-opacity"
           tabindex="0"
           role="button"
           (click)="router.navigate(['/signup'])"

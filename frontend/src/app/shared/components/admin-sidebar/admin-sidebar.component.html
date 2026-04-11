@@ -1,5 +1,5 @@
 <aside
-  class="h-full flex flex-col bg-white border-r border-black/30 transition-[width] duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] overflow-hidden"
+  class="h-full flex flex-col bg-white border-r border-[#0a0a0a] transition-[width] duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] overflow-hidden"
   [ngClass]="collapsed ? 'w-16' : 'w-52'"
 >
   <!-- Header -->
@@ -7,7 +7,7 @@
     @if (!collapsed) {
       <div class="flex items-center gap-2">
         <div
-          class="w-7 h-8 bg-[#0a0a0a] rounded-[4px] flex items-center justify-center transition-colors duration-100 group-hover:!bg-white group-hover:!text-[#0a0a0a]"
+          class="w-7 h-8 bg-[#0a0a0a] rounded-[4px] flex items-center justify-center transition-colors duration-50 group-hover:!bg-white group-hover:!text-[#0a0a0a]"
         >
           <span class="text-white text-xs font-bold">A</span>
         </div>
@@ -19,12 +19,12 @@
     }
     <button
       (click)="toggle()"
-      class="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-100 cursor-pointer text-[#0a0a0a]"
+      class="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-[#0a0a0a] hover:text-white transition-all duration-50 cursor-pointer text-[#0a0a0a]"
       [ngClass]="{ 'mx-auto': collapsed }"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        class="w-4 h-4 transition-transform duration-300"
+        class="w-4 h-4 transition-transform duration-50"
         [ngClass]="{ 'rotate-180': collapsed }"
         fill="none"
         viewBox="0 0 24 24"
@@ -37,13 +37,15 @@
   </div>
 
   <!-- Menu Items -->
-  <nav class="flex-1 flex flex-col gap-0 px-3 py-4">
+  <nav class="flex-1 flex flex-col gap-1 px-3 py-3">
     @for (item of menuItems; track item.icon) {
       <a
+        #rla="routerLinkActive"
         [routerLink]="item.route"
         routerLinkActive="bg-[#0a0a0a] text-white"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="flex items-center w-full h-10 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] bg-white hover:bg-[#0a0a0a] hover:text-white group px-3 gap-3"
+        class="flex items-center w-full h-10 rounded-lg transition-all duration-50 cursor-pointer text-left hover:bg-black/10 group px-3 gap-3"
+        [ngClass]="rla.isActive ? '!bg-[#0a0a0a] text-white' : 'bg-white text-[#0a0a0a]'"
         [pTooltip]="collapsed ? item.label : undefined"
         tooltipPosition="right"
         [showDelay]="500"
@@ -53,7 +55,8 @@
           @if (item.icon === 'home') {
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-100"
+              class="w-[18px] h-[18px] shrink-0 transition-colors duration-50"
+              [ngClass]="rla.isActive ? 'text-white' : 'text-[#0a0a0a]'"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -70,7 +73,8 @@
           @if (item.icon === 'users') {
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-100"
+              class="w-[18px] h-[18px] shrink-0 transition-colors duration-50"
+              [ngClass]="rla.isActive ? 'text-white' : 'text-[#0a0a0a]'"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -83,11 +87,51 @@
               />
             </svg>
           }
+          <!-- Patients -->
+          @if (item.icon === 'patients') {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-[18px] h-[18px] shrink-0 transition-colors duration-50"
+              [ngClass]="rla.isActive ? 'text-white' : 'text-[#0a0a0a]'"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+              />
+            </svg>
+          }
+          <!-- Doctors -->
+          @if (item.icon === 'doctors') {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-[18px] h-[18px] shrink-0 transition-colors duration-50"
+              [ngClass]="rla.isActive ? 'text-white' : 'text-[#0a0a0a]'"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v4m0 0h2m-2 0H10" />
+            </svg>
+          }
         </span>
 
         <span
-          class="text-sm font-medium text-[#0a0a0a] group-hover:text-white transition-all duration-200 ease-in-out overflow-hidden whitespace-nowrap"
-          [ngClass]="collapsed ? 'opacity-0 max-w-0' : 'opacity-100 max-w-[200px]'"
+          class="text-sm font-medium transition-all duration-50 ease-in-out overflow-hidden whitespace-nowrap"
+          [ngClass]="[
+            rla.isActive ? 'text-white' : 'text-[#0a0a0a]',
+            collapsed ? 'opacity-0 max-w-0' : 'opacity-100 max-w-[200px]',
+          ]"
           >{{ item.label }}</span
         >
       </a>
@@ -96,9 +140,9 @@
 
   <!-- Logout -->
   <div class="border-t border-black/30 px-3 py-2">
-    <a
-      routerLink="/login"
-      class="flex items-center gap-3 w-full px-3 h-10 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] bg-white hover:bg-[#0a0a0a] hover:text-white group"
+    <button
+      (click)="logout()"
+      class="flex items-center gap-3 w-full px-3 h-10 rounded-lg transition-all duration-100 cursor-pointer text-left text-[#0a0a0a] bg-white hover:bg-black/10 group"
       [pTooltip]="collapsed ? 'Logout' : undefined"
       tooltipPosition="right"
       [showDelay]="500"
@@ -106,7 +150,7 @@
       <span class="shrink-0 flex items-center justify-center w-[18px] h-[18px]">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="w-[18px] h-[18px] text-[#0a0a0a] group-hover:text-white shrink-0 transition-colors duration-100"
+          class="w-[18px] h-[18px] shrink-0 transition-colors duration-100"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -120,10 +164,10 @@
         </svg>
       </span>
       <span
-        class="text-sm font-medium text-[#0a0a0a] group-hover:text-white transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap"
+        class="text-sm font-medium transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap"
         [ngClass]="collapsed ? 'opacity-0 max-w-0' : 'opacity-100 max-w-[200px]'"
         >Logout</span
       >
-    </a>
+    </button>
   </div>
 </aside>

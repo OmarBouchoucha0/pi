@@ -45,14 +45,14 @@ describe('TiltDirective', () => {
     const fixture2 = TestBed.createComponent(TestHostComponent);
     fixture2.detectChanges();
     const directive = fixture2.debugElement.children[0].injector.get(TiltDirective);
-    expect(directive.tiltStrength).toBe(1);
+    expect(directive.tiltStrength).toBe(4);
   });
 
   it('should accept tiltLerp input', () => {
     const fixture2 = TestBed.createComponent(TestHostComponent);
     fixture2.detectChanges();
     const directive = fixture2.debugElement.children[0].injector.get(TiltDirective);
-    expect(directive.tiltLerp).toBe(0.1);
+    expect(directive.tiltLerp).toBe(0.05);
   });
 
   it('should clean up on destroy', () => {

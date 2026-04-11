@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Tooltip } from 'primeng/tooltip';
+import { inject } from '@angular/core';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,18 +12,21 @@ import { Tooltip } from 'primeng/tooltip';
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
+  private authService = inject(AuthService);
+
   collapsed = false;
 
   menuItems = [
     { icon: 'home', label: 'Dashboard', route: '/placeholder' },
     { icon: 'robot', label: 'Chat Bot', route: '/ai-chat-bot' },
     { icon: 'calendar', label: 'Appointments', route: '/placeholder' },
-    { icon: 'chart', label: 'Analytics', route: '/placeholder' },
-    { icon: 'inbox', label: 'Messages', route: '/placeholder' },
-    { icon: 'settings', label: 'Settings', route: '/placeholder' },
   ];
 
   toggle(): void {
     this.collapsed = !this.collapsed;
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }
