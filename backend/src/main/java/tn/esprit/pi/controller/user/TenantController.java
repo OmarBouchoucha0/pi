@@ -24,42 +24,13 @@ import tn.esprit.pi.service.user.TenantService;
 @RestController
 @RequestMapping("/api/tenants")
 @RequiredArgsConstructor
-@Tag(name = "Tenant Management", description = """
-        APIs for managing tenants (organizations/hospitals) in the MeddiFollow system.
-
-        A tenant represents an organization, typically a hospital or healthcare network.
-        Each tenant operates as a separate entity with its own users, departments, and data.
-
-        ## Tenant Properties
-        - **name**: The unique name identifier of the tenant/organization
-        - **status**: Current operational status (ACTIVE, INACTIVE, SUSPENDED)
-        - **deletedAt**: Timestamp for soft-delete (null if active)
-
-        ## Common Use Cases
-        - Create new tenant for a new hospital/organization
-        - Update tenant information (name, status)
-        - List all active tenants
-        - Check if a tenant name is available
-        - Soft-delete a tenant (marks as deleted without removing data)
-        """)
+@Tag(name = "Tenant Management", description = "APIs for managing tenants (organizations/hospitals)")
 @SecurityRequirement(name = "Bearer Authentication")
 public class TenantController {
 
     private final TenantService tenantService;
 
-    @Operation(
-            summary = "Get All Tenants",
-            description = """
-                    Retrieves a list of all active tenants in the system.
-
-                    This endpoint returns all tenants that have not been soft-deleted.
-                    Each tenant includes their name, status, and other properties.
-
-                    ## Response Details
-                    - Returns list of all active tenants
-                    - Soft-deleted tenants are excluded
-                    - Each tenant includes their current status
-                    """)
+    @Operation(summary = "Get All Tenants", description = "Retrieves a list of all active tenants in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tenants retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -71,20 +42,7 @@ public class TenantController {
         return ResponseEntity.ok(tenantService.findAll());
     }
 
-    @Operation(
-            summary = "Get Tenant by ID",
-            description = """
-                    Retrieves a specific tenant by their unique identifier.
-
-                    This endpoint returns the tenant details if found and not soft-deleted.
-
-                    ## Path Parameters
-                    - id: The unique identifier of the tenant
-
-                    ## Response Details
-                    - Returns tenant details including name and status
-                    - Returns 404 if tenant not found or soft-deleted
-                    """)
+    @Operation(summary = "Get Tenant by ID", description = "Retrieves a specific tenant by their unique identifier.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tenant retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -103,20 +61,7 @@ public class TenantController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(
-            summary = "Get Tenant by Name",
-            description = """
-                    Retrieves a tenant by their name.
-
-                    This endpoint searches for a tenant using its name.
-
-                    ## Path Parameters
-                    - name: The name of the tenant to search for
-
-                    ## Response Details
-                    - Returns tenant if found
-                    - Returns 404 if no tenant exists with that name
-                    """)
+    @Operation(summary = "Get Tenant by Name", description = "Retrieves a tenant by their name.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tenant retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -134,19 +79,7 @@ public class TenantController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(
-            summary = "Get Tenants by Status",
-            description = """
-                    Retrieves all tenants with a specific status.
-
-                    This endpoint returns tenants filtered by their operational status.
-
-                    ## Path Parameters
-                    - status: The status to filter by (ACTIVE, INACTIVE, SUSPENDED)
-
-                    ## Response Details
-                    - Returns list of tenants with the specified status
-                    """)
+    @Operation(summary = "Get Tenants by Status", description = "Retrieves all tenants with a specific status.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tenants retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -161,21 +94,7 @@ public class TenantController {
         return ResponseEntity.ok(tenantService.findByStatus(status));
     }
 
-    @Operation(
-            summary = "Check Tenant Name Availability",
-            description = """
-                    Checks if a tenant name is already in use.
-
-                    This endpoint verifies if the provided name is available for creating
-                    a new tenant or if it already exists.
-
-                    ## Path Parameters
-                    - name: The name to check for availability
-
-                    ## Response Details
-                    - Returns true if name is available (not in use)
-                    - Returns false if name is already taken
-                    """)
+    @Operation(summary = "Check Tenant Name Availability", description = "Checks if a tenant name is already in use.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Name availability checked.",
                     content = @Content(mediaType = "application/json")),
@@ -189,21 +108,7 @@ public class TenantController {
         return ResponseEntity.ok(tenantService.existsByName(name));
     }
 
-    @Operation(
-            summary = "Create Tenant",
-            description = """
-                    Creates a new tenant in the system.
-
-                    This endpoint registers a new tenant/organization.
-                    The tenant name must be unique across the system.
-
-                    ## Request Details
-                    - name: Unique name identifier for the tenant
-                    - status: Initial status (typically ACTIVE for new tenants)
-
-                    ## Response Details
-                    - Returns the created tenant with generated ID
-                    """)
+    @Operation(summary = "Create Tenant", description = "Creates a new tenant in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Tenant created successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -217,24 +122,7 @@ public class TenantController {
         return ResponseEntity.status(HttpStatus.CREATED).body(tenantService.save(tenant));
     }
 
-    @Operation(
-            summary = "Soft Delete Tenant",
-            description = """
-                    Soft deletes a tenant by setting their deletedAt timestamp.
-
-                    This endpoint performs a soft delete, marking the tenant as deleted
-                    without removing their record from the database. This preserves
-                    data integrity and allows for audit purposes.
-
-                    Important: Soft-deleting a tenant will also affect all associated
-                    users, departments, and hospitals within that tenant.
-
-                    ## Path Parameters
-                    - id: The unique identifier of the tenant to delete
-
-                    ## Response Details
-                    - Returns 204 No Content on success
-                    """)
+    @Operation(summary = "Soft Delete Tenant", description = "Soft deletes a tenant by setting their deletedAt timestamp.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Tenant soft deleted successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -251,24 +139,7 @@ public class TenantController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(
-            summary = "Update Tenant",
-            description = """
-                    Updates an existing tenant's information.
-
-                    This endpoint allows partial update of a tenant's information.
-                    Only provided fields will be updated.
-
-                    ## Path Parameters
-                    - id: The unique identifier of the tenant
-
-                    ## Request Details
-                    - name: New name (must be unique if provided)
-                    - status: New status (ACTIVE, INACTIVE, SUSPENDED)
-
-                    ## Response Details
-                    - Returns the updated tenant
-                    """)
+    @Operation(summary = "Update Tenant", description = "Updates an existing tenant's information.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tenant updated successfully.",
                     content = @Content(mediaType = "application/json")),

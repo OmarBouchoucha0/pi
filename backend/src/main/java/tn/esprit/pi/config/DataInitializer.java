@@ -55,7 +55,9 @@ public class DataInitializer implements CommandLineRunner {
         Arrays.asList(
                 createRole(RolesEnum.ADMIN, "System Administrator"),
                 createRole(RolesEnum.DOCTOR, "Medical Doctor"),
-                createRole(RolesEnum.PATIENT, "Patient User")
+                createRole(RolesEnum.PATIENT, "Patient User"),
+                createRole(RolesEnum.NURSE, "Nurse User"),
+                createRole(RolesEnum.LAB, "Lab User")
         ).forEach(role -> {
             if (role != null) {
                 log.info("Role ensured: {}", role.getRole());

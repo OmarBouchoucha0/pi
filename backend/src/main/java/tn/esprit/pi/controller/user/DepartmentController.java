@@ -22,47 +22,13 @@ import tn.esprit.pi.service.user.DepartmentService;
 @RestController
 @RequestMapping("/api/departments")
 @RequiredArgsConstructor
-@Tag(name = "Department Management", description = """
-        APIs for managing departments within hospitals in the MeddiFollow system.
-
-        A department is a specialized unit within a hospital that handles specific
-        medical services. Examples include Cardiology, Neurology, Pediatrics, etc.
-
-        ## Department Properties
-        - **name**: The name of the department (e.g., Cardiology, Emergency)
-        - **hospital**: The hospital this department belongs to
-        - **tenant**: The organization (tenant) this department belongs to
-        - **description**: Detailed description of the department's purpose
-        - **deletedAt**: Timestamp for soft-delete (null if active)
-
-        ## Common Use Cases
-        - Create new department under a hospital
-        - List all departments or filter by hospital/tenant
-        - Update department information
-        - Soft-delete a department
-
-        ## Department Hierarchy
-        - Tenant (Organization)
-          - Hospital
-            - Department
-              - Staff (Doctors, Nurses)
-        """)
+@Tag(name = "Department Management", description = "APIs for managing departments within hospitals")
 @SecurityRequirement(name = "Bearer Authentication")
 public class DepartmentController {
 
     private final DepartmentService departmentService;
 
-    @Operation(
-            summary = "Get All Departments",
-            description = """
-                    Retrieves a list of all active departments in the system.
-
-                    This endpoint returns all departments that have not been soft-deleted.
-
-                    ## Response Details
-                    - Returns list of all active departments
-                    - Each department includes hospital and tenant associations
-                    """)
+    @Operation(summary = "Get All Departments", description = "Retrieves a list of all active departments in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Departments retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -74,20 +40,7 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.findAll());
     }
 
-    @Operation(
-            summary = "Get Department by ID",
-            description = """
-                    Retrieves a specific department by their unique identifier.
-
-                    This endpoint returns department details if found.
-
-                    ## Path Parameters
-                    - id: The unique identifier of the department
-
-                    ## Response Details
-                    - Returns department details including hospital association
-                    - Returns 404 if department not found
-                    """)
+    @Operation(summary = "Get Department by ID", description = "Retrieves a specific department by their unique identifier.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Department retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -105,19 +58,7 @@ public class DepartmentController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(
-            summary = "Get Departments by Tenant",
-            description = """
-                    Retrieves all departments belonging to a specific tenant.
-
-                    This endpoint returns departments filtered by the tenant they belong to.
-
-                    ## Path Parameters
-                    - tenantId: The unique identifier of the tenant
-
-                    ## Response Details
-                    - Returns list of departments in the tenant
-                    """)
+    @Operation(summary = "Get Departments by Tenant", description = "Retrieves all departments belonging to a specific tenant.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Departments retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -131,19 +72,7 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.findByTenantId(tenantId));
     }
 
-    @Operation(
-            summary = "Get Departments by Hospital",
-            description = """
-                    Retrieves all departments within a specific hospital.
-
-                    This endpoint returns departments filtered by the hospital they belong to.
-
-                    ## Path Parameters
-                    - hospitalId: The unique identifier of the hospital
-
-                    ## Response Details
-                    - Returns list of departments in the hospital
-                    """)
+    @Operation(summary = "Get Departments by Hospital", description = "Retrieves all departments within a specific hospital.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Departments retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -157,22 +86,7 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.findByHospitalId(hospitalId));
     }
 
-    @Operation(
-            summary = "Create Department",
-            description = """
-                    Creates a new department in the system.
-
-                    This endpoint registers a new department under a hospital.
-
-                    ## Request Details
-                    - name: Name of the department
-                    - hospital: The hospital this department belongs to
-                    - tenant: The tenant this department belongs to
-                    - description: Detailed description of the department
-
-                    ## Response Details
-                    - Returns the created department with generated ID
-                    """)
+    @Operation(summary = "Create Department", description = "Creates a new department in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Department created successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -186,22 +100,7 @@ public class DepartmentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(departmentService.save(department));
     }
 
-    @Operation(
-            summary = "Soft Delete Department",
-            description = """
-                    Soft deletes a department by setting their deletedAt timestamp.
-
-                    This endpoint performs a soft delete, marking the department as deleted
-                    without removing their record from the database.
-
-                    Note: This may affect doctors assigned to this department.
-
-                    ## Path Parameters
-                    - id: The unique identifier of the department to delete
-
-                    ## Response Details
-                    - Returns 204 No Content on success
-                    """)
+    @Operation(summary = "Soft Delete Department", description = "Soft deletes a department by setting their deletedAt timestamp.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Department soft deleted successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -218,24 +117,7 @@ public class DepartmentController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(
-            summary = "Update Department",
-            description = """
-                    Updates an existing department's information.
-
-                    This endpoint allows partial update of a department's information.
-
-                    ## Path Parameters
-                    - id: The unique identifier of the department
-
-                    ## Request Details
-                    - name: New name (must be unique within hospital if provided)
-                    - description: New description
-                    - hospitalId: New hospital association
-
-                    ## Response Details
-                    - Returns the updated department
-                    """)
+    @Operation(summary = "Update Department", description = "Updates an existing department's information.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Department updated successfully.",
                     content = @Content(mediaType = "application/json")),

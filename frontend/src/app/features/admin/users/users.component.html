@@ -210,16 +210,16 @@
                   class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
                   [ngClass]="{
                     'bg-green-50 text-green-600': user.status === 'ACTIVE',
-                    'bg-black/5 text-black/40': user.status === 'INACTIVE',
-                    'bg-amber-50 text-amber-600': user.status === 'SUSPENDED',
+                    'bg-black/5 text-black/40': user.status === 'LOCKED',
+                    'bg-amber-50 text-amber-600': user.status === 'DISABLED',
                   }"
                 >
                   <span
                     class="w-1.5 h-1.5 rounded-full"
                     [ngClass]="{
                       'bg-green-500': user.status === 'ACTIVE',
-                      'bg-black/30': user.status === 'INACTIVE',
-                      'bg-amber-500': user.status === 'SUSPENDED',
+                      'bg-black/30': user.status === 'LOCKED',
+                      'bg-amber-500': user.status === 'DISABLED',
                     }"
                   ></span>
                   {{ user.status }}
@@ -233,6 +233,7 @@
                   class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <button
+                    (click)="openAddUserDialog(user)"
                     class="flex items-center justify-center w-6 h-6 rounded-md hover:bg-black/10 text-black/40 hover:text-[#0a0a0a] transition-colors"
                   >
                     <svg
@@ -251,6 +252,7 @@
                     </svg>
                   </button>
                   <button
+                    (click)="openDeleteDialog(user, $event)"
                     class="flex items-center justify-center w-6 h-6 rounded-md hover:bg-red-50 text-black/40 hover:text-red-500 transition-colors"
                   >
                     <svg
@@ -336,9 +338,9 @@
     </div>
   }
 
-  <!-- Add User Dialog -->
+  <!-- Add/Edit User Dialog -->
   <p-dialog
-    header="Add User"
+    [header]="isEditMode ? 'Edit User' : 'Add User'"
     [(visible)]="showAddUserDialog"
     [modal]="true"
     [style]="{ width: '400px' }"
@@ -434,9 +436,11 @@
             styleClass="w-full"
             inputStyleClass="!w-full !p-1 !rounded-xs !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
           />
-          <label class="!text-xs !font-light" for="password">Password</label>
+          <label class="!text-xs !font-light" for="password">
+            {{ isEditMode ? 'New Password (optional)' : 'Password' }}
+          </label>
         </p-floatlabel>
-        @if (submitted && password.length < 6) {
+        @if (submitted && !isEditMode && password.length < 6) {
           <small class="text-red-500 text-[12px] font-light pl-1"
             >Password must be at least 6 characters</small
           >
@@ -461,13 +465,39 @@
         </p-floatlabel>
       </div>
 
+      <!-- Status -->
+      @if (isEditMode) {
+        <div class="flex flex-col">
+          <p-floatlabel variant="on" class="w-full">
+            <p-select
+              [(ngModel)]="status"
+              name="status"
+              [options]="statusOptions"
+              optionLabel="label"
+              optionValue="value"
+              [appendTo]="'body'"
+              styleClass="!w-full !bg-white !text-[#0a0a0a]"
+              panelStyleClass="!bg-white !text-[#0a0a0a]"
+              inputId="status-select"
+            />
+            <label class="!text-xs !font-light" for="status-select">Status</label>
+          </p-floatlabel>
+        </div>
+      }
+
       <!-- Submit -->
       <p-button
-        label="Add User"
+        [label]="isEditMode ? 'Update User' : 'Add User'"
         type="submit"
         [loading]="loadingSubmit"
         styleClass="!w-full !rounded-lg !bg-[#0a0a0a] !border !border-black/15 !text-white !text-sm !font-medium !py-[9px] !shadow-none !transition-all !duration-50 hover:!opacity-95"
       />
     </form>
   </p-dialog>
+
+  <!-- Toast Notification -->
+  <p-toast />
+
+  <!-- Delete Confirmation Dialog -->
+  <p-confirmDialog styleClass="!bg-white !text-[#0a0a0a]" />
 </div>

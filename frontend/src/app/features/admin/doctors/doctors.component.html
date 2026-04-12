@@ -53,6 +53,23 @@
           </svg>
         </button>
       </div>
+      <!-- Add Doctor -->
+      <button
+        (click)="openAddDialog()"
+        class="flex items-center gap-1.5 text-xs font-medium text-white bg-[#0a0a0a] rounded-lg px-3 py-2 hover:opacity-80 transition-opacity"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-3.5 h-3.5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
+        </svg>
+        Add Doctor
+      </button>
     </div>
   </div>
 
@@ -195,16 +212,16 @@
                   class="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full"
                   [ngClass]="{
                     'bg-green-50 text-green-600': user.status === 'ACTIVE',
-                    'bg-black/5 text-black/40': user.status === 'INACTIVE',
-                    'bg-amber-50 text-amber-600': user.status === 'SUSPENDED',
+                    'bg-black/5 text-black/40': user.status === 'DISABLED',
+                    'bg-amber-50 text-amber-600': user.status === 'LOCKED',
                   }"
                 >
                   <span
                     class="w-1.5 h-1.5 rounded-full"
                     [ngClass]="{
                       'bg-green-500': user.status === 'ACTIVE',
-                      'bg-black/30': user.status === 'INACTIVE',
-                      'bg-amber-500': user.status === 'SUSPENDED',
+                      'bg-black/30': user.status === 'DISABLED',
+                      'bg-amber-500': user.status === 'LOCKED',
                     }"
                   ></span>
                   {{ user.status }}
@@ -218,6 +235,7 @@
                   class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <button
+                    (click)="openEditDialog(user)"
                     class="flex items-center justify-center w-6 h-6 rounded-md hover:bg-black/10 text-black/40 hover:text-[#0a0a0a] transition-colors"
                   >
                     <svg
@@ -232,6 +250,25 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="openDeleteDialog(user, $event)"
+                    class="flex items-center justify-center w-6 h-6 rounded-md hover:bg-red-50 text-black/40 hover:text-red-500 transition-colors"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-3.5 h-3.5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                       />
                     </svg>
                   </button>
@@ -292,4 +329,277 @@
       </div>
     </div>
   }
+
+  <!-- Add Doctor Dialog -->
+  <p-dialog
+    header="Add Doctor"
+    [(visible)]="showAddDialog"
+    [modal]="true"
+    [style]="{ width: '400px' }"
+    [closable]="true"
+    [draggable]="false"
+    styleClass="!bg-white !text-[#0a0a0a]"
+    (onHide)="closeAddDialog()"
+  >
+    <form (ngSubmit)="onSubmitUser()" class="flex flex-col gap-3 mt-2">
+      @if (errorMessage) {
+        <small class="text-red-500 text-[12px] font-light pl-1">
+          {{ errorMessage }}
+        </small>
+      }
+
+      <!-- First Name -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <input
+            pInputText
+            [(ngModel)]="firstName"
+            name="firstName"
+            id="addFirstName"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label class="!text-xs !font-light" for="addFirstName">First Name</label>
+        </p-floatlabel>
+        @if (submitted && !firstName.trim()) {
+          <small class="text-red-500 text-[12px] font-light pl-1">First name is required</small>
+        }
+      </div>
+
+      <!-- Last Name -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <input
+            pInputText
+            [(ngModel)]="lastName"
+            name="lastName"
+            id="addLastName"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label class="!text-xs !font-light" for="addLastName">Last Name</label>
+        </p-floatlabel>
+        @if (submitted && !lastName.trim()) {
+          <small class="text-red-500 text-[12px] font-light pl-1">Last name is required</small>
+        }
+      </div>
+
+      <!-- Phone -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <input
+            pInputText
+            [(ngModel)]="phone"
+            name="phone"
+            id="addPhone"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label class="!text-xs !font-light" for="addPhone">Phone</label>
+        </p-floatlabel>
+        @if (submitted && !phone.trim()) {
+          <small class="text-red-500 text-[12px] font-light pl-1">Phone is required</small>
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <input
+            pInputText
+            [(ngModel)]="email"
+            name="email"
+            id="addEmail"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label class="!text-xs !font-light" for="addEmail">Email</label>
+        </p-floatlabel>
+        @if (submitted && (!email || !validateEmail(email))) {
+          <small class="text-red-500 text-[12px] font-light pl-1">Please enter a valid email</small>
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <p-password
+            [(ngModel)]="password"
+            name="password"
+            id="addPassword"
+            [toggleMask]="true"
+            [feedback]="false"
+            styleClass="w-full"
+            inputStyleClass="!w-full !p-1 !rounded-xs !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label class="!text-xs !font-light" for="addPassword">Password</label>
+        </p-floatlabel>
+        @if (submitted && password.length < 6) {
+          <small class="text-red-500 text-[12px] font-light pl-1"
+            >Password must be at least 6 characters</small
+          >
+        }
+      </div>
+
+      <!-- License Number -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <input
+            pInputText
+            [(ngModel)]="licenseNumber"
+            name="licenseNumber"
+            id="addLicenseNumber"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label class="!text-xs !font-light" for="addLicenseNumber">License Number</label>
+        </p-floatlabel>
+        @if (submitted && !licenseNumber.trim()) {
+          <small class="text-red-500 text-[12px] font-light pl-1">License number is required</small>
+        }
+      </div>
+
+      <!-- Specialty -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <input
+            pInputText
+            [(ngModel)]="specialty"
+            name="specialty"
+            id="addSpecialty"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label class="!text-xs !font-light" for="addSpecialty">Specialty (optional)</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Department -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <p-select
+            [(ngModel)]="selectedDepartmentId"
+            name="departmentId"
+            [options]="departments"
+            optionLabel="name"
+            optionValue="id"
+            [appendTo]="'body'"
+            styleClass="!w-full !bg-white"
+            panelStyleClass="!bg-white"
+            inputId="department-select"
+          />
+          <label class="!text-xs !font-light" for="department-select">Department</label>
+        </p-floatlabel>
+        @if (submitted && !selectedDepartmentId) {
+          <small class="text-red-500 text-[12px] font-light pl-1">Please select a department</small>
+        }
+      </div>
+
+      <!-- Submit -->
+      <p-button
+        label="Add Doctor"
+        type="submit"
+        [loading]="loadingSubmit"
+        styleClass="!w-full !rounded-lg !bg-[#0a0a0a] !border !border-black/15 !text-white !text-sm !font-medium !py-[9px] !shadow-none !transition-all !duration-50 hover:!opacity-95"
+      />
+    </form>
+  </p-dialog>
+
+  <!-- Edit Doctor Dialog -->
+  <p-dialog
+    [header]="isEditMode ? 'Edit Doctor' : 'Edit Doctor'"
+    [(visible)]="showEditDialog"
+    [modal]="true"
+    [style]="{ width: '400px' }"
+    [closable]="true"
+    [draggable]="false"
+    styleClass="!bg-white !text-[#0a0a0a]"
+    (onHide)="closeEditDialog()"
+  >
+    <form (ngSubmit)="onSubmitUser()" class="flex flex-col gap-3 mt-2">
+      @if (errorMessage) {
+        <small class="text-red-500 text-[12px] font-light pl-1">
+          {{ errorMessage }}
+        </small>
+      }
+
+      <!-- First Name -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <input
+            pInputText
+            [(ngModel)]="firstName"
+            name="firstName"
+            id="firstName"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label class="!text-xs !font-light" for="firstName">First Name</label>
+        </p-floatlabel>
+        @if (submitted && !firstName.trim()) {
+          <small class="text-red-500 text-[12px] font-light pl-1">First name is required</small>
+        }
+      </div>
+
+      <!-- Last Name -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <input
+            pInputText
+            [(ngModel)]="lastName"
+            name="lastName"
+            id="lastName"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label class="!text-xs !font-light" for="lastName">Last Name</label>
+        </p-floatlabel>
+        @if (submitted && !lastName.trim()) {
+          <small class="text-red-500 text-[12px] font-light pl-1">Last name is required</small>
+        }
+      </div>
+
+      <!-- Phone -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <input
+            pInputText
+            [(ngModel)]="phone"
+            name="phone"
+            id="phone"
+            class="!w-full !rounded-xs !p-1 !border !border-black/15 !bg-white !text-[#0a0a0a] !font-light !shadow-none !transition-all focus:!border-[#0a0a0a] focus:!shadow-none focus:!outline-none"
+          />
+          <label class="!text-xs !font-light" for="phone">Phone</label>
+        </p-floatlabel>
+        @if (submitted && !phone.trim()) {
+          <small class="text-red-500 text-[12px] font-light pl-1">Phone is required</small>
+        }
+      </div>
+
+      <!-- Status -->
+      <div class="flex flex-col">
+        <p-floatlabel variant="on" class="w-full">
+          <p-select
+            [(ngModel)]="status"
+            name="status"
+            [options]="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            [appendTo]="'body'"
+            styleClass="!w-full !bg-white !text-[#0a0a0a]"
+            panelStyleClass="!bg-white !text-[#0a0a0a]"
+            inputId="status-select"
+          />
+          <label class="!text-xs !font-light" for="status-select">Status</label>
+        </p-floatlabel>
+      </div>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        [disabled]="loadingSubmit"
+        class="!w-full !rounded-lg !bg-[#0a0a0a] !border !border-black/15 !text-white !text-sm !font-medium !py-[9px] !shadow-none !transition-all !duration-50 hover:!opacity-95 disabled:!opacity-50"
+      >
+        {{ loadingSubmit ? 'Saving...' : 'Update Doctor' }}
+      </button>
+    </form>
+  </p-dialog>
+
+  <!-- Toast Notification -->
+  <p-toast />
+
+  <!-- Delete Confirmation Dialog -->
+  <p-confirmDialog styleClass="!bg-white !text-[#0a0a0a]" />
 </div>

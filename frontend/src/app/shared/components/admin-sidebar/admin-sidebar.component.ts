@@ -20,6 +20,9 @@ export class AdminSidebarComponent {
     { icon: 'users', label: 'Users', route: '/admin/users' },
     { icon: 'patients', label: 'Patients', route: '/admin/patients' },
     { icon: 'doctors', label: 'Doctors', route: '/admin/doctors' },
+    { icon: 'tenants', label: 'Tenants', route: '/admin/tenants' },
+    { icon: 'departments', label: 'Departments', route: '/admin/departments' },
+    { icon: 'hospitals', label: 'Hospitals', route: '/admin/hospitals' },
   ];
 
   toggle(): void {

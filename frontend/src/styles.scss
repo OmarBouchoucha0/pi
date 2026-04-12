@@ -28,3 +28,107 @@ body {
     }
   }
 }
+
+// Toast styling
+.p-toast-message {
+  font-family: 'Lexend', sans-serif !important;
+
+  &.p-toast-message-success {
+    background-color: #f0fdf4 !important;
+    border: 1px solid #22c55e !important;
+    color: #0a0a0a !important;
+
+    .p-toast-message-icon {
+      color: #22c55e !important;
+    }
+
+    .p-toast-message-content {
+      color: #0a0a0a !important;
+    }
+  }
+
+  .p-toast-summary {
+    font-weight: 600 !important;
+    font-size: 12px !important;
+  }
+
+  .p-toast-detail {
+    font-weight: 300 !important;
+    font-size: 11px !important;
+    margin-top: 2px !important;
+  }
+}
+
+// Confirm dialog styling
+.p-confirmdialog {
+  font-family: 'Lexend', sans-serif !important;
+
+  .p-confirmdialog-content {
+    background-color: white !important;
+    color: #0a0a0a !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
+  }
+
+  .p-dialog-header {
+    background-color: white !important;
+    color: #0a0a0a !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+    padding: 16px 24px !important;
+
+    .p-dialog-title {
+      font-weight: 600 !important;
+      font-size: 14px !important;
+    }
+  }
+
+  .p-dialog-content {
+    background-color: white !important;
+    color: #0a0a0a !important;
+    padding: 24px !important;
+
+    .p-confirmdialog-message {
+      font-weight: 300 !important;
+      font-size: 13px !important;
+    }
+  }
+
+  .p-dialog-footer {
+    background-color: white !important;
+    padding: 16px 24px !important;
+
+    button {
+      font-family: 'Lexend', sans-serif !important;
+      font-size: 12px !important;
+      font-weight: 500 !important;
+      border-radius: 8px !important;
+      padding: 8px 16px !important;
+
+      &.p-button-secondary {
+        background-color: transparent !important;
+        border: 1px solid rgba(0, 0, 0, 0.15) !important;
+        color: #0a0a0a !important;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.05) !important;
+        }
+      }
+
+      &.p-button-danger {
+        background-color: #ef4444 !important;
+        border: 1px solid #ef4444 !important;
+        color: white !important;
+
+        &:hover {
+          background-color: #dc2626 !important;
+          border-color: #dc2626 !important;
+        }
+      }
+    }
+  }
+
+  .p-confirmdialog-icon {
+    color: #ef4444 !important;
+    font-size: 24px !important;
+  }
+}

@@ -61,3 +61,140 @@
   background: inherit !important;
   padding: 4px 24px !important;
 }
+
+/* Container */
+::ng-deep .p-confirmdialog {
+  background: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Header */
+::ng-deep .p-confirmdialog .p-dialog-header {
+  background: white !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  padding: 10px !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+::ng-deep .p-confirmdialog .p-dialog-title {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #0a0a0a !important;
+}
+
+::ng-deep .p-confirmdialog .p-dialog-header-close {
+  width: 10px !important;
+  border-radius: 8px !important;
+}
+
+::ng-deep .p-confirmdialog .p-dialog-header-close:hover {
+  background: #0a0a0a !important;
+  color: white !important;
+}
+
+/* Content */
+::ng-deep .p-confirmdialog .p-dialog-content {
+  background: white !important;
+  padding: 24px 16px !important;
+  color: #0a0a0a !important;
+  font-size: 13px !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+/* Footer */
+::ng-deep .p-confirmdialog .p-dialog-footer {
+  background: white !important;
+  padding: 12px 16px !important;
+  border-radius: 0 0 12px 12px !important;
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+}
+
+/* Cancel button */
+::ng-deep .p-confirmdialog .p-button-secondary {
+  background: white !important;
+  padding: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
+  color: #0a0a0a !important;
+  font-size: 14px !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .p-confirmdialog .p-button-secondary:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Delete/danger button */
+::ng-deep .p-confirmdialog .p-button-danger {
+  background: #ef4444 !important;
+  padding: 5px;
+  border: none !important;
+  color: white !important;
+  font-size: 14px !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+::ng-deep .p-confirmdialog .p-button-danger:hover {
+  background: #dc2626 !important;
+}
+
+/* Mask */
+::ng-deep .p-dialog-mask {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+::ng-deep .p-toast-message {
+  background: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+::ng-deep .p-toast-message-content {
+  color: #0a0a0a !important;
+}
+
+::ng-deep .p-toast-summary {
+  color: #0a0a0a !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .p-toast-detail {
+  color: rgba(0, 0, 0, 0.5) !important;
+  font-size: 12px !important;
+}
+
+::ng-deep .p-toast-message-icon {
+  color: #0a0a0a !important;
+}
+
+::ng-deep .p-toast-close-button {
+  color: rgba(0, 0, 0, 0.4) !important;
+  border-radius: 8px !important;
+}
+
+::ng-deep .p-toast-close-button:hover {
+  background: #0a0a0a !important;
+  color: white !important;
+}
+
+/* Action buttons - always visible with grey color */
+::ng-deep .p-datatable-tbody > tr > td > div {
+  opacity: 1 !important;
+}
+
+::ng-deep .p-datatable-tbody > tr > td button {
+  color: #6b7280 !important;
+}
+
+::ng-deep .p-datatable-tbody > tr > td button:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+  color: #0a0a0a !important;
+}
