@@ -17,7 +17,6 @@ export class SidebarComponent {
   collapsed = false;
 
   menuItems = [
-    { icon: 'home', label: 'Dashboard', route: '/placeholder' },
     { icon: 'robot', label: 'Chat Bot', route: '/ai-chat-bot' },
     { icon: 'calendar', label: 'Appointments', route: '/placeholder' },
   ];

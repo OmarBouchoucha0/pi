@@ -18,6 +18,7 @@ import tn.esprit.pi.entity.user.Role;
 import tn.esprit.pi.entity.user.Tenant;
 import tn.esprit.pi.entity.user.User;
 import tn.esprit.pi.enums.user.RolesEnum;
+import tn.esprit.pi.enums.user.UserStatus;
 import tn.esprit.pi.exception.DuplicateResourceException;
 import tn.esprit.pi.exception.ResourceNotFoundException;
 import tn.esprit.pi.repository.user.BlacklistedTokenRepository;
@@ -118,6 +119,58 @@ public class UserService {
                 .build();
 
         return toResponse(save(user));
+    }
+
+    public UserResponse createUser(UserCreateRequest request) {
+        if (userRepository.existsByEmailAndDeletedAtIsNull(request.getEmail())) {
+            throw new DuplicateResourceException("Email already registered: " + request.getEmail());
+        }
+
+        Tenant tenant = tenantRepository.findByIdAndDeletedAtIsNull(request.getTenantId())
+                .orElseThrow(() -> new ResourceNotFoundException("Tenant not found with id: " + request.getTenantId()));
+
+        Role role = roleRepository.findByRole(RolesEnum.valueOf(request.getRole()))
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + request.getRole()));
+
+        User user = User.builder()
+                .email(request.getEmail())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .phone(request.getPhone())
+                .tenant(tenant)
+                .role(role)
+                .build();
+
+        return toResponse(save(user));
+    }
+
+    public UserResponse updateUser(Long id, UserUpdateRequest request) {
+        User user = userRepository.findByIdAndDeletedAtIsNull(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        if (request.getFirstName() != null) {
+            user.setFirstName(request.getFirstName());
+        }
+        if (request.getLastName() != null) {
+            user.setLastName(request.getLastName());
+        }
+        if (request.getPhone() != null) {
+            user.setPhone(request.getPhone());
+        }
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        }
+        if (request.getRole() != null) {
+            Role role = roleRepository.findByRole(RolesEnum.valueOf(request.getRole()))
+                    .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + request.getRole()));
+            user.setRole(role);
+        }
+        if (request.getStatus() != null) {
+            user.setStatus(UserStatus.valueOf(request.getStatus()));
+        }
+
+        return toResponse(userRepository.save(user));
     }
 
     public User save(User user) {

@@ -174,6 +174,30 @@ export class AuthService {
     return userStr ? JSON.parse(userStr) : null;
   }
 
+  getStoredUser(): User | null {
+    return this.getUser();
+  }
+
+  updateProfile(data: {
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+  }): Observable<User | null> {
+    const user = this.getUser();
+    if (!user) {
+      return of(null);
+    }
+    const updatedUser: User = {
+      ...user,
+      firstName: data.firstName ?? user.firstName,
+      lastName: data.lastName ?? user.lastName,
+      phone: data.phone ?? user.phone,
+    };
+    localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(updatedUser));
+    this.currentUserSubject.next(updatedUser);
+    return of(updatedUser);
+  }
+
   getRole(): string | null {
     return localStorage.getItem(TOKEN_KEYS.ROLE);
   }
@@ -227,5 +251,24 @@ export class AuthService {
     localStorage.removeItem(TOKEN_KEYS.ROLE);
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
+  }
+
+  checkTokenExpiration(): boolean {
+    const token = this.getAccessToken();
+    if (!token) {
+      return false;
+    }
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const exp = payload.exp * 1000;
+      const now = Date.now();
+      if (exp < now) {
+        this.logout();
+        return false;
+      }
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

@@ -53,6 +53,25 @@ export const routes: Routes = [
           import('./features/admin/doctors/doctors.component').then((m) => m.DoctorsComponent),
       },
       {
+        path: 'tenants',
+        loadComponent: () =>
+          import('./features/admin/tenants/tenants.component').then((m) => m.TenantsComponent),
+      },
+      {
+        path: 'departments',
+        loadComponent: () =>
+          import('./features/admin/departments/departments.component').then(
+            (m) => m.DepartmentsComponent,
+          ),
+      },
+      {
+        path: 'hospitals',
+        loadComponent: () =>
+          import('./features/admin/hospitals/hospitals.component').then(
+            (m) => m.HospitalsComponent,
+          ),
+      },
+      {
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/profile.component').then((m) => m.ProfileComponent),

@@ -14,8 +14,11 @@ public class SecurityUtils {
             return null;
         }
         Object principal = authentication.getPrincipal();
-        if (principal instanceof UserDetails) {
+        if (principal instanceof CustomUserDetails) {
             return ((CustomUserDetails) principal).getId();
+        }
+        if (principal instanceof UserDetails) {
+            return null;
         }
         return null;
     }

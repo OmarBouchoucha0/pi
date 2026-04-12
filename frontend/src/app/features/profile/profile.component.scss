@@ -1,0 +1,53 @@
+::ng-deep .p-toast-message {
+  background: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
+}
+
+::ng-deep .p-toast-message-content {
+  color: #0a0a0a !important;
+}
+
+::ng-deep .p-toast-summary {
+  color: #0a0a0a !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .p-toast-detail {
+  color: rgba(0, 0, 0, 0.5) !important;
+  font-size: 12px !important;
+}
+
+::ng-deep .p-toast-message-icon {
+  color: #0a0a0a !important;
+}
+
+::ng-deep .p-toast-close-button {
+  color: rgba(0, 0, 0, 0.4) !important;
+  border-radius: 8px !important;
+}
+
+::ng-deep .p-toast-close-button:hover {
+  background: #0a0a0a !important;
+  color: white !important;
+}
+
+::ng-deep .p-toast-message-success {
+  background-color: #f0fdf4 !important;
+  border-color: #22c55e !important;
+
+  .p-toast-message-icon {
+    color: #22c55e !important;
+  }
+}
+
+::ng-deep .p-toast-message-error {
+  background-color: #fef2f2 !important;
+  border-color: #ef4444 !important;
+
+  .p-toast-message-icon {
+    color: #ef4444 !important;
+  }
+}

@@ -25,19 +25,7 @@ import tn.esprit.pi.service.user.UserService;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@Tag(name = "User Management", description = """
-        APIs for managing users in the MeddiFollow hospital system.
-
-        This controller provides endpoints for user authentication (login, refresh, logout),
-        user registration (patients, doctors, admins), and user profile management.
-
-        ## Authentication Flow
-        1. Use `/api/users/auth/login` to authenticate with email and password
-        2. Receive JWT access and refresh tokens in response
-        3. Include access token in Authorization header for subsequent requests
-        4. Use `/api/users/auth/refresh` to get new access token when expired
-        5. Use `/api/users/auth/logout` to invalidate refresh token
-        """)
+@Tag(name = "User Management", description = "APIs for user authentication, registration, and profile management")
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserController {
 
@@ -112,6 +100,22 @@ public class UserController {
         return ResponseEntity.ok(userService.toResponseList(userService.findAll()));
     }
 
+    @Operation(summary = "Update User", description = "Updates an existing user's information.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "403", description = "Forbidden. Only ADMIN role can access.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "User not found.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "409", description = "Conflict. Email already in use.", content = @Content(mediaType = "application/json"))
+    })
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> updateUser(
+            @Parameter(description = "The unique identifier of the user", required = true) @PathVariable Long id,
+            @Valid @RequestBody UserUpdateRequest request) {
+        return ResponseEntity.ok(userService.updateUser(id, request));
+    }
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User retrieved successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -132,19 +136,7 @@ public class UserController {
         return ResponseEntity.ok(userService.toResponse(id));
     }
 
-    @Operation(summary = "Get User by Email", description = """
-            Retrieves a user by their email address.
-
-            This endpoint searches for a user with the specified email.
-            Only accessible by ADMIN and DOCTOR roles.
-
-            ## Path Parameters
-            - email: The email address to search for
-
-            ## Response Details
-            - Returns user if found
-            - Returns 404 if no user exists with that email
-            """)
+    @Operation(summary = "Get User by Email", description = "Retrieves a user by their email address. Only accessible by ADMIN and DOCTOR roles.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User retrieved successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -161,18 +153,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Get Users by Tenant", description = """
-            Retrieves all users belonging to a specific tenant/organization.
-
-            This endpoint returns all active users within a tenant.
-            Only accessible by ADMIN role.
-
-            ## Path Parameters
-            - tenantId: The unique identifier of the tenant
-
-            ## Response Details
-            - Returns list of users in the tenant
-            """)
+    @Operation(summary = "Get Users by Tenant", description = "Retrieves all users belonging to a specific tenant/organization. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -185,18 +166,7 @@ public class UserController {
         return ResponseEntity.ok(userService.toResponseList(userService.findByTenantId(tenantId)));
     }
 
-    @Operation(summary = "Get Users by Role", description = """
-            Retrieves all users with a specific role.
-
-            This endpoint returns all users assigned to a specific role.
-            Only accessible by ADMIN role.
-
-            ## Path Parameters
-            - roleId: The unique identifier of the role
-
-            ## Response Details
-            - Returns list of users with the specified role
-            """)
+    @Operation(summary = "Get Users by Role", description = "Retrieves all users with a specific role. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -209,18 +179,7 @@ public class UserController {
         return ResponseEntity.ok(userService.toResponseList(userService.findByRoleId(roleId)));
     }
 
-    @Operation(summary = "Get Users by Department", description = """
-            Retrieves all users belonging to a specific department.
-
-            This endpoint returns all users (typically doctors) in a department.
-            Accessible by ADMIN and DOCTOR roles.
-
-            ## Path Parameters
-            - departmentId: The unique identifier of the department
-
-            ## Response Details
-            - Returns list of users in the department
-            """)
+    @Operation(summary = "Get Users by Department", description = "Retrieves all users belonging to a specific department. Accessible by ADMIN and DOCTOR roles.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -233,16 +192,7 @@ public class UserController {
         return ResponseEntity.ok(userService.toResponseList(userService.findByDepartmentId(departmentId)));
     }
 
-    @Operation(summary = "Get All Patients", description = """
-            Retrieves all patients in the system.
-
-            This endpoint returns patients based on the caller's role:
-            - ADMIN: Returns all patients in the system
-            - DOCTOR: Returns only patients in their hospital
-
-            ## Response Details
-            - Each patient includes medical record number and other patient-specific fields
-            """)
+    @Operation(summary = "Get All Patients", description = "Retrieves all patients in the system. ADMIN sees all, DOCTOR sees only patients in their hospital.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Patients retrieved successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -271,15 +221,7 @@ public class UserController {
         return ResponseEntity.ok(List.of());
     }
 
-    @Operation(summary = "Get All Doctors", description = """
-            Retrieves all doctors in the system.
-
-            This endpoint returns all users with doctor role.
-            Accessible without authentication.
-
-            ## Response Details
-            - Each doctor includes license number and specialty
-            """)
+    @Operation(summary = "Get All Doctors", description = "Retrieves all doctors in the system. Accessible without authentication.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Doctors retrieved successfully.", content = @Content(mediaType = "application/json"))
     })
@@ -288,15 +230,7 @@ public class UserController {
         return ResponseEntity.ok(userService.toResponseList(userService.findAllDoctors()));
     }
 
-    @Operation(summary = "Get All Admins", description = """
-            Retrieves all administrators in the system.
-
-            This endpoint returns all users with admin role.
-            Only accessible by ADMIN role.
-
-            ## Response Details
-            - Each admin includes their privilege level
-            """)
+    @Operation(summary = "Get All Admins", description = "Retrieves all administrators in the system. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Admins retrieved successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -308,19 +242,7 @@ public class UserController {
         return ResponseEntity.ok(userService.toResponseList(userService.findAllAdmins()));
     }
 
-    @Operation(summary = "Get Patient by Medical Record Number", description = """
-            Retrieves a patient by their unique medical record number.
-
-            This endpoint searches for a patient using their medical record number.
-            Only accessible by ADMIN and DOCTOR roles.
-
-            ## Path Parameters
-            - medicalRecordNumber: The patient's unique medical record identifier
-
-            ## Response Details
-            - Returns patient if found
-            - Returns 404 if no patient exists with that medical record number
-            """)
+    @Operation(summary = "Get Patient by Medical Record Number", description = "Retrieves a patient by their unique medical record number. Only accessible by ADMIN and DOCTOR roles.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Patient retrieved successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -337,19 +259,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Get Doctor by License Number", description = """
-            Retrieves a doctor by their professional license number.
-
-            This endpoint searches for a doctor using their license number.
-            Only accessible by ADMIN and DOCTOR roles.
-
-            ## Path Parameters
-            - licenseNumber: The doctor's professional license identifier
-
-            ## Response Details
-            - Returns doctor if found
-            - Returns 404 if no doctor exists with that license number
-            """)
+    @Operation(summary = "Get Doctor by License Number", description = "Retrieves a doctor by their professional license number. Only accessible by ADMIN and DOCTOR roles.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Doctor retrieved successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -366,19 +276,7 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Check Email Availability", description = """
-            Checks if an email address is already registered in the system.
-
-            This endpoint verifies if the provided email is available for registration.
-            Only accessible by ADMIN role.
-
-            ## Path Parameters
-            - email: The email address to check
-
-            ## Response Details
-            - Returns true if email is available (not registered)
-            - Returns false if email is already in use
-            """)
+    @Operation(summary = "Check Email Availability", description = "Checks if an email address is already registered. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Email availability checked.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -391,21 +289,7 @@ public class UserController {
         return ResponseEntity.ok(userService.existsByEmail(email));
     }
 
-    @Operation(summary = "Create/Update User", description = """
-            Creates a new user or updates an existing user.
-
-            This endpoint creates a new user or updates an existing one.
-            The request body should contain the complete user object.
-            Only accessible by ADMIN role.
-
-            ## Request Details
-            - For new users: ID should be null
-            - For updates: ID should be set to the existing user ID
-            - Password should be plain text (will be hashed)
-
-            ## Response Details
-            - Returns the created/updated user
-            """)
+    @Operation(summary = "Create/Update User", description = "Creates a new user or updates an existing user. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "User created successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "200", description = "User updated successfully.", content = @Content(mediaType = "application/json")),
@@ -415,24 +299,11 @@ public class UserController {
     })
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> save(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user));
+    public ResponseEntity<UserResponse> save(@Valid @RequestBody UserCreateRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(request));
     }
 
-    @Operation(summary = "Soft Delete User", description = """
-            Soft deletes a user by setting their deletedAt timestamp.
-
-            This endpoint performs a soft delete, marking the user as deleted
-            without removing their record from the database. This preserves
-            data integrity and allows for audit purposes.
-            Only accessible by ADMIN role.
-
-            ## Path Parameters
-            - id: The unique identifier of the user to delete
-
-            ## Response Details
-            - Returns 204 No Content on success
-            """)
+    @Operation(summary = "Soft Delete User", description = "Soft deletes a user by setting their deletedAt timestamp. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User soft deleted successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -447,15 +318,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Record Successful Login", description = """
-            Records a successful login event for tracking purposes.
-
-            This endpoint updates the user's last login timestamp and resets
-            failed login attempts counter.
-
-            ## Path Parameters
-            - id: The unique identifier of the user
-            """)
+    @Operation(summary = "Record Successful Login", description = "Records a successful login event for tracking purposes.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Login recorded successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "User not found.", content = @Content(mediaType = "application/json"))
@@ -467,15 +330,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Record Failed Login Attempt", description = """
-            Records a failed login attempt for security tracking.
-
-            This endpoint increments the user's failed login attempts counter,
-            which can be used for account lockout policies.
-
-            ## Path Parameters
-            - id: The unique identifier of the user
-            """)
+    @Operation(summary = "Record Failed Login Attempt", description = "Records a failed login attempt for security tracking.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Failed login recorded successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "User not found.", content = @Content(mediaType = "application/json"))
@@ -487,25 +342,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "Create Patient", description = """
-            Creates a new patient user account.
-
-            This endpoint registers a new patient in the system with their
-            personal information and medical details. Only accessible by ADMIN role.
-
-            ## Request Details
-            - Email must be unique across the system
-            - Medical record number must be unique (if provided)
-            - Password will be hashed before storage
-
-            ## Patient-Specific Fields
-            - medicalRecordNumber: Unique identifier for patient records
-            - bloodType: Patient's blood type
-            - allergies: Known allergies (comma-separated)
-            - chronicConditions: Existing chronic conditions
-            - emergencyContactName: Emergency contact name
-            - emergencyContactPhone: Emergency contact phone
-            """)
+    @Operation(summary = "Create Patient", description = "Creates a new patient user account. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Patient created successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -519,19 +356,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createPatient(request));
     }
 
-    @Operation(summary = "Update Patient", description = """
-            Updates an existing patient's information.
-
-            This endpoint allows partial update of a patient's information.
-            Only accessible by ADMIN role.
-
-            ## Path Parameters
-            - id: The unique identifier of the patient
-
-            ## Request Details
-            - All fields are optional - only provided fields will be updated
-            - To change password, provide the new password in plain text
-            """)
+    @Operation(summary = "Update Patient", description = "Updates an existing patient's information. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Patient updated successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -547,22 +372,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updatePatient(id, request));
     }
 
-    @Operation(summary = "Create Doctor", description = """
-            Creates a new doctor user account.
-
-            This endpoint registers a new doctor in the system with their
-            professional information. Only accessible by ADMIN role.
-
-            ## Request Details
-            - Email must be unique across the system
-            - License number must be unique (if provided)
-            - Password will be hashed before storage
-            - Department must exist
-
-            ## Doctor-Specific Fields
-            - licenseNumber: Professional medical license number
-            - specialty: Medical specialty (e.g., Cardiology, Neurology)
-            """)
+    @Operation(summary = "Create Doctor", description = "Creates a new doctor user account. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Doctor created successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -576,19 +386,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createDoctor(request));
     }
 
-    @Operation(summary = "Update Doctor", description = """
-            Updates an existing doctor's information.
-
-            This endpoint allows partial update of a doctor's information.
-            Doctors can update their own profile, while ADMINs can update any doctor.
-
-            ## Path Parameters
-            - id: The unique identifier of the doctor
-
-            ## Request Details
-            - All fields are optional - only provided fields will be updated
-            - To change department, provide the new department ID
-            """)
+    @Operation(summary = "Update Doctor", description = "Updates an existing doctor's information. Doctors can update their own profile, ADMINs can update any.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Doctor updated successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -611,19 +409,7 @@ public class UserController {
         return ResponseEntity.ok(userService.updateDoctor(id, request));
     }
 
-    @Operation(summary = "Create Admin", description = """
-            Creates a new administrator user account.
-
-            This endpoint registers a new admin in the system with their
-            privilege level. Only accessible by ADMIN role.
-
-            ## Request Details
-            - Email must be unique across the system
-            - Password will be hashed before storage
-
-            ## Admin-Specific Fields
-            - privilegeLevel: The admin's access level (e.g., SUPER_ADMIN, ADMIN)
-            """)
+    @Operation(summary = "Create Admin", description = "Creates a new administrator user account. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Admin created successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),
@@ -637,19 +423,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createAdmin(request));
     }
 
-    @Operation(summary = "Update Admin", description = """
-            Updates an existing administrator's information.
-
-            This endpoint allows partial update of an admin's information.
-            Only accessible by ADMIN role.
-
-            ## Path Parameters
-            - id: The unique identifier of the admin
-
-            ## Request Details
-            - All fields are optional - only provided fields will be updated
-            - To change privilege level, provide the new level
-            """)
+    @Operation(summary = "Update Admin", description = "Updates an existing administrator's information. Only accessible by ADMIN role.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Admin updated successfully.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "401", description = "Unauthorized. Invalid or missing authentication token.", content = @Content(mediaType = "application/json")),

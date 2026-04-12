@@ -22,65 +22,13 @@ import tn.esprit.pi.service.aichatbot.ChatContextService;
 @RestController
 @RequestMapping("/api/ai/chat-contexts")
 @RequiredArgsConstructor
-@Tag(name = "AI Chat Context", description = """
-        APIs for managing conversation context in AI chat sessions.
-
-        This controller handles the contextual information that the AI uses to
-        generate personalized and relevant responses. Context data is stored
-        as key-value pairs that persist throughout a chat session.
-
-        ## Context Features
-        - **Key-Value Storage**: Each context item has a key and value
-        - **Session-Scoped**: Context is tied to specific chat sessions
-        - **Dynamic Updates**: Context can be updated during conversation
-        - **AI Reference**: AI uses context for personalized responses
-
-        ## Common Context Keys
-        - **patient_id**: Patient identifier for personalization
-        - **current_symptoms**: Active symptoms being discussed
-        - **medications**: Current medications if mentioned
-        - **last_topic**: The most recent discussion topic
-        - **medical_history**: Relevant medical history context
-
-        ## Context Usage Flow
-        1. When patient shares information (e.g., diabetes), it's stored as context
-        2. AI includes this context in future response generation
-        3. Context grows throughout the conversation
-        4. Old/unnecessary context can be cleaned up
-        5. Context is preserved for session history
-
-        ## Example Usage
-        Patient: "I have Type 2 Diabetes"
-        System stores: context[symptoms] += "Type 2 Diabetes"
-
-        Patient: "What should I eat?"
-        AI checks context, sees diabetes, provides diabetes-friendly dietary advice
-
-        ## Note
-        Context is automatically managed by the system during message processing.
-        This API provides manual control for advanced use cases.
-        """)
+@Tag(name = "AI Chat Context", description = "APIs for managing conversation context in AI chat sessions")
 @SecurityRequirement(name = "Bearer Authentication")
 public class ChatContextController {
 
     private final ChatContextService chatContextService;
 
-    @Operation(
-            summary = "Get All Context for Session",
-            description = """
-                    Retrieves all context key-value pairs for a specific chat session.
-
-                    This endpoint returns the complete context data stored for a session,
-                    which the AI uses to generate personalized responses.
-
-                    ## Path Parameters
-                    - sessionId: The unique identifier of the chat session
-
-                    ## Response Details
-                    - Returns list of context items (key-value pairs)
-                    - Each item includes the key, value, and creation timestamp
-                    - Empty list if no context exists
-                    """)
+    @Operation(summary = "Get All Context for Session", description = "Retrieves all context key-value pairs for a specific chat session.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Context retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -96,22 +44,7 @@ public class ChatContextController {
         return ResponseEntity.ok(chatContextService.toResponseList(chatContextService.findBySessionId(sessionId)));
     }
 
-    @Operation(
-            summary = "Check Context Key Exists",
-            description = """
-                    Checks if a specific context key exists for a session.
-
-                    This endpoint is useful for verifying whether certain information
-                    has already been stored in the context.
-
-                    ## Path Parameters
-                    - sessionId: The unique identifier of the chat session
-                    - key: The context key to check for
-
-                    ## Response Details
-                    - Returns true if the key exists in context
-                    - Returns false if key is not found or session doesn't exist
-                    """)
+    @Operation(summary = "Check Context Key Exists", description = "Checks if a specific context key exists for a session.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Context check completed.",
                     content = @Content(mediaType = "application/json")),

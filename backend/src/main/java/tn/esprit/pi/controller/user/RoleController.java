@@ -22,44 +22,13 @@ import tn.esprit.pi.service.user.RoleService;
 @RestController
 @RequestMapping("/api/roles")
 @RequiredArgsConstructor
-@Tag(name = "Role Management", description = """
-        APIs for managing user roles in the MeddiFollow system.
-
-        Roles define the permissions and access levels of users within the system.
-        Each user is assigned a single role that determines their capabilities.
-
-        ## System Roles
-        - **PATIENT**: Basic user role for patients. Can view their own profile.
-        - **DOCTOR**: Medical staff role. Can view patient records within their hospital.
-        - **ADMIN**: Administrator role. Full access to all system features.
-
-        ## Role Properties
-        - **role**: The role identifier (PATIENT, DOCTOR, ADMIN)
-        - **description**: Human-readable description of the role's purpose
-
-        ## Common Use Cases
-        - View all available roles
-        - Get role details by ID or role name
-        - Create custom roles (if needed)
-        - Delete roles (with caution - affects all users with that role)
-        """)
+@Tag(name = "Role Management", description = "APIs for managing user roles")
 @SecurityRequirement(name = "Bearer Authentication")
 public class RoleController {
 
     private final RoleService roleService;
 
-    @Operation(
-            summary = "Get All Roles",
-            description = """
-                    Retrieves a list of all roles in the system.
-
-                    This endpoint returns all available roles, including system-defined
-                    roles like PATIENT, DOCTOR, and ADMIN.
-
-                    ## Response Details
-                    - Returns list of all roles
-                    - Each role includes its identifier and description
-                    """)
+    @Operation(summary = "Get All Roles", description = "Retrieves a list of all roles in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Roles retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -71,20 +40,7 @@ public class RoleController {
         return ResponseEntity.ok(roleService.findAll());
     }
 
-    @Operation(
-            summary = "Get Role by ID",
-            description = """
-                    Retrieves a specific role by their unique identifier.
-
-                    This endpoint returns role details if found.
-
-                    ## Path Parameters
-                    - id: The unique identifier of the role
-
-                    ## Response Details
-                    - Returns role details including role type and description
-                    - Returns 404 if role not found
-                    """)
+    @Operation(summary = "Get Role by ID", description = "Retrieves a specific role by their unique identifier.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Role retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -102,20 +58,7 @@ public class RoleController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(
-            summary = "Get Role by Name",
-            description = """
-                    Retrieves a role by its name/enumeration value.
-
-                    This endpoint searches for a role using its enum value.
-
-                    ## Path Parameters
-                    - role: The role name (PATIENT, DOCTOR, or ADMIN)
-
-                    ## Response Details
-                    - Returns role if found
-                    - Returns 404 if no role exists with that name
-                    """)
+    @Operation(summary = "Get Role by Name", description = "Retrieves a role by its name/enumeration value.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Role retrieved successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -134,21 +77,7 @@ public class RoleController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(
-            summary = "Create Role",
-            description = """
-                    Creates a new role in the system.
-
-                    This endpoint registers a new role. Typically used for creating
-                    custom roles beyond the system defaults.
-
-                    ## Request Details
-                    - role: Unique role identifier (enum value)
-                    - description: Human-readable description
-
-                    ## Response Details
-                    - Returns the created role with generated ID
-                    """)
+    @Operation(summary = "Create Role", description = "Creates a new role in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Role created successfully.",
                     content = @Content(mediaType = "application/json")),
@@ -162,23 +91,7 @@ public class RoleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(roleService.save(role));
     }
 
-    @Operation(
-            summary = "Delete Role",
-            description = """
-                    Permanently deletes a role from the system.
-
-                    This endpoint permanently removes a role. Use with caution as it
-                    will affect all users assigned to this role.
-
-                    Warning: Deleting a role that is assigned to users may cause
-                    authentication and authorization issues.
-
-                    ## Path Parameters
-                    - id: The unique identifier of the role to delete
-
-                    ## Response Details
-                    - Returns 204 No Content on success
-                    """)
+    @Operation(summary = "Delete Role", description = "Permanently deletes a role from the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Role deleted successfully.",
                     content = @Content(mediaType = "application/json")),
