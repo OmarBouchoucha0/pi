@@ -11,7 +11,7 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'placeholder', pathMatch: 'full' },
+      { path: '', redirectTo: 'ai-chat-bot', pathMatch: 'full' },
       {
         path: 'placeholder',
         loadComponent: () =>
