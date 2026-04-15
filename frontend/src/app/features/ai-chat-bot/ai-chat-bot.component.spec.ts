@@ -21,11 +21,11 @@ describe('AiChatBotComponent', () => {
   });
 
   it('should have sessions initialized', () => {
-    expect(component.sessions.length).toBeGreaterThan(0);
+    expect(component.sessions).toEqual([]);
   });
 
   it('should have messages initialized', () => {
-    expect(component.messages.length).toBeGreaterThan(0);
+    expect(component.messages).toEqual([]);
   });
 
   it('should have empty userInput initially', () => {
@@ -34,14 +34,16 @@ describe('AiChatBotComponent', () => {
 
   it('should add a user message when sendMessage is called with non-empty input', () => {
     component.userInput = 'Hello';
+    component.selectedSessionId = 1;
     component.sendMessage();
-    expect(component.messages.length).toBe(5);
+    expect(component.messages.length).toBe(1);
     expect(component.messages[component.messages.length - 1].role).toBe('user');
     expect(component.messages[component.messages.length - 1].content).toBe('Hello');
   });
 
   it('should clear userInput after sending a message', () => {
     component.userInput = 'Hello';
+    component.selectedSessionId = 1;
     component.sendMessage();
     expect(component.userInput).toBe('');
   });
