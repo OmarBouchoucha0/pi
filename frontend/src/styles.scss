@@ -132,3 +132,13 @@ body {
     font-size: 24px !important;
   }
 }
+
+// Textarea disabled styling
+textarea.p-textarea {
+  &:disabled {
+    border-color: #d1d1d1 !important;
+    background-color: transparent !important;
+    opacity: 1 !important;
+    cursor: not-allowed !important;
+  }
+}
