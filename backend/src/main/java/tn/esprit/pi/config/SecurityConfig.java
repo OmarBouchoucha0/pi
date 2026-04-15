@@ -44,7 +44,8 @@ public class SecurityConfig {
                     "/swagger-ui.html",
                     "/v3/api-docs/**",
                     "/swagger-resources/**",
-                    "/webjars/**"
+                    "/webjars/**",
+                    "/ws/chat/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             )
@@ -61,7 +62,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedOriginPatterns(List.of("*"));
+        configuration.setAllowCredentials(true);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("Authorization"));
