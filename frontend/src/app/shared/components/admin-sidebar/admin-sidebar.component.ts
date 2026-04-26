@@ -23,6 +23,7 @@ export class AdminSidebarComponent {
     { icon: 'tenants', label: 'Tenants', route: '/admin/tenants' },
     { icon: 'departments', label: 'Departments', route: '/admin/departments' },
     { icon: 'hospitals', label: 'Hospitals', route: '/admin/hospitals' },
+    { icon: 'predictions', label: 'Predictions', route: '/admin/predictions' },
   ];
 
   toggle(): void {

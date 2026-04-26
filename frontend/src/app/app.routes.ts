@@ -72,6 +72,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'predictions',
+        loadComponent: () =>
+          import('./features/admin/predictions/predictions.component').then(
+            (m) => m.PredictionsComponent,
+          ),
+      },
+      {
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/profile.component').then((m) => m.ProfileComponent),

@@ -27,3 +27,17 @@ frontend/dist/
 # Logs
 *.log
 npm-debug.log*
+
+# Python / ML
+ml-service/venv/
+ml-service/__pycache__/
+ml-service/.pytest_cache/
+ml-service/*.pyc
+ml-service/*.pkl
+ml-service/*.h5
+ml-service/*.joblib
+ml-service/.ipynb_checkpoints/
+ml-service/data/
+ml-service/models/
+ml-service/weights/
+ml-service/checkpoints/
