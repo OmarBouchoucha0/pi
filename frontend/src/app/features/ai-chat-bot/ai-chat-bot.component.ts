@@ -6,7 +6,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { SplitterModule } from 'primeng/splitter';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { ChatService, ChatMessage as HttpChatMessage } from '../../core/services/chat.service';
 import { ChatWebSocketService } from '../../core/services/chat-websocket.service';
 import { ChatMessage as WsChatMessage } from '../../shared/types/chat.types';
@@ -50,11 +50,12 @@ export class AiChatBotComponent implements OnInit, OnDestroy {
   private wsSubscription: Subscription | null = null;
 
   ngOnInit(): void {
-    const user = this.authService.getStoredUser();
-    if (user) {
-      this.currentUserId = user.id;
-      this.loadSessions();
-    }
+    this.authService.currentUser$.pipe(take(1)).subscribe((user) => {
+      if (user) {
+        this.currentUserId = user.id;
+        this.loadSessions();
+      }
+    });
   }
 
   ngOnDestroy(): void {

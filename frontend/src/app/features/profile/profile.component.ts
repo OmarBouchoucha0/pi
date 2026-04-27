@@ -5,6 +5,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../core/services/auth.service';
 import { User } from '../../shared/types/user';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -27,12 +28,27 @@ export class ProfileComponent implements OnInit {
   phone = '';
 
   ngOnInit(): void {
-    this.user = this.authService.getStoredUser();
-    if (this.user) {
-      this.firstName = this.user.firstName || '';
-      this.lastName = this.user.lastName || '';
-      this.email = this.user.email || '';
-      this.phone = this.user.phone || '';
+    this.authService.currentUser$.pipe(take(1)).subscribe((user) => {
+      this.user = user;
+      if (user) {
+        this.firstName = user.firstName || '';
+        this.lastName = user.lastName || '';
+        this.email = user.email || '';
+        this.phone = user.phone || '';
+      }
+    });
+
+    if (!this.user) {
+      this.authService
+        .getCurrentUser()
+        .pipe(take(1))
+        .subscribe((user) => {
+          this.user = user;
+          this.firstName = user.firstName || '';
+          this.lastName = user.lastName || '';
+          this.email = user.email || '';
+          this.phone = user.phone || '';
+        });
     }
   }
 
