@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import tn.esprit.pi.dto.user.*;
@@ -36,10 +39,10 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Invalid email or password. Authentication failed.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Bad request. Invalid input format.", content = @Content(mediaType = "application/json"))
     })
-    @Operation(summary = "User Login", description = "Authenticates a user with email and password and returns JWT access and refresh tokens")
+    @Operation(summary = "User Login", description = "Authenticates a user with email and password and sets JWT cookies")
     @PostMapping("/auth/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        return ResponseEntity.ok(userService.login(request));
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
+        return ResponseEntity.ok(userService.login(request, response));
     }
 
     @ApiResponses(value = {
@@ -55,14 +58,27 @@ public class UserController {
     }
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Token refreshed successfully. Returns new access token.", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token.", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "400", description = "Bad request. Invalid input format.", content = @Content(mediaType = "application/json"))
+            @ApiResponse(responseCode = "200", description = "Token refreshed successfully. Sets new cookies.", content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "401", description = "Invalid or expired refresh token.", content = @Content(mediaType = "application/json"))
     })
-    @Operation(summary = "Refresh Access Token", description = "Exchanges a valid refresh token for a new access token")
+    @Operation(summary = "Refresh Access Token", description = "Exchanges a valid refresh token cookie for new access and refresh token cookies")
     @PostMapping("/auth/refresh")
-    public ResponseEntity<LoginResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
-        return ResponseEntity.ok(userService.refresh(request));
+    public ResponseEntity<LoginResponse> refresh(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = null;
+        if (request.getCookies() != null) {
+            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        if (refreshToken == null) {
+            throw new BadCredentialsException("Refresh token cookie not found");
+        }
+        RefreshTokenRequest refreshRequest = new RefreshTokenRequest();
+        refreshRequest.setRefreshToken(refreshToken);
+        return ResponseEntity.ok(userService.refresh(refreshRequest, response));
     }
 
     @ApiResponses(value = {
@@ -70,10 +86,10 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "Invalid refresh token format.", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "400", description = "Bad request. Invalid input format.", content = @Content(mediaType = "application/json"))
     })
-    @Operation(summary = "User Logout", description = "Logs out the user by blacklisting the refresh token")
+    @Operation(summary = "User Logout", description = "Logs out the user by clearing cookies and blacklisting tokens")
     @PostMapping("/auth/logout")
-    public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request) {
-        userService.logout(request);
+    public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request, HttpServletResponse response) {
+        userService.logout(request, response);
         return ResponseEntity.ok().build();
     }
 

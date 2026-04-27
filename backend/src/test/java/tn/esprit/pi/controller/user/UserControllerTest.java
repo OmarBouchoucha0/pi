@@ -15,6 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import tn.esprit.pi.dto.user.LoginRequest;
 import tn.esprit.pi.dto.user.LoginResponse;
 import tn.esprit.pi.dto.user.PatientRegisterRequest;
@@ -28,6 +31,12 @@ class UserControllerTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private HttpServletRequest httpServletRequest;
+
+    @Mock
+    private HttpServletResponse httpServletResponse;
 
     @InjectMocks
     private UserController userController;
@@ -67,9 +76,9 @@ class UserControllerTest {
         request.setEmail("test@test.com");
         request.setPassword("password");
 
-        when(userService.login(request)).thenReturn(loginResponse);
+        when(userService.login(request, httpServletResponse)).thenReturn(loginResponse);
 
-        ResponseEntity<LoginResponse> result = userController.login(request);
+        ResponseEntity<LoginResponse> result = userController.login(request, httpServletResponse);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isNotNull();
@@ -95,12 +104,12 @@ class UserControllerTest {
 
     @Test
     void refresh_success() {
-        RefreshTokenRequest request = new RefreshTokenRequest();
-        request.setRefreshToken("refresh-token");
+        Cookie refreshCookie = new Cookie("refreshToken", "refresh-token");
+        Cookie[] cookies = {refreshCookie};
+        when(httpServletRequest.getCookies()).thenReturn(cookies);
+        when(userService.refresh(any(RefreshTokenRequest.class), eq(httpServletResponse))).thenReturn(loginResponse);
 
-        when(userService.refresh(request)).thenReturn(loginResponse);
-
-        ResponseEntity<LoginResponse> result = userController.refresh(request);
+        ResponseEntity<LoginResponse> result = userController.refresh(httpServletRequest, httpServletResponse);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isNotNull();
@@ -111,12 +120,12 @@ class UserControllerTest {
         tn.esprit.pi.dto.user.LogoutRequest request = new tn.esprit.pi.dto.user.LogoutRequest();
         request.setRefreshToken("refresh-token");
 
-        doNothing().when(userService).logout(any());
+        doNothing().when(userService).logout(any(), eq(httpServletResponse));
 
-        ResponseEntity<Void> result = userController.logout(request);
+        ResponseEntity<Void> result = userController.logout(request, httpServletResponse);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(userService).logout(request);
+        verify(userService).logout(request, httpServletResponse);
     }
 
     @Test

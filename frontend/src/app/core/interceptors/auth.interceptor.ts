@@ -12,35 +12,21 @@ export const authInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn,
 ) => {
-  const authService = inject(AuthService);
-  const token = authService.getAccessToken();
-
-  if (token) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
-
-  return next(req).pipe(
+  const authReq = req.clone({
+    withCredentials: true,
+  });
+  return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401 && !req.url.includes('/auth/refresh')) {
-        return authService.refreshToken().pipe(
-          switchMap(() => {
-            const newToken = authService.getAccessToken();
-            const newReq = req.clone({
-              setHeaders: {
-                Authorization: `Bearer ${newToken}`,
-              },
-            });
-            return next(newReq);
-          }),
-          catchError((refreshError) => {
-            authService.logout();
-            return throwError(() => refreshError);
-          }),
-        );
+        return inject(AuthService)
+          .refreshToken()
+          .pipe(
+            switchMap(() => next(req)),
+            catchError((refreshError) => {
+              inject(AuthService).logout();
+              return throwError(() => refreshError);
+            }),
+          );
       }
       return throwError(() => error);
     }),

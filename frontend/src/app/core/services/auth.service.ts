@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, tap, catchError, of, map } from 'rxjs';
 import { Router } from '@angular/router';
 import {
   User,
@@ -14,12 +13,6 @@ import {
 } from '../../shared/types/user';
 
 const API_BASE = 'http://localhost:8080';
-const TOKEN_KEYS = {
-  ACCESS: 'accessToken',
-  REFRESH: 'refreshToken',
-  USER: 'currentUser',
-  ROLE: 'userRole',
-};
 
 @Injectable({
   providedIn: 'root',
@@ -28,16 +21,14 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  private currentUserSubject = new BehaviorSubject<User | null>(this.getUser());
-  currentUser$ = this.currentUserSubject.asObservable();
+  private userRoleSubject = new BehaviorSubject<string | null>(null);
+  userRole$ = this.userRoleSubject.asObservable();
+
+  private userSubject = new BehaviorSubject<User | null>(null);
+  currentUser$ = this.userSubject.asObservable();
 
   initialize(): Observable<boolean> {
-    const refreshToken = this.getRefreshToken();
-    if (!refreshToken) {
-      return of(false);
-    }
-    return this.refreshToken().pipe(
-      switchMap(() => this.getCurrentUser()),
+    return this.getCurrentUser().pipe(
       map(() => true),
       catchError((error) => {
         console.error('[Auth] Initialization failed:', error);
@@ -50,8 +41,8 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${API_BASE}/api/users/auth/login`, credentials).pipe(
       tap((response) => {
-        this.storeTokens(response);
-        this.currentUserSubject.next({
+        this.storeUserData(response);
+        this.userSubject.next({
           id: response.userId,
           email: response.email,
           firstName: '',
@@ -62,58 +53,46 @@ export class AuthService {
           role: response.role,
           tenantId: 1,
         });
+        this.userRoleSubject.next(response.role);
       }),
     );
   }
 
   logout(): void {
-    const refreshToken = this.getRefreshToken();
-    if (refreshToken) {
-      this.http
-        .post(`${API_BASE}/api/users/auth/logout`, { refreshToken })
-        .pipe(catchError(() => of(null)))
-        .subscribe(() => this.clearStorage());
-    } else {
-      this.clearStorage();
-    }
+    this.http
+      .post(`${API_BASE}/api/users/auth/logout`, {})
+      .pipe(catchError(() => of(null)))
+      .subscribe(() => this.clearStorage());
   }
 
   refreshToken(): Observable<RefreshResponse> {
-    const refreshToken = this.getRefreshToken();
-    const currentRole = this.getRole() as UserRole | null;
-    return this.http
-      .post<RefreshResponse>(`${API_BASE}/api/users/auth/refresh`, {
-        refreshToken,
-      })
-      .pipe(
-        tap((response) => {
-          localStorage.setItem(TOKEN_KEYS.ACCESS, response.accessToken);
-          localStorage.setItem(TOKEN_KEYS.REFRESH, response.refreshToken);
-          if (currentRole) {
-            localStorage.setItem(TOKEN_KEYS.ROLE, currentRole);
-          }
-          const user: User = {
-            id: response.userId,
-            email: '',
-            firstName: '',
-            lastName: '',
-            phone: '',
-            status: 'ACTIVE',
-            createdAt: '',
-            role: currentRole || 'PATIENT',
-            tenantId: 1,
-          };
-          localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(user));
-        }),
-      );
+    const currentRole = this.userRoleSubject.getValue();
+    return this.http.post<RefreshResponse>(`${API_BASE}/api/users/auth/refresh`, {}).pipe(
+      tap((response) => {
+        const user: User = {
+          id: response.userId,
+          email: '',
+          firstName: '',
+          lastName: '',
+          phone: '',
+          status: 'ACTIVE',
+          createdAt: '',
+          role: (currentRole as UserRole) || 'PATIENT',
+          tenantId: 1,
+        };
+        this.userSubject.next(user);
+        if (currentRole) {
+          this.userRoleSubject.next(currentRole);
+        }
+      }),
+    );
   }
 
   getCurrentUser(): Observable<User> {
     return this.http.get<User>(`${API_BASE}/api/users/auth/me`).pipe(
       tap((user) => {
-        localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(user));
-        localStorage.setItem(TOKEN_KEYS.ROLE, user.role);
-        this.currentUserSubject.next(user);
+        this.userSubject.next(user);
+        this.userRoleSubject.next(user.role);
       }),
     );
   }
@@ -121,8 +100,8 @@ export class AuthService {
   register(credentials: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${API_BASE}/api/users/register/patient`, credentials).pipe(
       tap((response) => {
-        this.storeTokens(response);
-        this.currentUserSubject.next({
+        this.storeUserData(response);
+        this.userSubject.next({
           id: response.userId,
           email: response.email,
           firstName: '',
@@ -133,6 +112,7 @@ export class AuthService {
           role: response.role,
           tenantId: 1,
         });
+        this.userRoleSubject.next(response.role);
       }),
     );
   }
@@ -145,8 +125,8 @@ export class AuthService {
       })
       .pipe(
         tap((response) => {
-          this.storeTokens(response);
-          this.currentUserSubject.next({
+          this.storeUserData(response);
+          this.userSubject.next({
             id: response.userId,
             email: response.email,
             firstName: '',
@@ -157,25 +137,21 @@ export class AuthService {
             role: response.role,
             tenantId: 1,
           });
+          this.userRoleSubject.next(response.role);
         }),
       );
   }
 
-  getAccessToken(): string | null {
-    return localStorage.getItem(TOKEN_KEYS.ACCESS);
-  }
-
-  getRefreshToken(): string | null {
-    return localStorage.getItem(TOKEN_KEYS.REFRESH);
-  }
-
   getUser(): User | null {
-    const userStr = localStorage.getItem(TOKEN_KEYS.USER);
-    return userStr ? JSON.parse(userStr) : null;
+    return this.userSubject.getValue();
   }
 
   getStoredUser(): User | null {
     return this.getUser();
+  }
+
+  getStoredRole(): string | null {
+    return this.userRoleSubject.getValue();
   }
 
   updateProfile(data: {
@@ -193,43 +169,39 @@ export class AuthService {
       lastName: data.lastName ?? user.lastName,
       phone: data.phone ?? user.phone,
     };
-    localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(updatedUser));
-    this.currentUserSubject.next(updatedUser);
+    this.userSubject.next(updatedUser);
     return of(updatedUser);
   }
 
   getRole(): string | null {
-    return localStorage.getItem(TOKEN_KEYS.ROLE);
+    return this.userRoleSubject.getValue();
   }
 
   isAuthenticated(): boolean {
-    return !!this.getAccessToken();
+    return !!this.userSubject.getValue();
   }
 
   isAdmin(): boolean {
-    return this.getRole() === 'ADMIN';
+    return this.userRoleSubject.getValue() === 'ADMIN';
   }
 
   isDoctor(): boolean {
-    return this.getRole() === 'DOCTOR';
+    return this.userRoleSubject.getValue() === 'DOCTOR';
   }
 
   isPatient(): boolean {
-    return this.getRole() === 'PATIENT';
+    return this.userRoleSubject.getValue() === 'PATIENT';
   }
 
   isLab(): boolean {
-    return this.getRole() === 'LAB';
+    return this.userRoleSubject.getValue() === 'LAB';
   }
 
   isNurse(): boolean {
-    return this.getRole() === 'NURSE';
+    return this.userRoleSubject.getValue() === 'NURSE';
   }
 
-  private storeTokens(response: AuthResponse): void {
-    localStorage.setItem(TOKEN_KEYS.ACCESS, response.accessToken);
-    localStorage.setItem(TOKEN_KEYS.REFRESH, response.refreshToken);
-    localStorage.setItem(TOKEN_KEYS.ROLE, response.role);
+  private storeUserData(response: AuthResponse): void {
     const user: User = {
       id: response.userId,
       email: response.email,
@@ -241,34 +213,13 @@ export class AuthService {
       role: response.role,
       tenantId: 1,
     };
-    localStorage.setItem(TOKEN_KEYS.USER, JSON.stringify(user));
+    this.userSubject.next(user);
+    this.userRoleSubject.next(response.role);
   }
 
   private clearStorage(): void {
-    localStorage.removeItem(TOKEN_KEYS.ACCESS);
-    localStorage.removeItem(TOKEN_KEYS.REFRESH);
-    localStorage.removeItem(TOKEN_KEYS.USER);
-    localStorage.removeItem(TOKEN_KEYS.ROLE);
-    this.currentUserSubject.next(null);
+    this.userSubject.next(null);
+    this.userRoleSubject.next(null);
     this.router.navigate(['/login']);
-  }
-
-  checkTokenExpiration(): boolean {
-    const token = this.getAccessToken();
-    if (!token) {
-      return false;
-    }
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const exp = payload.exp * 1000;
-      const now = Date.now();
-      if (exp < now) {
-        this.logout();
-        return false;
-      }
-      return true;
-    } catch {
-      return false;
-    }
   }
 }

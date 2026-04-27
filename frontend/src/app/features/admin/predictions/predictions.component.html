@@ -1,0 +1,84 @@
+<div class="h-full w-full bg-white flex flex-col overflow-hidden">
+  <!-- Header -->
+  <div class="px-6 py-4 border-b border-black/10 flex-shrink-0">
+    <h1 class="text-sm font-semibold text-[#0a0a0a]">Registration Surge Predictions</h1>
+    <p class="text-xs text-black/40 mt-0.5">AI-powered predictions for user registration surges</p>
+  </div>
+
+  <!-- Content -->
+  <div class="flex-1 overflow-y-auto min-h-0 p-6">
+    @if (loading) {
+      <div class="flex flex-col gap-4">
+        <p-skeleton width="100%" height="300px"></p-skeleton>
+        <div class="grid grid-cols-3 gap-4">
+          <p-skeleton width="100%" height="80px"></p-skeleton>
+          <p-skeleton width="100%" height="80px"></p-skeleton>
+          <p-skeleton width="100%" height="80px"></p-skeleton>
+        </div>
+      </div>
+    } @else {
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="bg-[#f9fafb] rounded-xl p-4">
+          <p class="text-xs text-black/40">Surge Threshold</p>
+          <p class="text-xl font-semibold text-[#0a0a0a] mt-1">{{ surgeThreshold }}</p>
+          <p class="text-xs text-black/40 mt-1">registrations/month</p>
+        </div>
+        <div class="bg-[#f9fafb] rounded-xl p-4">
+          <p class="text-xs text-black/40">Predicted Surges</p>
+          <p class="text-xl font-semibold text-[#ef4444] mt-1">{{ surgeCount }}</p>
+          <p class="text-xs text-black/40 mt-1">of {{ predictions.length }} months</p>
+        </div>
+        <div class="bg-[#f9fafb] rounded-xl p-4">
+          <p class="text-xs text-black/40">Avg Predicted</p>
+          <p class="text-xl font-semibold text-[#0a0a0a] mt-1">{{ avgPredictedCount }}</p>
+          <p class="text-xs text-black/40 mt-1">registrations/month</p>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="bg-[#f9fafb] rounded-xl p-4">
+        <p-chart type="bar" [data]="chartData" [options]="chartOptions" height="300px"></p-chart>
+      </div>
+
+      <!-- Predictions Table -->
+      <div class="mt-6 overflow-hidden rounded-xl border border-black/10">
+        <table class="w-full text-sm">
+          <thead class="bg-[#f9fafb]">
+            <tr>
+              <th class="text-left px-4 py-3 font-medium text-[#0a0a0a]">Month</th>
+              <th class="text-left px-4 py-3 font-medium text-[#0a0a0a]">Predicted Count</th>
+              <th class="text-left px-4 py-3 font-medium text-[#0a0a0a]">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (prediction of predictions; track prediction.month) {
+              <tr class="border-t border-black/5">
+                <td class="px-4 py-3 text-[#0a0a0a]">{{ prediction.month }}</td>
+                <td class="px-4 py-3 text-[#0a0a0a]">{{ prediction.predicted_count }}</td>
+                <td class="px-4 py-3">
+                  @if (prediction.is_surge) {
+                    <span
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700"
+                    >
+                      Surge
+                    </span>
+                  } @else {
+                    <span
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700"
+                    >
+                      Normal
+                    </span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Toast -->
+<p-toast />

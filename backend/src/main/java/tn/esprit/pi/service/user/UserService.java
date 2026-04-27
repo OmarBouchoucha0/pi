@@ -9,6 +9,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import tn.esprit.pi.dto.user.*;
 import tn.esprit.pi.entity.user.BlacklistedToken;
@@ -435,7 +437,7 @@ public class UserService {
         if (request.getPrivilegeLevel() != null) user.setPrivilegeLevel(request.getPrivilegeLevel());
     }
 
-    public LoginResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request, HttpServletResponse response) {
         User user = userRepository.findByEmailAndDeletedAtIsNull(request.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 
@@ -446,62 +448,105 @@ public class UserService {
         String accessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getEmail(), user.getRole().getRole());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
+        Cookie accessCookie = new Cookie("accessToken", accessToken);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(true);
+        accessCookie.setPath("/");
+        accessCookie.setMaxAge(3600);
+
+        Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true);
+        refreshCookie.setPath("/api/users/auth/refresh");
+        refreshCookie.setMaxAge(604800);
+
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
+
         return LoginResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
                 .userId(user.getId())
                 .email(user.getEmail())
                 .role(user.getRole().getRole())
                 .build();
     }
 
-    public LoginResponse refresh(RefreshTokenRequest request) {
-        String refreshToken = request.getRefreshToken();
+    public LoginResponse refresh(RefreshTokenRequest request, HttpServletResponse response) {
+        String oldRefreshToken = request.getRefreshToken();
 
-        if (!jwtTokenProvider.validateToken(refreshToken)) {
+        if (!jwtTokenProvider.validateToken(oldRefreshToken)) {
             throw new BadCredentialsException("Invalid refresh token");
         }
 
-        if (!jwtTokenProvider.isRefreshToken(refreshToken)) {
+        if (!jwtTokenProvider.isRefreshToken(oldRefreshToken)) {
             throw new BadCredentialsException("Invalid token type");
         }
 
-        if (blacklistedTokenRepository.existsByToken(refreshToken)) {
+        if (blacklistedTokenRepository.existsByToken(oldRefreshToken)) {
             throw new BadCredentialsException("Token has been revoked");
         }
 
-        Long userId = jwtTokenProvider.getUserIdFromToken(refreshToken);
+        Long userId = jwtTokenProvider.getUserIdFromToken(oldRefreshToken);
         User user = userRepository.findByIdAndDeletedAtIsNull(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
 
         String newAccessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getEmail(), user.getRole().getRole());
+        String newRefreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
+
+        BlacklistedToken blacklistedToken = BlacklistedToken.builder()
+                .token(oldRefreshToken)
+                .expiresAt(jwtTokenProvider.getExpirationFromToken(oldRefreshToken).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime())
+                .build();
+        blacklistedTokenRepository.save(blacklistedToken);
+
+        Cookie accessCookie = new Cookie("accessToken", newAccessToken);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(true);
+        accessCookie.setPath("/");
+        accessCookie.setMaxAge(3600);
+
+        Cookie refreshCookie = new Cookie("refreshToken", newRefreshToken);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true);
+        refreshCookie.setPath("/api/users/auth/refresh");
+        refreshCookie.setMaxAge(604800);
+
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
 
         return LoginResponse.builder()
-                .accessToken(newAccessToken)
-                .refreshToken(refreshToken)
                 .userId(user.getId())
                 .email(user.getEmail())
                 .role(user.getRole().getRole())
                 .build();
     }
 
-    public void logout(LogoutRequest request) {
+    public void logout(LogoutRequest request, HttpServletResponse response) {
         String refreshToken = request.getRefreshToken();
 
-        if (!jwtTokenProvider.validateToken(refreshToken)) {
-            throw new BadCredentialsException("Invalid refresh token");
+        if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
+            if (!blacklistedTokenRepository.existsByToken(refreshToken)) {
+                BlacklistedToken blacklistedToken = BlacklistedToken.builder()
+                        .token(refreshToken)
+                        .expiresAt(jwtTokenProvider.getExpirationFromToken(refreshToken).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime())
+                        .build();
+                blacklistedTokenRepository.save(blacklistedToken);
+            }
         }
 
-        if (blacklistedTokenRepository.existsByToken(refreshToken)) {
-            return;
-        }
+        Cookie accessCookie = new Cookie("accessToken", null);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setSecure(true);
+        accessCookie.setPath("/");
+        accessCookie.setMaxAge(0);
 
-        BlacklistedToken blacklistedToken = BlacklistedToken.builder()
-                .token(refreshToken)
-                .expiresAt(jwtTokenProvider.getExpirationFromToken(refreshToken).toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDateTime())
-                .build();
+        Cookie refreshCookie = new Cookie("refreshToken", null);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true);
+        refreshCookie.setPath("/api/users/auth/refresh");
+        refreshCookie.setMaxAge(0);
 
-        blacklistedTokenRepository.save(blacklistedToken);
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
     }
 
     public List<User> getPatientsByHospitalId(Long hospitalId) {
