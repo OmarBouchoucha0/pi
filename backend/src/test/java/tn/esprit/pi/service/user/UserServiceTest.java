@@ -18,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import tn.esprit.pi.dto.user.*;
 import tn.esprit.pi.entity.user.BlacklistedToken;
@@ -51,6 +53,9 @@ class UserServiceTest {
 
     @Mock
     private HttpServletResponse httpServletResponse;
+
+    @Mock
+    private HttpServletRequest httpServletRequest;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -514,12 +519,10 @@ class UserServiceTest {
                 .role(patientRole)
                 .build();
 
+when(httpServletRequest.isSecure()).thenReturn(false);
         when(userRepository.findByEmailAndDeletedAtIsNull("test@test.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("password123", "hashed_password")).thenReturn(true);
-        when(jwtTokenProvider.generateAccessToken(anyLong(), anyString(), any())).thenReturn("access_token");
-        when(jwtTokenProvider.generateRefreshToken(anyLong())).thenReturn("refresh_token");
-
-        LoginResponse result = userService.login(request, httpServletResponse);
+        LoginResponse result = userService.login(httpServletRequest, request, httpServletResponse);
 
         assertThat(result).isNotNull();
         assertThat(result.getUserId()).isEqualTo(1L);
@@ -535,7 +538,7 @@ class UserServiceTest {
 
         when(userRepository.findByEmailAndDeletedAtIsNull("invalid@test.com")).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> userService.login(request, httpServletResponse))
+        assertThatThrownBy(() -> userService.login(httpServletRequest, request, httpServletResponse))
                 .isInstanceOf(org.springframework.security.authentication.BadCredentialsException.class);
     }
 
@@ -555,7 +558,7 @@ class UserServiceTest {
         when(userRepository.findByEmailAndDeletedAtIsNull("test@test.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrong_password", "hashed_password")).thenReturn(false);
 
-        assertThatThrownBy(() -> userService.login(request, httpServletResponse))
+        assertThatThrownBy(() -> userService.login(httpServletRequest, request, httpServletResponse))
                 .isInstanceOf(org.springframework.security.authentication.BadCredentialsException.class);
     }
 
@@ -579,7 +582,7 @@ class UserServiceTest {
         when(jwtTokenProvider.generateRefreshToken(anyLong())).thenReturn("new_refresh_token");
         when(jwtTokenProvider.getExpirationFromToken("refresh_token")).thenReturn(new Date(System.currentTimeMillis() + 604800000));
 
-        LoginResponse result = userService.refresh(request, httpServletResponse);
+        LoginResponse result = userService.refresh(httpServletRequest, request, httpServletResponse);
 
         assertThat(result).isNotNull();
         assertThat(result.getUserId()).isEqualTo(1L);
@@ -593,7 +596,7 @@ class UserServiceTest {
 
         when(jwtTokenProvider.validateToken("invalid_token")).thenReturn(false);
 
-        assertThatThrownBy(() -> userService.refresh(request, httpServletResponse))
+        assertThatThrownBy(() -> userService.refresh(httpServletRequest, request, httpServletResponse))
                 .isInstanceOf(org.springframework.security.authentication.BadCredentialsException.class);
     }
 
@@ -606,34 +609,32 @@ class UserServiceTest {
         when(jwtTokenProvider.isRefreshToken("blacklisted_token")).thenReturn(true);
         when(blacklistedTokenRepository.existsByToken("blacklisted_token")).thenReturn(true);
 
-        assertThatThrownBy(() -> userService.refresh(request, httpServletResponse))
+        assertThatThrownBy(() -> userService.refresh(httpServletRequest, request, httpServletResponse))
                 .isInstanceOf(org.springframework.security.authentication.BadCredentialsException.class)
                 .hasMessageContaining("revoked");
     }
 
     @Test
     void logout_shouldBlacklistToken() {
-        LogoutRequest request = new LogoutRequest();
-        request.setRefreshToken("refresh_token");
-
+        Cookie refreshCookie = new Cookie("refreshToken", "refresh_token");
+        when(httpServletRequest.getCookies()).thenReturn(new Cookie[] { refreshCookie });
         when(jwtTokenProvider.validateToken("refresh_token")).thenReturn(true);
         when(blacklistedTokenRepository.existsByToken("refresh_token")).thenReturn(false);
         when(jwtTokenProvider.getExpirationFromToken("refresh_token")).thenReturn(new Date(System.currentTimeMillis() + 3600000));
 
-        userService.logout(request, httpServletResponse);
+        userService.logout(httpServletRequest, httpServletResponse);
 
         verify(blacklistedTokenRepository).save(any(BlacklistedToken.class));
     }
 
     @Test
     void logout_shouldNotBlacklistWhenAlreadyBlacklisted() {
-        LogoutRequest request = new LogoutRequest();
-        request.setRefreshToken("refresh_token");
-
+        Cookie refreshCookie = new Cookie("refreshToken", "refresh_token");
+        when(httpServletRequest.getCookies()).thenReturn(new Cookie[] { refreshCookie });
         when(jwtTokenProvider.validateToken("refresh_token")).thenReturn(true);
         when(blacklistedTokenRepository.existsByToken("refresh_token")).thenReturn(true);
 
-        userService.logout(request, httpServletResponse);
+        userService.logout(httpServletRequest, httpServletResponse);
 
         verify(blacklistedTokenRepository, never()).save(any(BlacklistedToken.class));
     }
