@@ -41,8 +41,8 @@ public class UserController {
     })
     @Operation(summary = "User Login", description = "Authenticates a user with email and password and sets JWT cookies")
     @PostMapping("/auth/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
-        return ResponseEntity.ok(userService.login(request, response));
+    public ResponseEntity<LoginResponse> login(HttpServletRequest request, @Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        return ResponseEntity.ok(userService.login(request, loginRequest, response));
     }
 
     @ApiResponses(value = {
@@ -78,17 +78,16 @@ public class UserController {
         }
         RefreshTokenRequest refreshRequest = new RefreshTokenRequest();
         refreshRequest.setRefreshToken(refreshToken);
-        return ResponseEntity.ok(userService.refresh(refreshRequest, response));
+        return ResponseEntity.ok(userService.refresh(request, refreshRequest, response));
     }
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Logout successful. Token has been blacklisted.", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "401", description = "Invalid refresh token format.", content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "400", description = "Bad request. Invalid input format.", content = @Content(mediaType = "application/json"))
+            @ApiResponse(responseCode = "401", description = "Invalid refresh token format.", content = @Content(mediaType = "application/json"))
     })
     @Operation(summary = "User Logout", description = "Logs out the user by clearing cookies and blacklisting tokens")
     @PostMapping("/auth/logout")
-    public ResponseEntity<Void> logout(@Valid @RequestBody LogoutRequest request, HttpServletResponse response) {
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         userService.logout(request, response);
         return ResponseEntity.ok().build();
     }
