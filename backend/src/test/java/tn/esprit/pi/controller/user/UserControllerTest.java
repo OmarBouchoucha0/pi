@@ -76,9 +76,9 @@ class UserControllerTest {
         request.setEmail("test@test.com");
         request.setPassword("password");
 
-        when(userService.login(request, httpServletResponse)).thenReturn(loginResponse);
+        when(userService.login(any(HttpServletRequest.class), any(LoginRequest.class), eq(httpServletResponse))).thenReturn(loginResponse);
 
-        ResponseEntity<LoginResponse> result = userController.login(request, httpServletResponse);
+        ResponseEntity<LoginResponse> result = userController.login(httpServletRequest, request, httpServletResponse);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isNotNull();
@@ -107,7 +107,7 @@ class UserControllerTest {
         Cookie refreshCookie = new Cookie("refreshToken", "refresh-token");
         Cookie[] cookies = {refreshCookie};
         when(httpServletRequest.getCookies()).thenReturn(cookies);
-        when(userService.refresh(any(RefreshTokenRequest.class), eq(httpServletResponse))).thenReturn(loginResponse);
+        when(userService.refresh(any(HttpServletRequest.class), any(RefreshTokenRequest.class), eq(httpServletResponse))).thenReturn(loginResponse);
 
         ResponseEntity<LoginResponse> result = userController.refresh(httpServletRequest, httpServletResponse);
 
@@ -117,15 +117,12 @@ class UserControllerTest {
 
     @Test
     void logout_success() {
-        tn.esprit.pi.dto.user.LogoutRequest request = new tn.esprit.pi.dto.user.LogoutRequest();
-        request.setRefreshToken("refresh-token");
+        doNothing().when(userService).logout(any(HttpServletRequest.class), eq(httpServletResponse));
 
-        doNothing().when(userService).logout(any(), eq(httpServletResponse));
-
-        ResponseEntity<Void> result = userController.logout(request, httpServletResponse);
+        ResponseEntity<Void> result = userController.logout(httpServletRequest, httpServletResponse);
 
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(userService).logout(request, httpServletResponse);
+        verify(userService).logout(any(HttpServletRequest.class), eq(httpServletResponse));
     }
 
     @Test

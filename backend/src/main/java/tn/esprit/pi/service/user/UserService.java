@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import tn.esprit.pi.dto.user.*;
@@ -437,28 +438,31 @@ public class UserService {
         if (request.getPrivilegeLevel() != null) user.setPrivilegeLevel(request.getPrivilegeLevel());
     }
 
-    public LoginResponse login(LoginRequest request, HttpServletResponse response) {
-        User user = userRepository.findByEmailAndDeletedAtIsNull(request.getEmail())
+    public LoginResponse login(HttpServletRequest request, LoginRequest loginRequest, HttpServletResponse response) {
+        User user = userRepository.findByEmailAndDeletedAtIsNull(loginRequest.getEmail())
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPasswordHash())) {
             throw new BadCredentialsException("Invalid email or password");
         }
 
         String accessToken = jwtTokenProvider.generateAccessToken(user.getId(), user.getEmail(), user.getRole().getRole());
         String refreshToken = jwtTokenProvider.generateRefreshToken(user.getId());
 
+        boolean isSecure = request.isSecure();
         Cookie accessCookie = new Cookie("accessToken", accessToken);
         accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(true);
+        accessCookie.setSecure(isSecure);
         accessCookie.setPath("/");
         accessCookie.setMaxAge(3600);
+        accessCookie.setAttribute("SameSite", "Strict");
 
         Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
         refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/api/users/auth/refresh");
+        refreshCookie.setSecure(isSecure);
+        refreshCookie.setPath("/");
         refreshCookie.setMaxAge(604800);
+        refreshCookie.setAttribute("SameSite", "Strict");
 
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
@@ -470,8 +474,8 @@ public class UserService {
                 .build();
     }
 
-    public LoginResponse refresh(RefreshTokenRequest request, HttpServletResponse response) {
-        String oldRefreshToken = request.getRefreshToken();
+    public LoginResponse refresh(HttpServletRequest request, RefreshTokenRequest refreshRequest, HttpServletResponse response) {
+        String oldRefreshToken = refreshRequest.getRefreshToken();
 
         if (!jwtTokenProvider.validateToken(oldRefreshToken)) {
             throw new BadCredentialsException("Invalid refresh token");
@@ -498,17 +502,20 @@ public class UserService {
                 .build();
         blacklistedTokenRepository.save(blacklistedToken);
 
+        boolean isSecure = request.isSecure();
         Cookie accessCookie = new Cookie("accessToken", newAccessToken);
         accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(true);
+        accessCookie.setSecure(isSecure);
         accessCookie.setPath("/");
         accessCookie.setMaxAge(3600);
+        accessCookie.setAttribute("SameSite", "Strict");
 
         Cookie refreshCookie = new Cookie("refreshToken", newRefreshToken);
         refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/api/users/auth/refresh");
+        refreshCookie.setSecure(isSecure);
+        refreshCookie.setPath("/");
         refreshCookie.setMaxAge(604800);
+        refreshCookie.setAttribute("SameSite", "Strict");
 
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
@@ -520,8 +527,8 @@ public class UserService {
                 .build();
     }
 
-    public void logout(LogoutRequest request, HttpServletResponse response) {
-        String refreshToken = request.getRefreshToken();
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = extractRefreshTokenFromCookies(request);
 
         if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
             if (!blacklistedTokenRepository.existsByToken(refreshToken)) {
@@ -533,17 +540,36 @@ public class UserService {
             }
         }
 
+        clearCookies(request, response);
+    }
+
+    private String extractRefreshTokenFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    private void clearCookies(HttpServletRequest request, HttpServletResponse response) {
+        boolean isSecure = request.isSecure();
         Cookie accessCookie = new Cookie("accessToken", null);
         accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(true);
+        accessCookie.setSecure(isSecure);
         accessCookie.setPath("/");
         accessCookie.setMaxAge(0);
+        accessCookie.setAttribute("SameSite", "Strict");
 
         Cookie refreshCookie = new Cookie("refreshToken", null);
         refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/api/users/auth/refresh");
+        refreshCookie.setSecure(isSecure);
+        refreshCookie.setPath("/");
         refreshCookie.setMaxAge(0);
+        refreshCookie.setAttribute("SameSite", "Strict");
 
         response.addCookie(accessCookie);
         response.addCookie(refreshCookie);
